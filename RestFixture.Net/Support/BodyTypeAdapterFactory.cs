@@ -26,125 +26,61 @@ namespace RestFixture.Net.Support
 {
 
 
-	/// <summary>
-	/// Depending on Content-Type passed in, it'll build the appropriate type adapter
-	/// for parsing/rendering the cell content.
-	/// 
-	/// @author smartrics
-	/// 
-	/// </summary>
-	public class BodyTypeAdapterFactory
-	{
-		private bool InstanceFieldsInitialized = false;
+    /// <summary>
+    /// Depending on Content-Type passed in, it'll build the appropriate type adapter
+    /// for parsing/rendering the cell content.
+    /// 
+    /// @author smartrics
+    /// 
+    /// </summary>
+    public class BodyTypeAdapterFactory
+    {
+        private RunnerVariablesProvider variablesProvider;
+        private Config config;
 
-		private void InitializeInstanceFields()
-		{
-			BodyTypeAdapterCreator jsonBodyTypeAdapterCreator = new BodyTypeAdapterCreator()
-			public BodyTypeAdapter createBodyTypeAdapter()
-			return new JSONBodyTypeAdapter(variablesProvider, config);
-		};
-            
-			contentTypeToBodyTypeAdapter[ContentType.JS] = jsonBodyTypeAdapterCreator;
-			contentTypeToBodyTypeAdapter[ContentType.JSON] = jsonBodyTypeAdapterCreator;
-			contentTypeToBodyTypeAdapter.put(ContentType.XML, new BodyTypeAdapterCreator()
-			public BodyTypeAdapter createBodyTypeAdapter()
-			return new XPathBodyTypeAdapter();
-			);
-			contentTypeToBodyTypeAdapter.put(ContentType.TEXT, new BodyTypeAdapterCreator()
-			public BodyTypeAdapter createBodyTypeAdapter()
-			return new TextBodyTypeAdapter();
-			);
-            
-			public BodyTypeAdapterFactory(final RunnerVariablesProvider variablesProvider, Config config)
-			this.variablesProvider = variablesProvider;
-			this.config = config;
-            
-			/// <summary>
-			/// Returns a @link <seealso cref="BodyTypeAdapter"/> for the given charset and @link <seealso cref="ContentType"/>.
-			/// </summary>
-			/// <param name="content"> the contentType </param>
-			/// <param name="charset"> the charset. </param>
-			/// <returns> an instance of <seealso cref="BodyTypeAdapter"/> </returns>
-			public BodyTypeAdapter getBodyTypeAdapter(ContentType content, string charset)
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final BodyTypeAdapterCreator creator = contentTypeToBodyTypeAdapter.get(content);
-			BodyTypeAdapterCreator creator = contentTypeToBodyTypeAdapter[content];
-			if (creator == null)
-			{
-			throw new System.ArgumentException("Content-Type is UNKNOWN.  Unable to find a BodyTypeAdapter to instantiate.");
-			}
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final BodyTypeAdapter instance = creator.createBodyTypeAdapter();
-			BodyTypeAdapter instance = creator.createBodyTypeAdapter();
-			if (charset != null)
-			{
-			instance.Charset = charset;
-			}
-			else
-			{
-			instance.Charset = Charset.defaultCharset().name();
-			}
-			return instance;
-            
-			interface BodyTypeAdapterCreator
-			BodyTypeAdapter createBodyTypeAdapter();
-            
-	}
+        public BodyTypeAdapterFactory(RunnerVariablesProvider variablesProvider, Config config)
+        {
+            this.variablesProvider = variablesProvider;
+            this.config = config;
+        }
 
+        //TODO: Rework Java Charset to use .NET Encoding instead.
+        public BodyTypeAdapter getBodyTypeAdapter(ContentType content, String charset)
+        {
+            BodyTypeAdapter adapter = null;
+            switch (content.InnerEnumValue())
+            {
+                case ContentType.InnerEnum.JS:
+                case ContentType.InnerEnum.JSON:
+                    adapter = new JSONBodyTypeAdapter(variablesProvider, config);
+                    break;
 
-		private final RunnerVariablesProvider variablesProvider;
-		private final Config config;
+                case ContentType.InnerEnum.XML:
+                    adapter = new XPathBodyTypeAdapter();
+                    break;
 
-		private IDictionary<ContentType, BodyTypeAdapterCreator> contentTypeToBodyTypeAdapter = new Dictionary<ContentType, BodyTypeAdapterCreator>();
-		{
-			BodyTypeAdapterCreator jsonBodyTypeAdapterCreator = new BodyTypeAdapterCreatorAnonymousInnerClass(this);
+                case ContentType.InnerEnum.TEXT:
+                    adapter = new TextBodyTypeAdapter();
+                    break;
 
-			contentTypeToBodyTypeAdapter.put(ContentType.JS, jsonBodyTypeAdapterCreator);
-			contentTypeToBodyTypeAdapter.put(ContentType.JSON, jsonBodyTypeAdapterCreator);
-			contentTypeToBodyTypeAdapter.put(ContentType.XML, new BodyTypeAdapterCreatorAnonymousInnerClass2(this));
-			contentTypeToBodyTypeAdapter.put(ContentType.TEXT, new BodyTypeAdapterCreatorAnonymousInnerClass3(this));
-		}
+                default:
+                    adapter = null;
+                    break;
+            }
 
-		public BodyTypeAdapterFactory(final RunnerVariablesProvider variablesProvider, Config config)
-		{
-			this.variablesProvider = variablesProvider;
-			this.config = config;
-		}
+            if (adapter == null)
+            {
+                throw new ArgumentException("Content-Type is UNKNOWN.  Unable to find a BodyTypeAdapter to instantiate.");
+            }
 
-		/// <summary>
-		/// Returns a @link <seealso cref="BodyTypeAdapter"/> for the given charset and @link <seealso cref="ContentType"/>.
-		/// </summary>
-		/// <param name="content"> the contentType </param>
-		/// <param name="charset"> the charset. </param>
-		/// <returns> an instance of <seealso cref="BodyTypeAdapter"/> </returns>
-		public BodyTypeAdapter getBodyTypeAdapter(ContentType content, string charset)
-		{
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final BodyTypeAdapterCreator creator = contentTypeToBodyTypeAdapter.get(content);
-			BodyTypeAdapterCreator creator = contentTypeToBodyTypeAdapter.get(content);
-			if (creator == null)
-			{
-				throw new System.ArgumentException("Content-Type is UNKNOWN.  Unable to find a BodyTypeAdapter to instantiate.");
-			}
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final BodyTypeAdapter instance = creator.createBodyTypeAdapter();
-			BodyTypeAdapter instance = creator.createBodyTypeAdapter();
-			if (charset != null)
-			{
-				instance.Charset = charset;
-			}
-			else
-			{
-				instance.Charset = Charset.defaultCharset().name();
-			}
-			return instance;
-		}
+            if (charset != null)
+            {
+                adapter.Charset = charset;
+            }
 
-		interface BodyTypeAdapterCreator
-		{
-			BodyTypeAdapter createBodyTypeAdapter();
-		}
+            adapter.Charset = Encoding.Default.EncodingName;
 
-}
-
+            return adapter;
+        }
+    }
 }
