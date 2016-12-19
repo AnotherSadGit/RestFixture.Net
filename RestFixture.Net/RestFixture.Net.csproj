@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19D1017E-BA1E-40B3-937A-F6BDAF43E096}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestFixture.Net</RootNamespace>
+    <AssemblyName>RestFixture.Net</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FitCell.cs" />
+    <Compile Include="FitFormatter.cs" />
+    <Compile Include="FitRestFixture.cs" />
+    <Compile Include="FitRow.cs" />
+    <Compile Include="HashMapHelperClass.cs" />
+    <Compile Include="PartsFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestFixture.cs" />
+    <Compile Include="RestFixtureConfig.cs" />
+    <Compile Include="RunnerVariablesProvider.cs" />
+    <Compile Include="SlimCell.cs" />
+    <Compile Include="SlimFormatter.cs" />
+    <Compile Include="SlimRow.cs" />
+    <Compile Include="StringHelperClass.cs" />
+    <Compile Include="Support\BodyTypeAdapter.cs" />
+    <Compile Include="Support\BodyTypeAdapterFactory.cs" />
+    <Compile Include="Support\CellFormatter.cs" />
+    <Compile Include="Support\CellWrapper.cs" />
+    <Compile Include="Support\Config.cs" />
+    <Compile Include="Support\ContentType.cs" />
+    <Compile Include="Support\FitVariables.cs" />
+    <Compile Include="Support\HashMapHelperClass.cs" />
+    <Compile Include="Support\HeadersTypeAdapter.cs" />
+    <Compile Include="Support\HttpClientBuilder.cs" />
+    <Compile Include="Support\Http\DeleteMethod.cs" />
+    <Compile Include="Support\Http\GetMethod.cs" />
+    <Compile Include="Support\Http\HeadMethod.cs" />
+    <Compile Include="Support\Http\OptionsMethod.cs" />
+    <Compile Include="Support\Http\PostMethod.cs" />
+    <Compile Include="Support\Http\PutMethod.cs" />
+    <Compile Include="Support\Http\TraceMethod.cs" />
+    <Compile Include="Support\Http\URIBuilder.cs" />
+    <Compile Include="Support\JavascriptException.cs" />
+    <Compile Include="Support\JavascriptWrapper.cs" />
+    <Compile Include="Support\JSONBodyTypeAdapter.cs" />
+    <Compile Include="Support\LetBodyConstHandler.cs" />
+    <Compile Include="Support\LetBodyHandler.cs" />
+    <Compile Include="Support\LetBodyJsHandler.cs" />
+    <Compile Include="Support\LetBodyXmlHandler.cs" />
+    <Compile Include="Support\LetHandler.cs" />
+    <Compile Include="Support\LetHandlerFactory.cs" />
+    <Compile Include="Support\LetHeaderHandler.cs" />
+    <Compile Include="Support\RestDataTypeAdapter.cs" />
+    <Compile Include="Support\RowWrapper.cs" />
+    <Compile Include="Support\SlimVariables.cs" />
+    <Compile Include="Support\StatusCodeTypeAdapter.cs" />
+    <Compile Include="Support\StringHelperClass.cs" />
+    <Compile Include="Support\StringTypeAdapter.cs" />
+    <Compile Include="Support\TextBodyTypeAdapter.cs" />
+    <Compile Include="Support\Tools.cs" />
+    <Compile Include="Support\Url.cs" />
+    <Compile Include="Support\Variables.cs" />
+    <Compile Include="Support\XPathBodyTypeAdapter.cs" />
+    <Compile Include="SvgImage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
