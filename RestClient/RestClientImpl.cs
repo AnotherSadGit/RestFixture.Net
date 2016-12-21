@@ -115,7 +115,7 @@ namespace RestClient
 			}
 			if (request.TransactionId == null)
 			{
-				request.TransactionId = Convert.ToInt64(DateTimeHelperClass.CurrentUnixTimeMillis());
+				request.TransactionId = Convert.ToInt64(DateTimeHelper.CurrentUnixTimeMillis());
 			}
 			LOG.debug("request: {}", request);
 			HttpMethod m = createHttpClientMethod(request);

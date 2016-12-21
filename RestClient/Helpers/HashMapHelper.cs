@@ -4,10 +4,12 @@
 //
 //	This class is used to replace calls to some Java HashMap or Hashtable methods.
 //---------------------------------------------------------------------------------------------------------
+
 using System.Collections.Generic;
-namespace RestClient
+
+namespace RestClient.Helpers
 {
-    internal static class HashMapHelperClass
+    internal static class HashMapHelper
     {
         internal static HashSet<KeyValuePair<TKey, TValue>> SetOfKeyValuePairs<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {

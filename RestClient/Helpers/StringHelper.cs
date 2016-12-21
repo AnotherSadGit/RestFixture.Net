@@ -9,9 +9,9 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace RestClient
+namespace RestClient.Helpers
 {
-    internal static class StringHelperClass
+    internal static class StringHelper
     {
         //----------------------------------------------------------------------------------
         //	This method replaces the Java String.substring method when 'start' is a

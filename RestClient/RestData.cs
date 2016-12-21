@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using RestClient.Helpers;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -104,7 +105,7 @@ namespace RestClient
                 }
                 try
                 {
-                    return StringHelperClass.NewString(raw, Charset);
+                    return StringHelper.NewString(raw, Charset);
                 }
                 catch (ArgumentException)  
                     // Thrown if Charset is not a valid code page or is unsupported by the 
