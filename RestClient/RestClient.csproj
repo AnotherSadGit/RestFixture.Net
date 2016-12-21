@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Helpers\HashMapHelper.cs" />
+    <Compile Include="LinkedHashMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="RestClientImpl.cs" />
