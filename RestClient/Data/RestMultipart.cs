@@ -16,11 +16,11 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestClient
+namespace RestClient.Data
 {
 
 	/// <summary>
-	/// Wraps a REST request multipart object used in {@code RestRequest}.
+	/// Wraps a REST request multipart object used in RestRequest}.
 	/// </summary>
 	public class RestMultipart
 	{

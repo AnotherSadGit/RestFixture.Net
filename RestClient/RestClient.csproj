@@ -44,10 +44,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="RestClientImpl.cs" />
-    <Compile Include="RestData.cs" />
-    <Compile Include="RestMultipart.cs" />
-    <Compile Include="RestRequest.cs" />
-    <Compile Include="RestResponse.cs" />
+    <Compile Include="Data\RestData.cs" />
+    <Compile Include="Data\RestMultipart.cs" />
+    <Compile Include="Data\RestRequest.cs" />
+    <Compile Include="Data\RestResponse.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

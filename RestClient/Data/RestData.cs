@@ -22,7 +22,7 @@ using RestClient.Helpers;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestClient
+namespace RestClient.Data
 {
 
 
@@ -138,8 +138,8 @@ namespace RestClient
             set { raw = value; }
         }
 
-        /// <summary> the resource type (for example {@code /resource-type}) for this
-        ///         request/response </summary>
+        /// <summary>
+        /// The resource type (for example /resource-type) for this request/response.</summary>
         public virtual string Resource
         {
             get { return resource; }
@@ -148,10 +148,10 @@ namespace RestClient
         }
 
         /// <summary>
-        /// A transaction Id is a unique long for this transaction.
-        /// 
-        /// It can be used to tie request and response, especially when debugging or parsing logs.
+        /// A unique identifier for a transaction.
         /// </summary>
+        /// <remarks>The TransactionId can be used to link a request and its associated response, 
+        /// especially when debugging or parsing logs.</remarks>
         public virtual long? TransactionId
         {
             get
