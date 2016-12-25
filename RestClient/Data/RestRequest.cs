@@ -42,55 +42,32 @@ namespace RestClient.Data
 		}
 
 		private const string FILE = "file";
-		private string fileName;
+		private string _fileName;
 		[Obsolete]
-		private string multipartFileName;
+		private string _multipartFileName;
 		[Obsolete]
-		private string multipartFileParameterName = FILE;
-		private IDictionary<string, RestMultipart> multipartFileByParamName = new LinkedHashMap<string, RestMultipart>();
-		private string query;
-		private Method method;
-		private bool followRedirect = true;
-		private bool resourceUriEscaped = false;
+		private string _multipartFileParameterName = FILE;
+        private LinkedHashMap<string, RestMultipart> _multipartFileByParamName = new LinkedHashMap<string, RestMultipart>();
+		private string _query;
+		private Method _method;
+		private bool _followRedirect = true;
+		private bool _isResourceUriEscaped = false;
 
-		/// <returns> the method for this request </returns>
-		public virtual Method getMethod()
-		{
-			return method;
-		}
-
-		/// <summary>
-		/// Sets the method for this request.
-		/// </summary>
-		/// <param name="method">
-		///            the method </param>
-		/// <returns> this request </returns>
-		/// <seealso cref= smartrics.rest.client.RestRequest.Method </seealso>
-		public virtual RestRequest setMethod(Method method)
-		{
-			this.method = method;
-			return this;
-		}
+	    /// <value> the method for this request </value>
+	    public virtual Method HttpMethod
+	    {
+	        get { return _method; }
+            set { _method = value; }
+	    }
 
 		/// <returns> the query for this request </returns>
 		public virtual string Query
 		{
 			get
 			{
-				return query;
+				return _query;
 			}
-		}
-
-		/// <summary>
-		/// Sets the query for this request.
-		/// </summary>
-		/// <param name="query">
-		///            the query </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest setQuery(string query)
-		{
-			this.query = query;
-			return this;
+            set { _query = value; }
 		}
 
 		/// <returns> the upload file name for this request </returns>
@@ -98,111 +75,18 @@ namespace RestClient.Data
 		{
 			get
 			{
-				return fileName;
+				return _fileName;
 			}
+		    set { _fileName = value; }
 		}
-
-	//    /**
-	//     * @return the multipart upload file name for this request
-	//     */
-	//    public String getMultipartFileName() {
-	//        return multipartFileName;
-	//    }
 
 		/// <returns> the multipart upload files name for this request </returns>
-		public virtual IDictionary<string, RestMultipart> MultipartFileNames
+        public virtual LinkedHashMap<string, RestMultipart> MultipartFileNames
 		{
 			get
 			{
-				// Add History Api
-				if ((!string.ReferenceEquals(this.multipartFileName, null)) && (this.multipartFileName.Trim().Length > 0))
-				{
-					RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE, this.multipartFileName);
-					this.addMultipart(this.multipartFileParameterName, restMultipart);
-				}
-				// Return the Map
-				return multipartFileByParamName;
+				return _multipartFileByParamName;
 			}
-		}
-
-		/// <returns> the multipart file form parameter name for this request </returns>
-		[Obsolete]
-		public virtual string MultipartFileParameterName
-		{
-			get
-			{
-				return multipartFileParameterName;
-			}
-		}
-
-		/// <summary>
-		/// Sets the multipart file form parameter name for this request.
-		/// </summary>
-		/// <param name="multipartFileParameterName">
-		///            the multipart file form parameter name </param>
-		/// <returns> this request </returns>
-		[Obsolete]
-		public virtual RestRequest setMultipartFileParameterName(string multipartFileParameterName)
-		{
-			this.multipartFileParameterName = multipartFileParameterName;
-			return this;
-		}
-
-		/// <summary>
-		/// Sets the multipart upload file name for this request.
-		/// </summary>
-		/// <param name="multipartFileName">
-		///            the multipart file name </param>
-		/// <returns> this request </returns>
-		[Obsolete]
-		public virtual RestRequest setMultipartFileName(string multipartFileName)
-		{
-			this.multipartFileName = multipartFileName;
-			return this;
-		}
-
-
-		/// <summary>
-		/// Add the multipart upload file name for this request.
-		/// </summary>
-		/// <param name="multipartFileName">
-		///            the multipart file name </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest addMultipartFileName(string multipartFileName)
-		{
-			RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE, multipartFileName);
-			return this.addMultipart(FILE, restMultipart);
-		}
-
-		/// <summary>
-		/// Add the multipart upload file name for this request.
-		/// </summary>
-		/// <param name="multipartFileName">
-		///            the multipart file name </param>
-		/// <param name="contentType">
-		///            the multipart contentType </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest addMultipartFileName(string multipartFileName, string contentType)
-		{
-			RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE,multipartFileName, contentType);
-			return this.addMultipart(FILE, restMultipart);
-		}
-
-
-		/// <summary>
-		/// Add the multipart upload file name for this request.
-		/// </summary>
-		/// <param name="multipartFileName">
-		///            the multipart file name </param>
-		/// <param name="contentType">
-		///            the multipart contentType </param>
-		/// <param name="charSet">
-		///            the multipart charSet </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest addMultipartFileName(string multipartFileName, string contentType, string charSet)
-		{
-			RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE, multipartFileName, contentType, charSet);
-			return this.addMultipart(FILE, restMultipart);
 		}
 
 		/// <summary>
@@ -215,13 +99,7 @@ namespace RestClient.Data
 		/// <returns> this request </returns>
 		public virtual RestRequest addMultipart(string multiParamName, RestMultipart restMultipart)
 		{
-			multipartFileByParamName[multiParamName] = restMultipart;
-			return this;
-		}
-
-		public virtual RestRequest setFollowRedirect(bool v)
-		{
-			this.followRedirect = v;
+			_multipartFileByParamName[multiParamName] = restMultipart;
 			return this;
 		}
 
@@ -229,20 +107,9 @@ namespace RestClient.Data
 		{
 			get
 			{
-				return followRedirect;
+				return _followRedirect;
 			}
-		}
-
-		/// <summary>
-		/// Sets the upload file name for this request.
-		/// </summary>
-		/// <param name="fileName">
-		///            the upload file name </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest setFileName(string fileName)
-		{
-			this.fileName = fileName;
-			return this;
+            set { _followRedirect = value; }
 		}
 
 		/// <summary>
@@ -252,31 +119,23 @@ namespace RestClient.Data
 		/// resource Uri not null
 		/// </summary>
 		/// <returns> true if valid </returns>
-		public virtual bool Valid
+		public virtual bool IsValid
 		{
 			get
 			{
-				return getMethod() != null && Resource != null;
+				return HttpMethod != null && Resource != null;
 			}
 		}
 
 		/// <returns> whether resource uri is % escaped (true) or not (false). Defaults to false. </returns>
-		public virtual bool ResourceUriEscaped
+		public virtual bool IsResourceUriEscaped
 		{
 			get
 			{
-				return resourceUriEscaped;
+				return _isResourceUriEscaped;
 			}
+            set { _isResourceUriEscaped = value; }
 		}
-
-		/// <param name="escaped"> whether resource uri is % escaped or not </param>
-		/// <returns> this request </returns>
-		public virtual RestRequest setResourceUriEscaped(bool escaped)
-		{
-			this.resourceUriEscaped = escaped;
-			return this;
-		}
-
 
 		/// <summary>
 		/// String representation of this request.
@@ -285,9 +144,9 @@ namespace RestClient.Data
 		public override string ToString()
 		{
 			StringBuilder builder = new StringBuilder();
-			if (getMethod() != null)
+			if (HttpMethod != null)
 			{
-				builder.Append(getMethod().ToString()).Append(" ");
+				builder.Append(HttpMethod.ToString()).Append(" ");
 			}
 			if (Resource != null)
 			{

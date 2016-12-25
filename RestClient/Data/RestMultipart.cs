@@ -20,7 +20,7 @@ namespace RestClient.Data
 {
 
 	/// <summary>
-	/// Wraps a REST request multipart object used in RestRequest}.
+	/// Wraps a REST request multipart object used in RestRequest.
 	/// </summary>
 	public class RestMultipart
 	{
@@ -34,28 +34,30 @@ namespace RestClient.Data
 			STRING
 		}
 
-		private RestMultipartType type;
-		private string value;
-		private string contentType;
-		private string charset;
+		private RestMultipartType _type;
+		private string _value;
+		private string _contentType;
+		private string _charset;
 
 		/// 
 		/// <param name="type"> Type of the stringValue </param>
 		/// <param name="stringValue"> The String content or the file Path </param>
-		public RestMultipart(RestMultipartType type, string stringValue) : this(type, stringValue, (string)null, (string)null)
+		public RestMultipart(RestMultipartType type, string stringValue) : 
+            this(type, stringValue, (string)null, (string)null)
 		{
 		}
 
-		public RestMultipart(RestMultipartType type, string stringValue, string contentType) : this(type, stringValue, contentType, (string)null)
+		public RestMultipart(RestMultipartType type, string stringValue, string contentType) : 
+            this(type, stringValue, contentType, (string)null)
 		{
 		}
 
 		public RestMultipart(RestMultipartType type, string stringValue, string contentType, string charset)
 		{
-			this.type = type;
-			this.value = stringValue;
-			this.contentType = contentType;
-			this.charset = charset;
+			this._type = type;
+			this._value = stringValue;
+			this._contentType = contentType;
+			this._charset = charset;
 		}
 
 		/// <returns> the upload file name for this request </returns>
@@ -63,20 +65,9 @@ namespace RestClient.Data
 		{
 			get
 			{
-				return value;
+				return _value;
 			}
-		}
-
-		/// <summary>
-		/// Sets the multipart upload file name for this request.
-		/// </summary>
-		/// <param name="value">
-		///            the multipart file name </param>
-		/// <returns> this restMultipart </returns>
-		public virtual RestMultipart setValue(string value)
-		{
-			this.value = value;
-			return this;
+		    set { this._value = value; }
 		}
 
 		/// <returns> the Content Type for upload file name for this request </returns>
@@ -84,21 +75,9 @@ namespace RestClient.Data
 		{
 			get
 			{
-				return contentType;
+				return _contentType;
 			}
-		}
-
-		/// <summary>
-		/// Sets the content type of multipart upload file name for this request.
-		/// </summary>
-		/// <param name="contentType">
-		///            the content type </param>
-		/// <returns> this restMultipart </returns>
-		public virtual RestMultipart setContentType(string contentType)
-		{
-			this.contentType = contentType;
-			return this;
-
+		    set { _contentType = value; }
 		}
 
 		/// <returns> the Charset for upload file name for this request </returns>
@@ -106,32 +85,20 @@ namespace RestClient.Data
 		{
 			get
 			{
-				return charset;
-			}
-		}
-
-		/// <summary>
-		/// Sets the charset of multipart upload file name for this request.
-		/// </summary>
-		/// <param name="charset">
-		///            the charset </param>
-		/// <returns> this restMultipart </returns>
-
-		public virtual RestMultipart setCharset(string charset)
-		{
-			this.charset = charset;
-			return this;
+				return _charset;
+            }
+            set { _charset = value; }
 		}
 
 		public virtual RestMultipartType Type
 		{
 			get
 			{
-				return type;
+				return _type;
 			}
 			set
 			{
-				this.type = value;
+				this._type = value;
 			}
 		}
 
@@ -149,15 +116,15 @@ namespace RestClient.Data
 
 			RestMultipart that = (RestMultipart) o;
 
-			if (!value.Equals(that.value))
+			if (!_value.Equals(that._value))
 			{
 				return false;
 			}
-			if (!string.ReferenceEquals(contentType, null) ?!contentType.Equals(that.contentType) :!string.ReferenceEquals(that.contentType, null))
+			if (!string.ReferenceEquals(_contentType, null) ?!_contentType.Equals(that._contentType) :!string.ReferenceEquals(that._contentType, null))
 			{
 				return false;
 			}
-			return !string.ReferenceEquals(charset, null) ? charset.Equals(that.charset) : string.ReferenceEquals(that.charset, null);
+			return !string.ReferenceEquals(_charset, null) ? _charset.Equals(that._charset) : string.ReferenceEquals(that._charset, null);
 
 		}
 
@@ -165,16 +132,16 @@ namespace RestClient.Data
 
 		public override int GetHashCode()
 		{
-			int result = value.GetHashCode();
-			result = 31 * result + (!string.ReferenceEquals(contentType, null) ? contentType.GetHashCode() : 0);
-			result = 31 * result + (!string.ReferenceEquals(charset, null) ? charset.GetHashCode() : 0);
+			int result = _value.GetHashCode();
+			result = 31 * result + (!string.ReferenceEquals(_contentType, null) ? _contentType.GetHashCode() : 0);
+			result = 31 * result + (!string.ReferenceEquals(_charset, null) ? _charset.GetHashCode() : 0);
 			return result;
 		}
 
 
 		public override string ToString()
 		{
-			return "RestMultipart{" + "value='" + value + '\'' + ", contentType='" + contentType + '\'' + ", charset='" + charset + '\'' + '}';
+			return "RestMultipart{" + "value='" + _value + '\'' + ", contentType='" + _contentType + '\'' + ", charset='" + _charset + '\'' + '}';
 		}
 
 	}
