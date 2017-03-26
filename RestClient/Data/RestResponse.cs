@@ -20,61 +20,45 @@
  */
 namespace RestClient.Data
 {
-	/// <summary>
-	/// Wraps a REST response object
-	/// </summary>
-	public class RestResponse : RestData
-	{
-		private string statusText;
-		private int? statusCode;
+    /// <summary>
+    /// Wraps a REST response object
+    /// </summary>
+    public class RestResponse : RestData
+    {
+        private string statusText;
+        private int? statusCode;
 
-		/// <returns> the status code of this response </returns>
-		public virtual int? StatusCode
-		{
-			get
-			{
-				return statusCode;
-			}
-		}
+        /// <returns> the status code of this response </returns>
+        public virtual int? StatusCode
+        {
+            get { return statusCode; }
+            set { statusCode = value; }
+        }
 
-		/// <param name="sCode"> the status code for this response </param>
-		/// <returns> this response </returns>
-		public virtual RestResponse setStatusCode(int? sCode)
-		{
-			this.statusCode = sCode;
-			return this;
-		}
+        /// <returns> the status text for this response </returns>
+        public virtual string StatusText
+        {
+            get
+            {
+                return statusText;
+            }
 
-		/// <returns> the status text for this response </returns>
-		public virtual string StatusText
-		{
-			get
-			{
-				return statusText;
-			}
-		}
+            set { statusText = value; }
+        }
 
-		/// <param name="st"> the status text for this response </param>
-		/// <returns> this response </returns>
-		public virtual RestResponse setStatusText(string st)
-		{
-			this.statusText = st;
-			return this;
-		}
+        /// <returns> string representation of this response </returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            if (StatusCode != null)
+            {
+                builder.Append(string.Format("[{0}] {1}", this.StatusCode, this.StatusText));
+            }
+            builder.Append(LINE_SEPARATOR);
+            builder.Append(base.ToString());
+            return builder.ToString();
+        }
 
-		/// <returns> string representation of this response </returns>
-		public override string ToString()
-		{
-			StringBuilder builder = new StringBuilder();
-			if (StatusCode != null)
-			{
-				builder.Append(string.Format("[{0}] {1}", this.StatusCode, this.StatusText));
-			}
-			builder.Append(LINE_SEPARATOR);
-			builder.Append(base.ToString());
-			return builder.ToString();
-		}
-
-	}
+    }
 
 }
