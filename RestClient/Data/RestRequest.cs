@@ -32,13 +32,20 @@ namespace RestClient.Data
 		/// </summary>
 		public enum Method
 		{
+            // WARNING: In the original Java implementation, "Get" was the first enum value so it 
+            //  would have the value 0; there was no "NotSet" value.  However, Java and .NET have 
+            //  different behaviour for uninitialized enums.  In Java an uninitialized enum has 
+            //  value null whereas in .NET it has value 0.  So we need to add a "NotSet" with value 
+            //  0 to the .NET implementation, to avoid defaulting to a valid enum value like "Get".
+            NotSet = 0,
 			Get,
 			Post,
 			Put,
 			Delete,
 			Head,
 			Options,
-			Trace
+            Trace,
+            Patch   // WARNING: Original Java implementation does not include Patch.
 		}
 
 		private const string FILE = "file";
@@ -116,14 +123,14 @@ namespace RestClient.Data
 		/// Checks validity of this request.
 		/// 
 		/// In this implementation a request is valid if both the method and the
-		/// resource Uri not null
+		/// resource Uri are set
 		/// </summary>
 		/// <returns> true if valid </returns>
 		public virtual bool IsValid
 		{
 			get
 			{
-				return HttpMethod != null && Resource != null;
+                return HttpMethod != Method.NotSet && Resource != null;
 			}
 		}
 
