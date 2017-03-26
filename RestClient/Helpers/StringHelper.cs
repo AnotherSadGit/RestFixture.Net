@@ -98,5 +98,18 @@ namespace RestClient.Helpers
             encoding.GetBytes(s, 0, s.Length, (byte[])(object)sbytes, 0);
             return sbytes;
         }
+
+        //--------------------------------------------------------------------------------
+        //	These methods are general helper methods, not used to replace Java methods.
+        //--------------------------------------------------------------------------------
+        public static bool IsNullOrBlank(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return true;
+            }
+
+            return (s.Trim().Length == 0);
+        }
     }
 }

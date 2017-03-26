@@ -16,6 +16,9 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using RestClient.Data;
+
 namespace RestClient
 {
 
@@ -31,15 +34,14 @@ namespace RestClient
 		/// Sets the base URL.
 		/// It is the portion of the full Url not part of the
 		/// resource type. For example if a resource type full Url is
-		/// {@code http://host:8888/domain/resourcetype} and the resource type is
-		/// {@code /resourcetype}, the base Url is {@code http://host:8888/domain}.
+		/// http://host:8888/domain/resourcetype and the resource type is
+		/// /resourcetype, the base Url is http://host:8888/domain.
 		/// It is meant to serve as a default value to be appended to compose the
 		/// full Url when
 		/// <seealso cref="smartrics.rest.client.RestClient#execute(RestRequest)"/>
 		/// is used.
 		/// </summary>
-		/// <param name="bUrl">
-		///            a string with the base Url.
+		/// <param name="bUrl">A string with the base Url.
 		/// See <seealso cref="smartrics.rest.client.RestClient#execute(RestRequest)"/> </param>
 		string BaseUrl {set;get;}
 
@@ -47,8 +49,7 @@ namespace RestClient
 		/// <summary>
 		/// Executes a rest request using the underlying Http client implementation.
 		/// </summary>
-		/// <param name="request">
-		///            the request to be executed </param>
+		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request </returns>
 		RestResponse execute(RestRequest request);
 
@@ -57,10 +58,8 @@ namespace RestClient
 		/// 
 		/// This method offers the possibility to override the base Url set on this client.
 		/// </summary>
-		/// <param name="baseUrl">
-		///            the base Url </param>
-		/// <param name="request">
-		///            the request to be executed </param>
+		/// <param name="baseUrl">The base Url </param>
+		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request.
 		/// See <seealso cref="smartrics.rest.client.RestClient#setBaseUrl(java.lang.String)"/> </returns>
 		RestResponse execute(string baseUrl, RestRequest request);

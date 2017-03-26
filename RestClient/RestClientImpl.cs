@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NLog;
+using RestClient.Data;
+using RestClient.Helpers;
+using RestSharp;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,450 +27,499 @@ using System.Collections.Generic;
  */
 namespace RestClient
 {
-	using Header = org.apache.commons.httpclient.Header;
-	using HttpClient = org.apache.commons.httpclient.HttpClient;
-	using HttpException = org.apache.commons.httpclient.HttpException;
-	using HttpMethod = org.apache.commons.httpclient.HttpMethod;
-	using URI = org.apache.commons.httpclient.URI;
-	using URIException = org.apache.commons.httpclient.URIException;
-	using EntityEnclosingMethod = org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-	using FileRequestEntity = org.apache.commons.httpclient.methods.FileRequestEntity;
-	using RequestEntity = org.apache.commons.httpclient.methods.RequestEntity;
-	using FilePart = org.apache.commons.httpclient.methods.multipart.FilePart;
-	using MultipartRequestEntity = org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-	using Part = org.apache.commons.httpclient.methods.multipart.Part;
-	using StringPart = org.apache.commons.httpclient.methods.multipart.StringPart;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
-
-	/// <summary>
-	/// A generic REST client based on {@code HttpClient}.
-	/// </summary>
-	public class RestClientImpl : RestClient
+    /// <summary>
+    /// A client for making HTTP requests.
+    /// </summary>
+    /// <remarks>Very loosely based on the original Java version of RestClient.RestClientImpl.</remarks>
+	public class RestClientImpl
 	{
+        private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-		private static Logger LOG = LoggerFactory.getLogger(typeof(RestClientImpl));
+        private string _baseAddress;
+        public string BaseAddress
+        {
+            get { return _baseAddress; }
+            set
+            {
+                string _baseUri = value;
+                if (!string.IsNullOrWhiteSpace(_baseUri))
+                {
+                    Client.BaseUrl = new Uri(_baseUri);
+                }
+            }
+        }
 
-		private readonly HttpClient client;
+        private RestSharp.IRestClient _client;
+        public RestSharp.IRestClient Client
+        {
+            get
+            {
+                if (_client == null)
+                {
+                    if (!string.IsNullOrWhiteSpace(_baseAddress))
+                    {
+                        _client = new RestSharp.RestClient(_baseAddress);
+                    }
+                    else
+                    {
+                        _client = new RestSharp.RestClient();
+                    }
+                }
 
-		private string baseUrl;
+                return _client;
+            }
+        }
 
-		/// <summary>
-		/// Constructor allowing the injection of an {@code
-		/// org.apache.commons.httpclient.HttpClient}.
-		/// </summary>
-		/// <param name="client"> the client
-		///               See <seealso cref="org.apache.commons.httpclient.HttpClient"/> </param>
-		public RestClientImpl(HttpClient client)
-		{
-			if (client == null)
-			{
-				throw new System.ArgumentException("Null HttpClient instance");
-			}
-			this.client = client;
-		}
+        /// <summary>
+        /// Initializes a new instance of the HttpClient class.
+        /// </summary>
+        public RestClientImpl()
+        {
 
-		/// <summary>
-		/// See <seealso cref="smartrics.rest.client.RestClient#setBaseUrl(java.lang.String)"/>
-		/// </summary>
-		public virtual string BaseUrl
-		{
-			set
-			{
-				this.baseUrl = value;
-			}
-			get
-			{
-				return baseUrl;
-			}
-		}
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the HttpClient class with the specified URL.
+        /// </summary>
+        public RestClientImpl(string baseAddress)
+        {
+            this.BaseAddress = baseAddress;
+        }
 
-		/// <summary>
-		/// Returns the Http client instance used by this implementation.
-		/// </summary>
-		/// <returns> the instance of HttpClient
-		/// See <seealso cref="org.apache.commons.httpclient.HttpClient"/>
-		/// See <seealso cref="smartrics.rest.client.RestClientImpl#RestClientImpl(HttpClient)"/> </returns>
-		public virtual HttpClient Client
-		{
-			get
-			{
-				return client;
-			}
-		}
+        // Unfortunately both RestClient, used by the Java RestFixture which is being ported 
+        //  to .NET, and RestSharp have classes called RestRequest and RestResponse.  So we must 
+        //  always specify which RestRequest or RestResponse class we're using.
 
-		/// <summary>
-		/// See <seealso cref="smartrics.rest.client.RestClient#execute(smartrics.rest.client.RestRequest)"/>
-		/// </summary>
-		public virtual RestResponse execute(RestRequest request)
-		{
-			return execute(BaseUrl, request);
-		}
+        public Data.RestResponse execute(Data.RestRequest requestDetails)
+        {
+            return execute(this.Client, requestDetails);
+        }
 
-		/// <summary>
-		/// See <seealso cref="smartrics.rest.client.RestClient#execute(java.lang.String, smartrics.rest.client.RestRequest)"/>
-		/// </summary>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: public RestResponse execute(String hostAddr, final RestRequest request)
-		public virtual RestResponse execute(string hostAddr, RestRequest request)
-		{
-			if (request == null || !request.Valid)
-			{
-				throw new System.ArgumentException("Invalid request " + request);
-			}
-			if (request.TransactionId == null)
-			{
-				request.TransactionId = Convert.ToInt64(DateTimeHelper.CurrentUnixTimeMillis());
-			}
-			LOG.debug("request: {}", request);
-			HttpMethod m = createHttpClientMethod(request);
-			configureHttpMethod(m, hostAddr, request);
-			// Debug Client
-			if (LOG.DebugEnabled)
-			{
-				try
-				{
-					LOG.info("Http Request URI : {}", m.URI);
-				}
-				catch (URIException e)
-				{
-					LOG.error("Error URIException in debug : " + e.Message, e);
-				}
-				// Request Header
-				LOG.debug("Http Request Method Class : {} ", m.GetType());
-				LOG.debug("Http Request Header : {} ", Arrays.ToString(m.RequestHeaders));
-				// Request Body
-				if (m is EntityEnclosingMethod)
-				{
-					try
-					{
-						System.IO.MemoryStream requestOut = new System.IO.MemoryStream();
-						((EntityEnclosingMethod) m).RequestEntity.writeRequest(requestOut);
-						LOG.debug("Http Request Body : {}", requestOut.ToString());
-					}
-					catch (IOException e)
-					{
-						LOG.error("Error in reading request body in debug : " + e.Message, e);
-					}
-				}
-			}
-			// Prepare Response
-			RestResponse resp = new RestResponse();
-			resp.TransactionId = request.TransactionId;
-			resp.Resource = request.Resource;
-			try
-			{
-				client.executeMethod(m);
-				foreach (Header h in m.ResponseHeaders)
-				{
-					resp.addHeader(h.Name, h.Value);
-				}
-				resp.StatusCode = m.StatusCode;
-				resp.StatusText = m.StatusText;
-				resp.RawBody = m.ResponseBody;
-				// Debug
-				if (LOG.DebugEnabled)
-				{
-					LOG.debug("Http Request Path : {}", m.Path);
-					LOG.debug("Http Request Header : {} ", Arrays.ToString(m.RequestHeaders));
-					LOG.debug("Http Response Status : {}", m.StatusLine);
-					LOG.debug("Http Response Body : {}", m.ResponseBodyAsString);
-				}
+        public Data.RestResponse execute(string hostAddress, 
+            Data.RestRequest requestDetails)
+        {
+            Uri hostUri = GetHostUri(hostAddress);
+            IRestClient client = new RestSharp.RestClient(hostUri);
+            return execute(client, requestDetails);
+        }
 
-			}
-			catch (HttpException e)
-			{
-				string message = "Http call failed for protocol failure";
-				throw new System.InvalidOperationException(message, e);
-			}
-			catch (IOException e)
-			{
-				string message = "Http call failed for IO failure";
-				throw new System.InvalidOperationException(message, e);
-			}
-			finally
-			{
-				m.releaseConnection();
-			}
-			LOG.debug("response: {}", resp);
-			return resp;
-		}
+        private Data.RestResponse execute(RestSharp.IRestClient client,
+            Data.RestRequest requestDetails)
+        {
+            if (client == null)
+            {
+                client = this.Client;
+            }
 
-		/// <summary>
-		/// Configures the instance of HttpMethod with the data in the request and
-		/// the host address.
-		/// </summary>
-		/// <param name="m">        the method class to configure </param>
-		/// <param name="hostAddr"> the host address </param>
-		/// <param name="request">  the rest request </param>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: protected void configureHttpMethod(org.apache.commons.httpclient.HttpMethod m, String hostAddr, final RestRequest request)
-		protected internal virtual void configureHttpMethod(HttpMethod m, string hostAddr, RestRequest request)
-		{
-			addHeaders(m, request);
-			setUri(m, hostAddr, request);
-			m.QueryString = request.Query;
-			if (m is EntityEnclosingMethod)
-			{
-				RequestEntity requestEntity = null;
-				string fileName = request.FileName;
-				if (!string.ReferenceEquals(fileName, null))
-				{
-					requestEntity = configureFileUpload(fileName);
-				}
-				else
-				{
-					// Add Multipart
-					IDictionary<string, RestMultipart> multipartFiles = request.MultipartFileNames;
-					if ((multipartFiles != null) && (multipartFiles.Count > 0))
-					{
-						requestEntity = configureMultipartFileUpload(m, request, requestEntity, multipartFiles);
-					}
-					else
-					{
-						requestEntity = new RequestEntityAnonymousInnerClass(this, request);
-					}
-				}
-				((EntityEnclosingMethod) m).RequestEntity = requestEntity;
-			}
-			else
-			{
-				m.FollowRedirects = request.FollowRedirect;
-			}
+            if (client.BaseUrl == null || string.IsNullOrWhiteSpace(client.BaseUrl.AbsoluteUri))
+            {
+                client.BaseUrl = new Uri(this.BaseAddress);
+            }
 
-		}
+            // We're using RestSharp to execute HTTP requests.  RestSharp copes with trailing "/" 
+            //  on BaseUrl and leading "/" on Resource, whether one or both of the "/" are present 
+            //  or absent.
 
-		private class RequestEntityAnonymousInnerClass : RequestEntity
-		{
-			private readonly RestClientImpl outerInstance;
+            ValidateRequest(client, requestDetails);
 
-			private RestRequest request;
+            if (requestDetails.TransactionId == null)
+            {
+                requestDetails.TransactionId = Convert.ToInt64(DateTimeHelper.CurrentUnixTimeMillis());
+            }
+            
+            client.FollowRedirects = requestDetails.FollowRedirect;
 
-			public RequestEntityAnonymousInnerClass(RestClientImpl outerInstance, RestRequest request)
-			{
-				this.outerInstance = outerInstance;
-				this.request = request;
-			}
+            RestSharp.RestRequest request = BuildRequest(requestDetails);
 
-			public virtual bool Repeatable
-			{
-				get
-				{
-					return true;
-				}
-			}
+            if (LOG.IsDebugEnabled)
+            {
+                try
+                {
+                    LOG.Info("Http Request : {0} {1}",
+                        request.Method, client.BuildUri(request).AbsoluteUri);
+                }
+                catch (Exception e)
+                {
+                    LOG.Error(e, "Exception in debug : {0}", e.Message);
+                }
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void writeRequest(OutputStream out) throws IOException
-			public virtual void writeRequest(System.IO.Stream @out)
-			{
-				PrintWriter printer = new PrintWriter(@out);
-				printer.print(request.Body);
-				printer.flush();
-			}
+                // Request Header
+                LogRequestHeaders(request);
 
-			public virtual long ContentLength
-			{
-				get
-				{
-					return request.Body.Bytes.length;
-				}
-			}
+                // Request Body
+                if (IsEntityEnclosingMethod(request.Method))
+                {
+                    try
+                    {
+                        Parameter body = request.Parameters
+                            .Where(p => p.Type == ParameterType.RequestBody).FirstOrDefault();
+                        LOG.Debug("Http Request Body : {0}", body.Value);
+                    }
+                    catch (IOException e)
+                    {
+                        LOG.Error(e, "Error in reading request body in debug : {0}", e.Message);
+                    }
+                }
+            }
 
-			public virtual string ContentType
-			{
-				get
-				{
-					IList<smartrics.rest.client.RestData.Header> values = request.getHeader("Content-Type");
-					string v = "text/xml";
-					if (values.Count != 0)
-					{
-						v = values[0].Value;
-					}
-					return v;
-				}
-			}
-		}
+            // Prepare Response
+            Data.RestResponse responseDetails = new Data.RestResponse();
+            responseDetails.TransactionId = requestDetails.TransactionId;
+            responseDetails.Resource = requestDetails.Resource;
+            try
+            {
+                IRestResponse response = client.Execute(request);
+                
+                foreach (RestSharp.Parameter responseHeader in response.Headers)
+                {
+                    responseDetails.addHeader(responseHeader.Name, responseHeader.Value.ToString());
+                }
 
+                responseDetails.StatusCode = (int) response.StatusCode;
+                responseDetails.StatusText = response.StatusDescription;
+                // The Java byte data type is actually a signed byte, equivalent to sbyte in .NET.
+                //  Data.RestResponse is a direct port of the Java class so it uses 
+                //  the sbyte data type.  The strange conversion from byte[] to sbyte[] was from 
+                //  the answer to Stackoverflow question http://stackoverflow.com/questions/25759878/convert-byte-to-sbyte
+                // TODO: Check RestFixture code to see whether Data.RestResponse.RawBody can be converted to byte[].
+                responseDetails.RawBody = (sbyte[])(Array)(response.RawBytes);
 
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: private org.apache.commons.httpclient.methods.RequestEntity configureMultipartFileUpload(org.apache.commons.httpclient.HttpMethod m, final RestRequest request, org.apache.commons.httpclient.methods.RequestEntity requestEntity, java.util.Map<String, RestMultipart> multipartFiles)
-		private RequestEntity configureMultipartFileUpload(HttpMethod m, RestRequest request, RequestEntity requestEntity, IDictionary<string, RestMultipart> multipartFiles)
-		{
-			MultipartRequestEntity multipartRequestEntity = null;
-			// Current File Name reading for tracking missing file
-			string fileName = null;
+                // Debug
+                if (LOG.IsDebugEnabled)
+                {
+                    // Not necessarily the same as the request URI.  The response URI is the URI 
+                    //  that finally responds to the request, after any redirects.
+                    LOG.Debug("Http Request Path : {0}", response.ResponseUri);
+                    LogRequestHeaders(request);
+                    // Apache HttpClient.HttpMethod.getStatusLine() returns the HTTP response 
+                    //  status line.  Can't do this with RestSharp as it cannot retrieve the 
+                    //  protocol version which is at the start of the status line.  So just log 
+                    //  the status code and description.
+                    // Looks like they added ProtocolVersion to RestSharp in issue 795 (commit 
+                    //  52c18a8) but it's only available in the FRAMEWORK builds.
+                    LOG.Debug("Http Response Status : {0} {1}", 
+                        (int)response.StatusCode, response.StatusDescription);
+                    LOG.Debug("Http Response Body : {0}", response.Content);
+                }
 
-			IList<Part> fileParts = new List<Part>(multipartFiles.Count);
-			// Read File Part
-			foreach (KeyValuePair<string, RestMultipart> multipartFile in multipartFiles.SetOfKeyValuePairs())
-			{
-				Part filePart = createMultipart(multipartFile.Key, multipartFile.Value);
-				fileParts.Add(filePart);
-			}
-			Part[] parts = fileParts.ToArray();
-			multipartRequestEntity = new MultipartRequestEntity(parts, ((EntityEnclosingMethod) m).Params);
+                if (IsResponseError(response))
+                {
+                    LOG.Error(response.ErrorException, response.ErrorMessage);
+                    string message = "Http call failed";
+                    if (!string.IsNullOrWhiteSpace(response.ErrorMessage))
+                    {
+                        message = response.ErrorMessage.Trim();
+                    }
+                    throw new System.InvalidOperationException(message, response.ErrorException);
+                }
 
-			return multipartRequestEntity;
-		}
+            }
+            catch (Exception e)
+            {
+                string message = "Http call failed";
+                throw new System.InvalidOperationException(message, e);
+            }
 
-		private Part createMultipart(string fileParamName, RestMultipart restMultipart)
-		{
-			RestMultipart.RestMultipartType type = restMultipart.Type;
-			switch (type)
-			{
-				case smartrics.rest.client.RestMultipart.RestMultipartType.FILE:
-					string fileName = null;
-					try
-					{
-						fileName = restMultipart.Value;
-						File file = new File(fileName);
-						FilePart filePart = new FilePart(fileParamName, file, restMultipart.ContentType, restMultipart.Charset);
-						LOG.info("Configure Multipart file upload paramName={} :  ContentType={} for  file={} ", new string[]{fileParamName, restMultipart.ContentType, fileName});
-						return filePart;
-					}
-					catch (FileNotFoundException e)
-					{
-						throw new System.ArgumentException("File not found: " + fileName, e);
-					}
-				case smartrics.rest.client.RestMultipart.RestMultipartType.STRING:
-					StringPart stringPart = new StringPart(fileParamName, restMultipart.Value, restMultipart.Charset);
-					stringPart.ContentType = restMultipart.ContentType;
-					LOG.info("Configure Multipart String upload paramName={} :  ContentType={} ", fileParamName, stringPart.ContentType);
-					return stringPart;
-				default:
-					throw new System.ArgumentException("Unknonw Multipart Type : " + type);
-			}
+            LOG.Debug("response: {0}", responseDetails);
+            return responseDetails;
+        }
 
-		}
+        /// <summary>
+        /// Builds the HTTP request that will be sent.
+        /// </summary>
+        /// <param name="requestDetails">The RestClient.RestRequest containing details of the request 
+        /// to send.</param>
+        /// <returns>A RestSharp.RestRequest object containing details of the request to send.</returns>
+        /// <remarks>Loosely based on RestClient.RestClientImpl.configureHttpMethod, which is 
+        /// designed around the Apache HttpClient library, written in Java.  This is very different 
+        /// from the .NET System.Net library so cannot be ported directly; the HttpClient must be 
+        /// rewritten from scratch.</remarks>
+        private RestSharp.RestRequest BuildRequest(Data.RestRequest requestDetails)
+        {
+            Uri resourceUri = GetResourceUri(requestDetails);
+            RestSharp.Method httpMethod = GetHttpMethod(requestDetails);
 
+            RestSharp.RestRequest request = new RestSharp.RestRequest(resourceUri, httpMethod);
 
+            AddHttpRequestHeaders(request, requestDetails);
 
-		private RequestEntity configureFileUpload(string fileName)
-		{
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final File file = new File(fileName);
-			File file = new File(fileName);
-			if (!file.exists())
-			{
-				throw new System.ArgumentException("File not found: " + fileName);
-			}
-			return new FileRequestEntity(file, "application/octet-stream");
-		}
+            if (IsEntityEnclosingMethod(httpMethod))
+            {
+                string fileName = requestDetails.FileName;
+                if (!string.IsNullOrWhiteSpace(fileName))
+                {
+                    if (!File.Exists(fileName))
+                    {
+                        throw new ArgumentException("File not found: " + fileName);
+                    }
+                    request.AddFile("file", fileName);
+                }
+                else
+                {
+                    // Add Multipart
+                    LinkedHashMap<string, Data.RestMultipart> 
+                        multipartFiles = requestDetails.MultipartFileNames;
+                    if ((multipartFiles != null) && (multipartFiles.Count > 0))
+                    {
+                        ConfigureRequestMultipartFileUpload(request, requestDetails, multipartFiles);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(requestDetails.Body))
+                    {
+                        string contentType = null;
+                        if (requestDetails.ContentType.ToLower().Contains("json"))
+                        {
+                            request.RequestFormat = DataFormat.Json;
+                            contentType = requestDetails.ContentType;
+                        }
+                        else
+                        {
+                            request.RequestFormat = DataFormat.Xml;
+                            if (requestDetails.ContentType.ToLower().Contains("xml"))
+                            {
+                                contentType = requestDetails.ContentType;
+                            }
+                            else
+                            {
+                                // RestSharp supports only two RequestFormats: JSON and XML.
+                                contentType = "application/xml";
+                            }
+                        }
 
-		public virtual string getContentType(RestRequest request)
-		{
-			IList<smartrics.rest.client.RestData.Header> values = request.getHeader("Content-Type");
-			string v = "text/xml";
-			if (values.Count != 0)
-			{
-				v = values[0].Value;
-			}
-			return v;
-		}
+                        // requestDetails.Body is a string, and RestRequest.AddBody, AddJsonBody 
+                        //  and AddXmlBody take objects as arguments, not strings.  Although they 
+                        //  won't throw exceptions, the result is not as expected if an object is 
+                        //  serialized to JSON or XML before being passed to one of the AddBody 
+                        //  methods.  
+                        //
+                        //  For example, if a Book object is serialized to JSON and the JSON string 
+                        //  is passed to AddBody or AddJsonBody the body sent across the wire is:
+                        //
+                        //  "{\"Id\":10,\"Title\":\"The Meaning of Liff\",\"Year\":1983}"
+                        //
+                        //  when it should be:
+                        //
+                        //  {Id: 10, Title: "The Meaning of Liff", Year: 1983}
 
-		private void setUri(HttpMethod m, string hostAddr, RestRequest request)
-		{
-			string host = string.ReferenceEquals(hostAddr, null) ? client.HostConfiguration.Host : hostAddr;
-			if (string.ReferenceEquals(host, null))
-			{
-				throw new System.InvalidOperationException("hostAddress is null: please config httpClient host configuration or " + "pass a valid host address or config a baseUrl on this client");
-			}
-			string uriString = host + request.Resource;
-			bool escaped = request.ResourceUriEscaped;
-			try
-			{
-				m.URI = createUri(uriString, escaped);
-			}
-			catch (URIException e)
-			{
-				throw new System.InvalidOperationException("Problem when building URI: " + uriString, e);
-			}
-			catch (System.NullReferenceException e)
-			{
-				throw new System.InvalidOperationException("Building URI with null string", e);
-			}
-		}
+                        //  The incorrect format of the JSON in the request body will prevent it 
+                        //  from being desrialized correctly at the server end.
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: protected org.apache.commons.httpclient.URI createUri(String uriString, boolean escaped) throws org.apache.commons.httpclient.URIException
-		protected internal virtual URI createUri(string uriString, bool escaped)
-		{
-			return new URI(uriString, escaped);
-		}
+                        // Instead of using one of the AddBody methods, use 
+                        //  AddParameter(..., ..., ParameterType.RequestBody) 
+                        //  which can handle objects serialized to JSON or XML strings.
+                        request.AddParameter(contentType, requestDetails.Body,
+                            ParameterType.RequestBody);
+                    }
+                }
+            }
 
-		/// <summary>
-		/// factory method that maps a string with a HTTP method name to an
-		/// implementation class in Apache HttpClient. Currently the name is mapped
-		/// to <code>org.apache.commons.httpclient.methods.%sMethod</code> where
-		/// <code>%s</code> is the parameter mName.
-		/// </summary>
-		/// <param name="mName"> the method name </param>
-		/// <returns> the method class </returns>
-		protected internal virtual string getMethodClassnameFromMethodName(string mName)
-		{
-			return string.Format("org.apache.commons.httpclient.methods.{0}Method", mName);
-		}
+            return request;
+        }
 
-		/// <summary>
-		/// Utility method that creates an instance of {@code
-		/// org.apache.commons.httpclient.HttpMethod}.
-		/// </summary>
-		/// <param name="request"> the rest request </param>
-		/// <returns> the instance of {@code org.apache.commons.httpclient.HttpMethod}
-		/// matching the method in RestRequest. </returns>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") protected org.apache.commons.httpclient.HttpMethod createHttpClientMethod(RestRequest request)
-		protected internal virtual HttpMethod createHttpClientMethod(RestRequest request)
-		{
-			string mName = request.Method.ToString();
-			string className = getMethodClassnameFromMethodName(mName);
-			try
-			{
-				Type<HttpMethod> clazz = (Type<HttpMethod>) Type.GetType(className);
-				if (className.EndsWith("TraceMethod", StringComparison.Ordinal))
-				{
-					return clazz.GetConstructor(typeof(string)).newInstance("http://dummy.com");
-				}
-				else
-				{
-					return clazz.newInstance();
-				}
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new System.InvalidOperationException(className + " not found: you may be using a too old or " + "too new version of HttpClient", e);
-			}
-			catch (InstantiationException e)
-			{
-				throw new System.InvalidOperationException("An object of type " + className + " cannot be instantiated", e);
-			}
-			catch (IllegalAccessException e)
-			{
-				throw new System.InvalidOperationException("The default ctor for type " + className + " cannot be accessed", e);
-			}
-			catch (Exception e)
-			{
-				throw new System.InvalidOperationException("Exception when instantiating: " + className, e);
-			}
-			catch (InvocationTargetException e)
-			{
-				throw new System.InvalidOperationException("The ctor with String.class arg for type " + className + " cannot be invoked", e);
-			}
-			catch (NoSuchMethodException e)
-			{
-				throw new System.InvalidOperationException("The ctor with String.class arg for type " + className + " doesn't exist", e);
-			}
-		}
+        private void ValidateRequest(RestSharp.IRestClient client,
+            Data.RestRequest requestDetails)
+        {
+            // Client cannot be null.
+            if (client.BaseUrl == null || string.IsNullOrWhiteSpace(client.BaseUrl.AbsoluteUri))
+            {
+                throw new ArgumentException("Host address is not set: "
+                    + "Please pass a valid host address.");
+            }
 
-		private void addHeaders(HttpMethod m, RestRequest request)
-		{
-			foreach (RestData.Header h in request.Headers)
-			{
-				m.addRequestHeader(h.Name, h.Value);
-			}
-		}
-	}
+            if (requestDetails == null)
+            {
+                throw new System.ArgumentException("HTTP request details not supplied.");
+            }
 
+            if (requestDetails.HttpMethod == Data.RestRequest.Method.NotSet)
+            {
+                throw new System.ArgumentException(
+                    "HTTP request method is not set (eg \"GET\", \"POST\").");
+            }
+
+            if (string.IsNullOrWhiteSpace(requestDetails.Resource))
+            {
+                throw new System.ArgumentException("Relative URL of resource is not set.");
+            }
+        }
+
+        private Uri GetHostUri(string hostAddress)
+        {
+            if (string.IsNullOrWhiteSpace(hostAddress))
+            {
+                return null;
+            }
+
+            // Ensure there is a trailing "/".
+            hostAddress = hostAddress.TrimEnd('/');
+            hostAddress = hostAddress + '/';
+
+            return new Uri(hostAddress);
+        }
+
+        private Uri GetResourceUri(Data.RestRequest requestDetails)
+        {
+            string queryString = GetHttpRequestQueryString(requestDetails);
+            // C# behaves differently from Java when concatenating nulls:
+            //  Java: "string" + null = "stringnull" (the string "null" is substituted for null);
+            //  C#: "string" + null = "string" (the empty string is substituted for null).
+            string uriString = requestDetails.Resource + queryString;
+            // .NET System.Uri constructor will always check whether all characters are escaped 
+            //  and escape those that aren't so no need to specify whether the URI is escaped or 
+            //  not.
+            Uri uri = null;
+            try
+            {
+                // Assume this is a relative URL as host address, passed into the Execute method 
+                //  separately, is invalid if null or blank.
+                uri = new Uri(uriString, UriKind.Relative);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Problem when building URI: " + uriString, ex);
+            }
+
+            return uri;
+        }
+
+        private string GetHttpRequestQueryString(Data.RestRequest requestDetails)
+        {
+            string queryString = requestDetails.Query;
+            if (StringHelper.IsNullOrBlank(queryString))
+            {
+                return string.Empty;
+            }
+
+            // Ensure query string starts with "?".
+            queryString = queryString.TrimStart('?').Trim();
+            queryString = "?" + queryString;
+            return queryString;
+        }
+
+        private RestSharp.Method GetHttpMethod(Data.RestRequest restRequest)
+        {
+            // No way to tell if restRequest.Method has not been set.  If not set explicitly it 
+            //  will have value 0 = Get.
+            RestSharp.Method httpMethod;
+            bool ignoreCase = true;
+            if (Enum.TryParse(restRequest.HttpMethod.ToString(), ignoreCase, out httpMethod))
+            {
+                return httpMethod;
+            }
+
+            // As at v105.2.3, on 26 Feb 2017, RestSharp is unable to handle TRACE HTTP methods, 
+            //  although the RestClient in the Java RestFixture can.
+            string errorMessage = string.Format("RestRequst.HttpMethod {0} cannot be handled "
+                                                + "by RestSharp.",
+                                                restRequest.HttpMethod);
+            throw new ArgumentException(errorMessage);
+        }
+
+        private void AddHttpRequestHeaders(RestSharp.RestRequest requestToBuild,
+            Data.RestRequest requestDetails)
+        {
+            // NB: RestSharp will default content type to XML if not set explicitly.
+
+            foreach (Data.RestData.Header header in requestDetails.Headers)
+            {
+                requestToBuild.AddHeader(header.Name, header.Value);
+            }
+        }
+
+        private bool IsEntityEnclosingMethod(RestSharp.Method httpMethod)
+        {
+            // Original Java code in RestClientImpl.configureHttpMethod:
+            //  if (m is EntityEnclosingMethod) ... 
+            //  where m is of type org.apache.commons.httpclient.HttpMethod
+            // Looked up derived types of EntityEnclosingMethod via 
+            //  http://grepcode.com/search/usages?id=repo1.maven.org$maven2@com.ning$metrics.action@0.2.7@org$apache$commons$httpclient$methods@EntityEnclosingMethod&type=type&k=u 
+            // There were only two: PutMethod and PostMethod.
+            // We'll add Patch as well.
+            if (httpMethod == RestSharp.Method.PUT || httpMethod == RestSharp.Method.POST
+                || httpMethod == RestSharp.Method.PATCH)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ConfigureRequestMultipartFileUpload(RestSharp.RestRequest request, 
+            Data.RestRequest requestDetails,
+            LinkedHashMap<string, Data.RestMultipart> multipartFiles)
+        {
+            request.AddHeader("Content-Type", "multipart/form-data");
+
+            foreach (KeyValuePair<string, RestMultipart> multipartFile in multipartFiles)
+            {
+                ConfigureMultipart(request, multipartFile.Key, multipartFile.Value);
+            }
+        }
+
+        private void ConfigureMultipart(RestSharp.RestRequest request, 
+            string fileParamName, RestMultipart restMultipart)
+        {
+            RestMultipart.RestMultipartType type = restMultipart.Type;
+            switch (type)
+            {
+                case RestMultipart.RestMultipartType.FILE:
+                    string fileName = null;
+                    try
+                    {
+                        fileName = restMultipart.Value;
+                        using (var fileContent = new FileStream(fileName, FileMode.Open))
+                        {
+                            request.AddFile(fileName, fileContent.CopyTo, fileName, 
+                                restMultipart.ContentType);
+                        }
+
+                        LOG.Info("Configure Multipart file upload paramName={0} :  ContentType={1} for  file={2} ", 
+                            new string[] { fileParamName, restMultipart.ContentType, fileName });
+                        break;
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        throw new System.ArgumentException("File not found: " + fileName, e);
+                    }
+                case RestMultipart.RestMultipartType.STRING:
+                    // According to a comment on RestSharp issue 524, 
+                    //  https://github.com/restsharp/RestSharp/issues/524 , it's only possible to 
+                    //  add string data in multipart form data using ParameterType GetOrPost.  
+                    //  ParameterType RequestBody doesn't work.
+                    request.AddParameter(fileParamName, restMultipart.Value,
+                        restMultipart.ContentType, ParameterType.GetOrPost);
+                    LOG.Info("Configure Multipart String upload paramName={0}:  ContentType={1} ", 
+                        fileParamName, restMultipart.ContentType);
+                    break;
+                default:
+                    throw new System.ArgumentException("Unknonw Multipart Type: " + type);
+                    break;
+            }
+
+        }
+
+        private void LogRequestHeaders(RestSharp.RestRequest request)
+        {
+            if (LOG.IsDebugEnabled)
+            {
+                LOG.Debug("Http Request Headers : [{0}]",
+                    string.Join(", ",
+                        request.Parameters.Where(p => p.Type == ParameterType.HttpHeader)));
+            }
+        }
+
+        private bool IsResponseError(RestSharp.IRestResponse response)
+        {
+            if (response == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(response.ErrorMessage)
+                && response.ErrorException == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
 }
