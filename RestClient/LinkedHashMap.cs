@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using NLog.Time;
 
 namespace RestClient
 {
@@ -89,6 +91,31 @@ namespace RestClient
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void Clear()
+        {
+            _dictionary.Clear();
+            _list.Clear();
+        }
+
+        public IList<TKey> Keys
+        {
+            // Return list keys rather than dictionary keys to ensure they're in the correct order.
+            get { return _list.Select(it => it.Key).ToList();  }
+        }
+
+        public void PutAll(LinkedHashMap<TKey, TValue> sourceMap)
+        {
+            if (sourceMap == null || sourceMap.Count == 0)
+            {
+                return;
+            }
+
+            foreach (TKey key in sourceMap.Keys)
+            {
+                this[key] = sourceMap[key];
+            }
         }
     }
 }
