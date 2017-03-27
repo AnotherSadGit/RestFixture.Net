@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -24,9 +25,6 @@ namespace RestFixture.Net.Support
 {
 
 	using org.mozilla.javascript;
-	using Header = smartrics.rest.client.RestData.Header;
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 
 	/// <summary>
 	/// Wrapper class to all that related to JavaScript.

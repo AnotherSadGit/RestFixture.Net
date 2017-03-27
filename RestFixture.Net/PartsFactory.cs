@@ -1,4 +1,6 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using RestFixture.Net.Support;
+
+/*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -48,7 +50,7 @@ namespace RestFixture.Net
 
 //JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
 //ORIGINAL LINE: public PartsFactory(final RunnerVariablesProvider variablesProvider, smartrics.rest.fitnesse.fixture.support.Config config)
-		public PartsFactory(RunnerVariablesProvider variablesProvider, Config config)
+        public PartsFactory(RunnerVariablesProvider variablesProvider, Support.Config config)
 		{
 			this.bodyTypeAdapterFactory = new BodyTypeAdapterFactory(variablesProvider, config);
 		}

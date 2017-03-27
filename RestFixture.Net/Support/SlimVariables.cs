@@ -29,21 +29,25 @@ namespace RestFixture.Net.Support
 	public class SlimVariables : Variables
 	{
 
-		private readonly StatementExecutorInterface executor;
+		//private readonly StatementExecutorInterface executor;
 
-		/// <summary>
-		/// initialises the variables. reade
-		/// {@code restfixture.null.value.representation} to know how to render
-		/// {@code null}s.
-		/// </summary>
-		/// <param name="c">        the config object </param>
-		/// <param name="executor"> the executor </param>
-		public SlimVariables(Config c, StatementExecutorInterface executor) : base(c)
-		{
-			this.executor = executor;
-		}
+	    /// <summary>
+	    /// initialises the variables. reade
+	    /// {@code restfixture.null.value.representation} to know how to render
+	    /// {@code null}s.
+	    /// </summary>
+	    /// <param name="c">        the config object </param>
+	    /// <param name="executor"> the executor </param>
+	    //public SlimVariables(Config c, StatementExecutorInterface executor) : base(c)
+	    //{
+	    //    this.executor = executor;
+	    //}
 
-		/// <summary>
+	    public SlimVariables(Config c) : base(c)
+	    {
+	    }
+
+	    /// <summary>
 		/// puts a value.
 		/// </summary>
 		/// <param name="label"> the symbol </param>

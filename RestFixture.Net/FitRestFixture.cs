@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NLog;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -43,7 +44,7 @@ namespace RestFixture.Net
 	/// </summary>
 	public class FitRestFixture : ActionFixture
 	{
-		private static readonly Logger LOG = LoggerFactory.getLogger(typeof(FitRestFixture));
+        private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
 		private RestFixture restFixture;
 

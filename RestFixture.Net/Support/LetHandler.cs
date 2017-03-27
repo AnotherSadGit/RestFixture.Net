@@ -1,4 +1,5 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using RestClient.Data;
+/*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -18,9 +19,6 @@
  */
 namespace RestFixture.Net.Support
 {
-
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 	/// <summary>
 	/// Strategy to handle LET expressions.
 	/// 

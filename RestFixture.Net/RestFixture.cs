@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Serialization;
+using NLog;
+using RestFixture.Net.Support;
+using RestClient;
+using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,18 +27,9 @@ using System.Collections.Generic;
  */
 namespace RestFixture.Net
 {
+    using RestClient = RestClient.RestClient;
 
-	using FitNesseVersion = fitnesse.FitNesseVersion;
-	using StatementExecutorConsumer = fitnesse.slim.StatementExecutorConsumer;
-	using StatementExecutorInterface = fitnesse.slim.StatementExecutorInterface;
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
-	using RestClient = smartrics.rest.client.RestClient;
-	using Header = smartrics.rest.client.RestData.Header;
-	using RestMultipart = smartrics.rest.client.RestMultipart;
-	using RestRequest = smartrics.rest.client.RestRequest;
-	using RestResponse = smartrics.rest.client.RestResponse;
-	using smartrics.rest.fitnesse.fixture.support;
+	//using smartrics.rest.fitnesse.fixture.support;
 
 
 	/// <summary>
@@ -155,7 +152,7 @@ namespace RestFixture.Net
 	/// <td>restfixture.content.handlers.map</td>
 	/// <td><i>a map of content type to type adapters, entries separated by \n, and
 	/// kye-value separated by '='. Available type adapters are JS, TEXT, JSON, XML
-	/// (see <seealso cref="smartrics.rest.fitnesse.fixture.support.BodyTypeAdapterFactory"/>
+	/// (see <seealso cref="BodyTypeAdapterFactory"/>
 	/// ).</i></td>
 	/// </tr>
 	/// <tr>
@@ -181,15 +178,16 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// </para>
 	/// </summary>
-	public class RestFixture : StatementExecutorConsumer, RunnerVariablesProvider
+	public class RestFixture : RunnerVariablesProvider
 	{
+        private static Version _fitSharpVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+        private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
 		/// <summary>
 		/// What runner this table is running on.
 		/// 
 		/// Note, the OTHER runner is primarily for testing purposes.
-		/// 
-		/// @author smartrics
 		/// 
 		/// </summary>
 		public enum Runner
@@ -208,16 +206,14 @@ namespace RestFixture.Net
 			OTHER
 		}
 
-		/* (non-Javadoc)
-		 * @see smartrics.rest.fitnesse.fixture.RunnerVariablesProvider#createRunnerVariables()
-		 */
-		public override Variables createRunnerVariables()
+		public Variables createRunnerVariables()
 		{
 			switch (runner)
 			{
-			case smartrics.rest.fitnesse.fixture.RestFixture.Runner.SLIM:
-				return new SlimVariables(config, slimStatementExecutor);
-			case smartrics.rest.fitnesse.fixture.RestFixture.Runner.FIT:
+			case Runner.SLIM:
+				//return new SlimVariables(config, slimStatementExecutor);
+                return new SlimVariables(config);
+			case Runner.FIT:
 				return new FitVariables(config);
 			default:
 				// Use FitVariables for tests
@@ -228,8 +224,6 @@ namespace RestFixture.Net
 		private const string LINE_SEPARATOR = "\n";
 
 		private const string FILE = "file";
-
-		private static readonly Logger LOG = LoggerFactory.getLogger(typeof(RestFixture));
 
 		protected internal Variables GLOBALS;
 
@@ -243,13 +237,13 @@ namespace RestFixture.Net
 
 		protected internal string multipartFileParameterName = FILE;
 
-		protected internal IDictionary<string, RestMultipart> multiFileNameByParamName = new LinkedHashMap<string, RestMultipart>();
+		protected internal LinkedHashMap<string, RestMultipart> multiFileNameByParamName = new LinkedHashMap<string, RestMultipart>();
 
 		protected internal string requestBody;
 
 		protected internal bool resourceUrisAreEscaped = false;
 
-		protected internal IDictionary<string, string> requestHeaders;
+		protected internal LinkedHashMap<string, string> requestHeaders;
 
 		private RestClient restClient;
 
@@ -270,15 +264,10 @@ namespace RestFixture.Net
 
 		private IDictionary<string, string> namespaceContext = new Dictionary<string, string>();
 
-//JAVA TO C# CONVERTER NOTE: Fields cannot have the same name as methods:
-		private Url baseUrl_Renamed;
+		private Url _baseUrl;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("rawtypes") protected RowWrapper row;
-		protected internal RowWrapper row;
+		protected internal RowWrapper<object> row;
 
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
-//ORIGINAL LINE: private CellFormatter<?> formatter;
 		private CellFormatter<object> formatter;
 
 		private PartsFactory partsFactory;
@@ -289,12 +278,12 @@ namespace RestFixture.Net
 
 		private bool followRedirects = true;
 
-		private StatementExecutorInterface slimStatementExecutor;
+		//private StatementExecutorInterface slimStatementExecutor;
 
 
 		static RestFixture()
 		{
-			LOG.info("############ Detected FitNesse version: {} ###########", (new FitNesseVersion()).ToString());
+			LOG.Info("############ Detected FitSharp version: {} ###########", _fitSharpVersion);
 		}
 
 		/// <summary>
@@ -302,7 +291,7 @@ namespace RestFixture.Net
 		/// </summary>
 		public RestFixture() : base()
 		{
-			this.partsFactory = new PartsFactory(this, Config.getConfig(Config.DEFAULT_CONFIG_NAME));
+			this.partsFactory = new PartsFactory(this, Net.Support.Config.getConfig(Config.DEFAULT_CONFIG_NAME));
 			this.displayActualOnRight = true;
 			this.minLenForCollapseToggle = -1;
 			this.resourceUrisAreEscaped = false;
@@ -334,7 +323,7 @@ namespace RestFixture.Net
 			this.displayAbsoluteURLInFull = true;
 			this.config = Config.getConfig(configName);
 			this.partsFactory = new PartsFactory(this, config);
-			this.baseUrl_Renamed = new Url(stripTag(hostName));
+			this._baseUrl = new Url(stripTag(hostName));
 			this.requestHeaders = new LinkedHashMap<string, string>();
 		}
 
@@ -352,7 +341,7 @@ namespace RestFixture.Net
 			this.displayAbsoluteURLInFull = true;
 			this.partsFactory = partsFactory;
 			this.config = Config.getConfig(configName);
-			this.baseUrl_Renamed = new Url(stripTag(hostName));
+			this._baseUrl = new Url(stripTag(hostName));
 			this.requestHeaders = new LinkedHashMap<string, string>();
 		}
 
@@ -384,9 +373,9 @@ namespace RestFixture.Net
 		/// <returns> the base URL as string </returns>
 		public virtual string getBaseUrl()
 		{
-			if (baseUrl_Renamed != null)
+			if (_baseUrl != null)
 			{
-				return baseUrl_Renamed.ToString();
+				return _baseUrl.ToString();
 			}
 			return null;
 		}
@@ -397,7 +386,7 @@ namespace RestFixture.Net
 		/// <param name="url"> the url </param>
 		public virtual void setBaseUrl(Url url)
 		{
-			this.baseUrl_Renamed = url;
+			this._baseUrl = url;
 		}
 
 		public virtual void baseUrl(string url)
@@ -423,8 +412,6 @@ namespace RestFixture.Net
 		/// The formatter for this instance of the RestFixture.
 		/// </summary>
 		/// <returns> the formatter for the cells </returns>
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
-//ORIGINAL LINE: public CellFormatter<?> getFormatter()
 		public virtual CellFormatter<object> Formatter
 		{
 			get
@@ -459,7 +446,7 @@ namespace RestFixture.Net
 		/// <returns> true if the state is valid, false otherwise </returns>
 		protected internal virtual bool validateState()
 		{
-			return baseUrl_Renamed != null;
+			return _baseUrl != null;
 		}
 
 
@@ -492,7 +479,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setMultipartFileName()
 		public virtual void setMultipartFileName()
 		{
-			CellWrapper cell = row.getCell(1);
+			CellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -517,10 +504,10 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addMultipartFile()
 		public virtual void addMultipartFile()
 		{
-			CellWrapper cellFileName = row.getCell(1);
-			CellWrapper cellParamName = row.getCell(2);
-			CellWrapper cellContentType = row.getCell(3);
-			CellWrapper cellCharset = row.getCell(4);
+			CellWrapper<object> cellFileName = row.getCell(1);
+			CellWrapper<object> cellParamName = row.getCell(2);
+			CellWrapper<object> cellContentType = row.getCell(3);
+			CellWrapper<object> cellCharset = row.getCell(4);
 			if (cellFileName == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -544,10 +531,10 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addMultipartString()
 		public virtual void addMultipartString()
 		{
-			CellWrapper cellFileName = row.getCell(1);
-			CellWrapper cellParamName = row.getCell(2);
-			CellWrapper cellContentType = row.getCell(3);
-			CellWrapper cellCharset = row.getCell(4);
+			CellWrapper<object> cellFileName = row.getCell(1);
+			CellWrapper<object> cellParamName = row.getCell(2);
+			CellWrapper<object> cellContentType = row.getCell(3);
+			CellWrapper<object> cellCharset = row.getCell(4);
 			if (cellFileName == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart string content to set");
@@ -559,7 +546,7 @@ namespace RestFixture.Net
 		}
 
 
-		private RestMultipart registerMultipartRow(RestMultipart.RestMultipartType type, CellWrapper cellFileName, CellWrapper cellParamName, CellWrapper cellContentType, CellWrapper cellCharset)
+		private RestMultipart registerMultipartRow(RestMultipart.RestMultipartType type, CellWrapper<object> cellFileName, CellWrapper<object> cellParamName, CellWrapper<object> cellContentType, CellWrapper<object> cellCharset)
 		{
 	// Param Name
 			string multipartParamName = FILE;
@@ -623,7 +610,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setFileName()
 		public virtual void setFileName()
 		{
-			CellWrapper cell = row.getCell(1);
+			CellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a file name to set");
@@ -658,7 +645,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setMultipartFileParameterName()
 		public virtual void setMultipartFileParameterName()
 		{
-			CellWrapper cell = row.getCell(1);
+			CellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a parameter name to set");
@@ -690,7 +677,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setBody()
 		public virtual void setBody()
 		{
-			CellWrapper cell = row.getCell(1);
+			CellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a body to set");
@@ -738,7 +725,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addHeader()
 		public virtual void addHeader()
 		{
-			CellWrapper cell = row.getCell(1);
+			CellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a header map to set");
@@ -746,8 +733,7 @@ namespace RestFixture.Net
 			else
 			{
 				string substitutedHeaders = GLOBALS.substitute(cell.text());
-//JAVA TO C# CONVERTER TODO TASK: There is no .NET Dictionary equivalent to the Java 'putAll' method:
-				requestHeaders.putAll(parseHeaders(substitutedHeaders));
+				requestHeaders.PutAll(parseHeaders(substitutedHeaders));
 				cell.body(Formatter.gray(substitutedHeaders));
 			}
 		}
@@ -756,15 +742,14 @@ namespace RestFixture.Net
 		/// \@sglebs - fixes #161. necessary to work with a scenario </summary>
 		/// <param name="headers"> the headers string to set </param>
 		/// <returns> the headers map </returns>
-		public virtual IDictionary<string, string> addHeader(string headers)
+		public virtual LinkedHashMap<string, string> addHeader(string headers)
 		{
 			string substitutedHeaders = headers;
 			if (GLOBALS != null)
 			{
 				substitutedHeaders = GLOBALS.substitute(headers);
 			}
-//JAVA TO C# CONVERTER TODO TASK: There is no .NET Dictionary equivalent to the Java 'putAll' method:
-			requestHeaders.putAll(parseHeaders(substitutedHeaders));
+			requestHeaders.PutAll(parseHeaders(substitutedHeaders));
 			return requestHeaders;
 		}
 
@@ -772,7 +757,7 @@ namespace RestFixture.Net
 		/// \@sglebs - fixes #161. necessary to work with a scenario </summary>
 		/// <param name="headers"> the headers string to set </param>
 		/// <returns> the headers map </returns>
-		public virtual IDictionary<string, string> setHeader(string headers)
+		public virtual LinkedHashMap<string, string> setHeader(string headers)
 		{
 			requestHeaders = new LinkedHashMap<string, string>();
 			return addHeader(headers);
@@ -782,7 +767,7 @@ namespace RestFixture.Net
 		/// \@sglebs - fixes #161. necessary to work with a scenario </summary>
 		/// <param name="headers"> the headers string to set </param>
 		/// <returns> the headers map </returns>
-		public virtual IDictionary<string, string> setHeaders(string headers)
+		public virtual LinkedHashMap<string, string> setHeaders(string headers)
 		{
 			return setHeader(headers);
 		}
@@ -947,694 +932,693 @@ namespace RestFixture.Net
 			doMethod(emptifyBody(requestBody), "Post");
 			debugMethodCallEnd();
 		}
-    }
 
-    /// <summary>
-    /// <code> | let | label | type | loc | expr |</code>
-    /// <para>
-    /// allows to associate a value to a label. values are extracted from the
-    /// body of the last successful http response.
-    /// <ul>
-    /// <li><code>label</code> is the label identifier
-    /// 
-    /// <li><code>type</code> is the type of operation to perform on the last
-    /// http response. At the moment only XPaths and Regexes are supported. In
-    /// case of regular expressions, the expression must contain only one group
-    /// match, if multiple groups are matched the label will be assigned to the
-    /// first found <code>type</code> only allowed values are <code>xpath</code>
-    /// and <code>regex</code>
-    /// 
-    /// <li><code>loc</code> where to apply the <code>expr</code> of the given
-    /// <code>type</code>. Currently only <code>header</code> and
-    /// <code>body</code> are supported. If type is <code>xpath</code> by default
-    /// the expression is matched against the body and the value in loc is
-    /// ignored.
-    /// 
-    /// <li><code>expr</code> is the expression of type <code>type</code> to be
-    /// executed on the last http response to extract the content to be
-    /// associated to the label.
-    /// </ul>
-    /// </para>
-    /// <para>
-    /// <code>label</code>s can be retrieved after they have been defined and
-    /// their scope is the fixture instance under execution. They are stored in a
-    /// map so multiple calls to <code>let()</code> with the same label will
-    /// override the current value of that label.
-    /// </para>
-    /// <para>
-    /// Labels are resolved in <code>uri</code>s, <code>header</code>s and
-    /// <code>body</code>es.
-    /// </para>
-    /// <para>
-    /// In order to be resolved a label must be between <code>%</code>, e.g.
-    /// <code>%id%</code>.
-    /// </para>
-    /// <para>
-    /// The test row must have an empy cell at the end that will display the
-    /// value extracted and assigned to the label.
-    /// </para>
-    /// <para>
-    /// Example: <br>
-    /// <code>| GET | /services | 200 | | |</code><br>
-    /// <code>| let | id |  body | /services/id[0]/text() | |</code><br>
-    /// <code>| GET | /services/%id% | 200 | | |</code>
-    /// </para>
-    /// <para>
-    /// or
-    /// </para>
-    /// <para>
-    /// <code>| POST | /services | 201 | | |</code><br>
-    /// <code>| let  | id | header | /services/([.]+) | |</code><br>
-    /// <code>| GET  | /services/%id% | 200 | | |</code>
-    /// </para>
-    /// </summary>
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "unchecked", "rawtypes" }) public void let()
-    public virtual void let()
-    {
-        debugMethodCallStart();
-        if (row.size() != 5)
-        {
-            Formatter.exception(row.getCell(row.size() - 1), "Not all cells found: | let | label | type | expr | result |");
-            debugMethodCallEnd();
-            return;
-        }
-        string label = row.getCell(1).text().Trim();
-        string loc = row.getCell(2).text();
-        CellWrapper exprCell = row.getCell(3);
-        try
-        {
-            exprCell.body(GLOBALS.substitute(exprCell.body()));
-            string expr = exprCell.text();
-            CellWrapper valueCell = row.getCell(4);
-            string valueCellText = valueCell.body();
-            string valueCellTextReplaced = GLOBALS.substitute(valueCellText);
-            valueCell.body(valueCellTextReplaced);
-            string sValue = null;
-            LetHandler letHandler = LetHandlerFactory.getHandlerFor(loc);
-            if (letHandler != null)
-            {
-                StringTypeAdapter adapter = new StringTypeAdapter();
-                try
-                {
-                    sValue = letHandler.handle(this, config, LastResponse, namespaceContext, expr);
-                    exprCell.body(Formatter.gray(exprCell.body()));
-                }
-                catch (Exception e)
-                {
-                    Formatter.exception(exprCell, e.Message);
-                    LOG.error("Exception occurred when processing cell=" + exprCell, e);
-                }
-                GLOBALS.put(label, sValue);
-                adapter.set(sValue);
-                Formatter.check(valueCell, adapter);
-            }
-            else
-            {
-                Formatter.exception(exprCell, "I don't know how to process the expression for '" + loc + "'");
-            }
-        }
-        catch (Exception e)
-        {
-            Formatter.exception(exprCell, e);
-        }
-        finally
-        {
-            debugMethodCallEnd();
-        }
-    }
-
-    /// <summary>
-    /// allows to add comments to a rest fixture - basically does nothing except ignoring the text.
-    /// the text is substituted if variables are found.
-    /// </summary>
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings("unchecked") public void comment()
-    public virtual void comment()
-    {
-        debugMethodCallStart();
+        /// <summary>
+        /// <code> | let | label | type | loc | expr |</code>
+        /// <para>
+        /// allows to associate a value to a label. values are extracted from the
+        /// body of the last successful http response.
+        /// <ul>
+        /// <li><code>label</code> is the label identifier
+        /// 
+        /// <li><code>type</code> is the type of operation to perform on the last
+        /// http response. At the moment only XPaths and Regexes are supported. In
+        /// case of regular expressions, the expression must contain only one group
+        /// match, if multiple groups are matched the label will be assigned to the
+        /// first found <code>type</code> only allowed values are <code>xpath</code>
+        /// and <code>regex</code>
+        /// 
+        /// <li><code>loc</code> where to apply the <code>expr</code> of the given
+        /// <code>type</code>. Currently only <code>header</code> and
+        /// <code>body</code> are supported. If type is <code>xpath</code> by default
+        /// the expression is matched against the body and the value in loc is
+        /// ignored.
+        /// 
+        /// <li><code>expr</code> is the expression of type <code>type</code> to be
+        /// executed on the last http response to extract the content to be
+        /// associated to the label.
+        /// </ul>
+        /// </para>
+        /// <para>
+        /// <code>label</code>s can be retrieved after they have been defined and
+        /// their scope is the fixture instance under execution. They are stored in a
+        /// map so multiple calls to <code>let()</code> with the same label will
+        /// override the current value of that label.
+        /// </para>
+        /// <para>
+        /// Labels are resolved in <code>uri</code>s, <code>header</code>s and
+        /// <code>body</code>es.
+        /// </para>
+        /// <para>
+        /// In order to be resolved a label must be between <code>%</code>, e.g.
+        /// <code>%id%</code>.
+        /// </para>
+        /// <para>
+        /// The test row must have an empy cell at the end that will display the
+        /// value extracted and assigned to the label.
+        /// </para>
+        /// <para>
+        /// Example: <br>
+        /// <code>| GET | /services | 200 | | |</code><br>
+        /// <code>| let | id |  body | /services/id[0]/text() | |</code><br>
+        /// <code>| GET | /services/%id% | 200 | | |</code>
+        /// </para>
+        /// <para>
+        /// or
+        /// </para>
+        /// <para>
+        /// <code>| POST | /services | 201 | | |</code><br>
+        /// <code>| let  | id | header | /services/([.]+) | |</code><br>
+        /// <code>| GET  | /services/%id% | 200 | | |</code>
+        /// </para>
+        /// </summary>
         //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-        //ORIGINAL LINE: @SuppressWarnings("rawtypes") CellWrapper messageCell = row.getCell(1);
-        CellWrapper messageCell = row.getCell(1);
-        try
+        //ORIGINAL LINE: @SuppressWarnings({ "unchecked", "rawtypes" }) public void let()
+        public virtual void let()
         {
-            string message = messageCell.text().Trim();
-            message = GLOBALS.substitute(message);
-            messageCell.body(Formatter.gray(message));
-        }
-        catch (Exception e)
-        {
-            Formatter.exception(messageCell, e);
-        }
-        finally
-        {
-            debugMethodCallEnd();
-        }
-    }
-
-    /// <summary>
-    /// Evaluates a string using the internal JavaScript engine. Result of the
-    /// last evaluation is set in the attribute lastEvaluation.
-    /// 
-    /// </summary>
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void evalJs()
-    public virtual void evalJs()
-    {
-        CellWrapper jsCell = row.getCell(1);
-        if (jsCell == null)
-        {
-            Formatter.exception(row.getCell(0), "Missing string to evaluate)");
-            return;
-        }
-        JavascriptWrapper wrapper = new JavascriptWrapper(this);
-        object result = null;
-        try
-        {
-            result = wrapper.evaluateExpression(lastResponse, jsCell.body());
-        }
-        catch (JavascriptException e)
-        {
-            Formatter.exception(row.getCell(1), e);
-            return;
-        }
-        lastEvaluation = null;
-        if (result != null)
-        {
-            lastEvaluation = result.ToString();
-        }
-        StringTypeAdapter adapter = new StringTypeAdapter();
-        adapter.set(lastEvaluation);
-        Formatter.right(row.getCell(1), adapter);
-    }
-
-    /// <summary>
-    /// Process the row in input. Abstracts the test runner via the wrapper
-    /// interfaces.
-    /// </summary>
-    /// <param name="currentRow"> the current row </param>
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings("rawtypes") public void processRow(RowWrapper<?> currentRow)
-    public virtual void processRow<T1>(RowWrapper<T1> currentRow)
-    {
-        row = currentRow;
-        CellWrapper cell0 = row.getCell(0);
-        if (cell0 == null)
-        {
-            throw new Exception("Current RestFixture row is not parseable (maybe empty or not existent)");
-        }
-        string methodName = cell0.text();
-        if ("".Equals(methodName))
-        {
-            throw new Exception("RestFixture method not specified");
-        }
-        Method method1;
-        try
-        {
-            method1 = this.GetType().GetMethod(methodName);
-            method1.invoke(this);
-        }
-        catch (SecurityException e)
-        {
-            throw new Exception("Not enough permissions to access method " + methodName + " for this class " + this.GetType().Name, e);
-        }
-        catch (NoSuchMethodException e)
-        {
-            //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-            throw new Exception("Class " + this.GetType().FullName + " doesn't have a callable method named " + methodName, e);
-        }
-        catch (System.ArgumentException e)
-        {
-            throw new Exception("Method named " + methodName + " invoked with the wrong argument.", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new Exception("Method named " + methodName + " is not public.", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            throw new Exception("Method named " + methodName + " threw an exception when executing.", e);
-        }
-    }
-
-    protected internal virtual void initialize(Runner runner)
-    {
-        this.runner = runner;
-        bool state = validateState();
-        notifyInvalidState(state);
-        configFormatter();
-        configFixture();
-        configRestClient();
-    }
-
-    protected internal virtual string emptifyBody(string b)
-    {
-        string body = b;
-        if (string.ReferenceEquals(body, null))
-        {
-            body = "";
-        }
-        return body;
-    }
-
-    /// <returns> the request headers </returns>
-    public virtual IDictionary<string, string> Headers
-    {
-        get
-        {
-            IDictionary<string, string> headers = null;
-            if (requestHeaders != null && !requestHeaders.Empty)
+            debugMethodCallStart();
+            if (row.size() != 5)
             {
-                headers = requestHeaders;
+                Formatter.exception(row.getCell(row.size() - 1), "Not all cells found: | let | label | type | expr | result |");
+                debugMethodCallEnd();
+                return;
             }
-            else
-            {
-                headers = defaultHeaders;
-            }
-            return headers;
-        }
-    }
-
-    // added for RestScriptFixture
-    protected internal virtual string RequestBody
-    {
-        get
-        {
-            return requestBody;
-        }
-        set
-        {
-            requestBody = value;
-        }
-    }
-
-
-    protected internal virtual IDictionary<string, string> NamespaceContext
-    {
-        get
-        {
-            return namespaceContext;
-        }
-    }
-
-    private void doMethod(string m)
-    {
-        doMethod(null, m);
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) protected void doMethod(String body, String method)
-    protected internal virtual void doMethod(string body, string method)
-    {
-        CellWrapper urlCell = row.getCell(1);
-        string url = deHtmlify(stripTag(urlCell.text()));
-        string resUrl = GLOBALS.substitute(url);
-        string rBody = GLOBALS.substitute(body);
-        IDictionary<string, string> rHeaders = substitute(Headers);
-
-        try
-        {
-            doMethod(method, resUrl, rHeaders, rBody);
-            completeHttpMethodExecution();
-        }
-        catch (Exception e)
-        {
-            Formatter.exception(row.getCell(0), "Execution of " + method + " caused exception '" + e.Message + "'");
-            LOG.error("Exception occurred when processing method=" + method, e);
-        }
-    }
-
-    protected internal virtual void doMethod(string method, string resUrl, string rBody)
-    {
-        doMethod(method, resUrl, substitute(Headers), rBody);
-    }
-
-    protected internal virtual void doMethod(string method, string resUrl, IDictionary<string, string> headers, string rBody)
-    {
-        LastRequest = partsFactory.buildRestRequest();
-        LastRequest.Method = RestRequest.Method.valueOf(method);
-        LastRequest.addHeaders(headers);
-        LastRequest.FollowRedirect = followRedirects;
-        LastRequest.ResourceUriEscaped = resourceUrisAreEscaped;
-        if (fileName != null)
-        {
-            LastRequest.FileName = fileName;
-        }
-
-        // Set multiFileName
-        if (multipartFileName != null)
-        {
-            RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE, multipartFileName);
-            LastRequest.addMultipart(multipartFileParameterName, restMultipart);
-        }
-
-        // Add multiFileName
-        if (!multiFileNameByParamName.Empty)
-        {
-            foreach (KeyValuePair<string, RestMultipart> entryMultipart in multiFileNameByParamName.entrySet())
-            {
-                LastRequest.addMultipart(entryMultipart.Key, entryMultipart.Value);
-                LOG.debug(" addMultipart : paramName = {} , value = {}", entryMultipart.Key, entryMultipart.Value);
-            }
-        }
-
-        string[] uri = resUrl.Split("\\?", 2);
-
-        string[] thisRequestUrlParts = buildThisRequestUrl(uri[0]);
-        LastRequest.Resource = thisRequestUrlParts[1];
-        if (uri.Length > 1)
-        {
-            string query = uri[1];
-            for (int i = 2; i < uri.Length; i++)
-            {
-                query += "?" + uri[i]; //TODO: StringBuilder
-            }
-            LastRequest.Query = query;
-        }
-        if ("Post".Equals(method) || "Put".Equals(method))
-        {
-            LastRequest.Body = rBody;
-        }
-
-        //sglebs dirty workaround for #96
-        configureCredentials();
-
-        restClient.BaseUrl = thisRequestUrlParts[0];
-        RestResponse response = restClient.execute(LastRequest);
-        LastResponse = response;
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) protected void completeHttpMethodExecution()
-    protected internal virtual void completeHttpMethodExecution()
-    {
-        string uri = LastResponse.Resource;
-        string query = LastRequest.Query;
-        if (!string.ReferenceEquals(query, null) && !"".Equals(query.Trim()))
-        {
-            uri = uri + "?" + query;
-        }
-        string clientBaseUri = restClient.BaseUrl;
-        string u = clientBaseUri + uri;
-        CellWrapper uriCell = row.getCell(1);
-        Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, uri);
-        CellWrapper cellStatusCode = row.getCell(2);
-        if (cellStatusCode == null)
-        {
-            throw new System.InvalidOperationException("You must specify a status code cell");
-        }
-        int? lastStatusCode = LastResponse.StatusCode;
-        process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
-        IList<Header> lastHeaders = LastResponse.Headers;
-        process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
-        CellWrapper bodyCell = row.getCell(4);
-        if (bodyCell == null)
-        {
-            throw new System.InvalidOperationException("You must specify a body cell");
-        }
-        bodyCell.body(GLOBALS.substitute(bodyCell.body()));
-        BodyTypeAdapter bodyTypeAdapter = createBodyTypeAdapter();
-        process(bodyCell, LastResponse.Body, bodyTypeAdapter);
-    }
-
-    // Split out of completeHttpMethodExecution so RestScriptFixture can call
-    // this
-    protected internal virtual BodyTypeAdapter createBodyTypeAdapter()
-    {
-        return createBodyTypeAdapter(ContentType.parse(LastResponse.ContentType));
-    }
-
-    // Split out of completeHttpMethodExecution so RestScriptFixture can call
-    // this
-    protected internal virtual BodyTypeAdapter createBodyTypeAdapter(ContentType ct)
-    {
-        string charset = LastResponse.Charset;
-        BodyTypeAdapter bodyTypeAdapter = partsFactory.buildBodyTypeAdapter(ct, charset);
-        bodyTypeAdapter.Context = namespaceContext;
-        return bodyTypeAdapter;
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void process(CellWrapper expected, Object actual, RestDataTypeAdapter ta)
-    private void process(CellWrapper expected, object actual, RestDataTypeAdapter ta)
-    {
-        if (expected == null)
-        {
-            throw new System.InvalidOperationException("You must specify a headers cell");
-        }
-        ta.set(actual);
-        bool ignore = "".Equals(expected.text().Trim());
-        if (ignore)
-        {
-            string actualString = ta.ToString();
-            if (!"".Equals(actualString))
-            {
-                expected.addToBody(Formatter.gray(actualString));
-            }
-        }
-        else
-        {
-            bool success = false;
+            string label = row.getCell(1).text().Trim();
+            string loc = row.getCell(2).text();
+            CellWrapper<object> exprCell = row.getCell(3);
             try
             {
-                string substitute = GLOBALS.substitute(Tools.fromHtml(expected.text()));
-                object parse = ta.parse(substitute);
-                success = ta.Equals(parse, actual);
+                exprCell.body(GLOBALS.substitute(exprCell.body()));
+                string expr = exprCell.text();
+                CellWrapper<object> valueCell = row.getCell(4);
+                string valueCellText = valueCell.body();
+                string valueCellTextReplaced = GLOBALS.substitute(valueCellText);
+                valueCell.body(valueCellTextReplaced);
+                string sValue = null;
+                LetHandler letHandler = LetHandlerFactory.getHandlerFor(loc);
+                if (letHandler != null)
+                {
+                    StringTypeAdapter adapter = new StringTypeAdapter();
+                    try
+                    {
+                        sValue = letHandler.handle(this, config, LastResponse, namespaceContext, expr);
+                        exprCell.body(Formatter.gray(exprCell.body()));
+                    }
+                    catch (Exception e)
+                    {
+                        Formatter.exception(exprCell, e.Message);
+                        LOG.Error(e, "Exception occurred when processing cell={0}", exprCell);
+                    }
+                    GLOBALS.put(label, sValue);
+                    adapter.set(sValue);
+                    Formatter.check(valueCell, adapter);
+                }
+                else
+                {
+                    Formatter.exception(exprCell, "I don't know how to process the expression for '" + loc + "'");
+                }
             }
             catch (Exception e)
             {
-                Formatter.exception(expected, e);
+                Formatter.exception(exprCell, e);
+            }
+            finally
+            {
+                debugMethodCallEnd();
+            }
+        }
+
+        /// <summary>
+        /// allows to add comments to a rest fixture - basically does nothing except ignoring the text.
+        /// the text is substituted if variables are found.
+        /// </summary>
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings("unchecked") public void comment()
+        public virtual void comment()
+        {
+            debugMethodCallStart();
+            //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+            //ORIGINAL LINE: @SuppressWarnings("rawtypes") CellWrapper messageCell = row.getCell(1);
+            CellWrapper<object> messageCell = row.getCell(1);
+            try
+            {
+                string message = messageCell.text().Trim();
+                message = GLOBALS.substitute(message);
+                messageCell.body(Formatter.gray(message));
+            }
+            catch (Exception e)
+            {
+                Formatter.exception(messageCell, e);
+            }
+            finally
+            {
+                debugMethodCallEnd();
+            }
+        }
+
+        /// <summary>
+        /// Evaluates a string using the internal JavaScript engine. Result of the
+        /// last evaluation is set in the attribute lastEvaluation.
+        /// 
+        /// </summary>
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void evalJs()
+        public virtual void evalJs()
+        {
+            CellWrapper<object> jsCell = row.getCell(1);
+            if (jsCell == null)
+            {
+                Formatter.exception(row.getCell(0), "Missing string to evaluate)");
                 return;
             }
-            if (success)
+            JavascriptWrapper wrapper = new JavascriptWrapper(this);
+            object result = null;
+            try
             {
-                Formatter.right(expected, ta);
+                result = wrapper.evaluateExpression(lastResponse, jsCell.body());
+            }
+            catch (JavascriptException e)
+            {
+                Formatter.exception(row.getCell(1), e);
+                return;
+            }
+            lastEvaluation = null;
+            if (result != null)
+            {
+                lastEvaluation = result.ToString();
+            }
+            StringTypeAdapter adapter = new StringTypeAdapter();
+            adapter.set(lastEvaluation);
+            Formatter.right(row.getCell(1), adapter);
+        }
+
+        /// <summary>
+        /// Process the row in input. Abstracts the test runner via the wrapper
+        /// interfaces.
+        /// </summary>
+        /// <param name="currentRow"> the current row </param>
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings("rawtypes") public void processRow(RowWrapper<?> currentRow)
+        public virtual void processRow<T1>(RowWrapper<T1> currentRow)
+        {
+            row = currentRow;
+            CellWrapper<object> cell0 = row.getCell(0);
+            if (cell0 == null)
+            {
+                throw new Exception("Current RestFixture row is not parseable (maybe empty or not existent)");
+            }
+            string methodName = cell0.text();
+            if ("".Equals(methodName))
+            {
+                throw new Exception("RestFixture method not specified");
+            }
+            Method method1;
+            try
+            {
+                method1 = this.GetType().GetMethod(methodName);
+                method1.invoke(this);
+            }
+            catch (SecurityException e)
+            {
+                throw new Exception("Not enough permissions to access method " + methodName + " for this class " + this.GetType().Name, e);
+            }
+            catch (NoSuchMethodException e)
+            {
+                //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+                throw new Exception("Class " + this.GetType().FullName + " doesn't have a callable method named " + methodName, e);
+            }
+            catch (System.ArgumentException e)
+            {
+                throw new Exception("Method named " + methodName + " invoked with the wrong argument.", e);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new Exception("Method named " + methodName + " is not public.", e);
+            }
+            catch (InvocationTargetException e)
+            {
+                throw new Exception("Method named " + methodName + " threw an exception when executing.", e);
+            }
+        }
+
+        protected internal virtual void initialize(Runner runner)
+        {
+            this.runner = runner;
+            bool state = validateState();
+            notifyInvalidState(state);
+            configFormatter();
+            configFixture();
+            configRestClient();
+        }
+
+        protected internal virtual string emptifyBody(string b)
+        {
+            string body = b;
+            if (string.ReferenceEquals(body, null))
+            {
+                body = "";
+            }
+            return body;
+        }
+
+        /// <returns> the request headers </returns>
+        public virtual IDictionary<string, string> Headers
+        {
+            get
+            {
+                IDictionary<string, string> headers = null;
+                if (requestHeaders != null && !requestHeaders.Empty)
+                {
+                    headers = requestHeaders;
+                }
+                else
+                {
+                    headers = defaultHeaders;
+                }
+                return headers;
+            }
+        }
+
+        // added for RestScriptFixture
+        protected internal virtual string RequestBody
+        {
+            get
+            {
+                return requestBody;
+            }
+            set
+            {
+                requestBody = value;
+            }
+        }
+
+
+        protected internal virtual IDictionary<string, string> NamespaceContext
+        {
+            get
+            {
+                return namespaceContext;
+            }
+        }
+
+        private void doMethod(string m)
+        {
+            doMethod(null, m);
+        }
+
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) protected void doMethod(String body, String method)
+        protected internal virtual void doMethod(string body, string method)
+        {
+            CellWrapper<object> urlCell = row.getCell(1);
+            string url = deHtmlify(stripTag(urlCell.text()));
+            string resUrl = GLOBALS.substitute(url);
+            string rBody = GLOBALS.substitute(body);
+            IDictionary<string, string> rHeaders = substitute(Headers);
+
+            try
+            {
+                doMethod(method, resUrl, rHeaders, rBody);
+                completeHttpMethodExecution();
+            }
+            catch (Exception e)
+            {
+                Formatter.exception(row.getCell(0), "Execution of " + method + " caused exception '" + e.Message + "'");
+                LOG.error("Exception occurred when processing method=" + method, e);
+            }
+        }
+
+        protected internal virtual void doMethod(string method, string resUrl, string rBody)
+        {
+            doMethod(method, resUrl, substitute(Headers), rBody);
+        }
+
+        protected internal virtual void doMethod(string method, string resUrl, IDictionary<string, string> headers, string rBody)
+        {
+            LastRequest = partsFactory.buildRestRequest();
+            LastRequest.Method = RestRequest.Method.valueOf(method);
+            LastRequest.addHeaders(headers);
+            LastRequest.FollowRedirect = followRedirects;
+            LastRequest.ResourceUriEscaped = resourceUrisAreEscaped;
+            if (fileName != null)
+            {
+                LastRequest.FileName = fileName;
+            }
+
+            // Set multiFileName
+            if (multipartFileName != null)
+            {
+                RestMultipart restMultipart = new RestMultipart(RestMultipart.RestMultipartType.FILE, multipartFileName);
+                LastRequest.addMultipart(multipartFileParameterName, restMultipart);
+            }
+
+            // Add multiFileName
+            if (!multiFileNameByParamName.Empty)
+            {
+                foreach (KeyValuePair<string, RestMultipart> entryMultipart in multiFileNameByParamName.entrySet())
+                {
+                    LastRequest.addMultipart(entryMultipart.Key, entryMultipart.Value);
+                    LOG.debug(" addMultipart : paramName = {} , value = {}", entryMultipart.Key, entryMultipart.Value);
+                }
+            }
+
+            string[] uri = resUrl.Split("\\?", 2);
+
+            string[] thisRequestUrlParts = buildThisRequestUrl(uri[0]);
+            LastRequest.Resource = thisRequestUrlParts[1];
+            if (uri.Length > 1)
+            {
+                string query = uri[1];
+                for (int i = 2; i < uri.Length; i++)
+                {
+                    query += "?" + uri[i]; //TODO: StringBuilder
+                }
+                LastRequest.Query = query;
+            }
+            if ("Post".Equals(method) || "Put".Equals(method))
+            {
+                LastRequest.Body = rBody;
+            }
+
+            //sglebs dirty workaround for #96
+            configureCredentials();
+
+            restClient.BaseUrl = thisRequestUrlParts[0];
+            RestResponse response = restClient.execute(LastRequest);
+            LastResponse = response;
+        }
+
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) protected void completeHttpMethodExecution()
+        protected internal virtual void completeHttpMethodExecution()
+        {
+            string uri = LastResponse.Resource;
+            string query = LastRequest.Query;
+            if (!string.ReferenceEquals(query, null) && !"".Equals(query.Trim()))
+            {
+                uri = uri + "?" + query;
+            }
+            string clientBaseUri = restClient.BaseUrl;
+            string u = clientBaseUri + uri;
+            CellWrapper<object> uriCell = row.getCell(1);
+            Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, uri);
+            CellWrapper<object> cellStatusCode = row.getCell(2);
+            if (cellStatusCode == null)
+            {
+                throw new System.InvalidOperationException("You must specify a status code cell");
+            }
+            int? lastStatusCode = LastResponse.StatusCode;
+            process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
+            IList<Header> lastHeaders = LastResponse.Headers;
+            process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
+            CellWrapper<object> bodyCell = row.getCell(4);
+            if (bodyCell == null)
+            {
+                throw new System.InvalidOperationException("You must specify a body cell");
+            }
+            bodyCell.body(GLOBALS.substitute(bodyCell.body()));
+            BodyTypeAdapter bodyTypeAdapter = createBodyTypeAdapter();
+            process(bodyCell, LastResponse.Body, bodyTypeAdapter);
+        }
+
+        // Split out of completeHttpMethodExecution so RestScriptFixture can call
+        // this
+        protected internal virtual BodyTypeAdapter createBodyTypeAdapter()
+        {
+            return createBodyTypeAdapter(ContentType.parse(LastResponse.ContentType));
+        }
+
+        // Split out of completeHttpMethodExecution so RestScriptFixture can call
+        // this
+        protected internal virtual BodyTypeAdapter createBodyTypeAdapter(ContentType ct)
+        {
+            string charset = LastResponse.Charset;
+            BodyTypeAdapter bodyTypeAdapter = partsFactory.buildBodyTypeAdapter(ct, charset);
+            bodyTypeAdapter.Context = namespaceContext;
+            return bodyTypeAdapter;
+        }
+
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void process(CellWrapper<object> expected, Object actual, RestDataTypeAdapter ta)
+        private void process(CellWrapper expected, object actual, RestDataTypeAdapter ta)
+        {
+            if (expected == null)
+            {
+                throw new System.InvalidOperationException("You must specify a headers cell");
+            }
+            ta.set(actual);
+            bool ignore = "".Equals(expected.text().Trim());
+            if (ignore)
+            {
+                string actualString = ta.ToString();
+                if (!"".Equals(actualString))
+                {
+                    expected.addToBody(Formatter.gray(actualString));
+                }
             }
             else
             {
-                Formatter.wrong(expected, ta);
+                bool success = false;
+                try
+                {
+                    string substitute = GLOBALS.substitute(Tools.fromHtml(expected.text()));
+                    object parse = ta.parse(substitute);
+                    success = ta.Equals(parse, actual);
+                }
+                catch (Exception e)
+                {
+                    Formatter.exception(expected, e);
+                    return;
+                }
+                if (success)
+                {
+                    Formatter.right(expected, ta);
+                }
+                else
+                {
+                    Formatter.wrong(expected, ta);
+                }
             }
         }
-    }
 
-    private void debugMethodCallStart()
-    {
-        debugMethodCall("=> ");
-    }
+        private void debugMethodCallStart()
+        {
+            debugMethodCall("=> ");
+        }
 
-    private void debugMethodCallEnd()
-    {
-        debugMethodCall("<= ");
-    }
+        private void debugMethodCallEnd()
+        {
+            debugMethodCall("<= ");
+        }
 
-    private void debugMethodCall(string h)
-    {
-        if (debugMethodCall)
+        private void debugMethodCall(string h)
         {
-            StackTraceElement el = Thread.CurrentThread.StackTrace[4];
-            LOG.debug(h + el.MethodName);
+            if (debugMethodCall)
+            {
+                StackTraceElement el = Thread.CurrentThread.StackTrace[4];
+                LOG.debug(h + el.MethodName);
+            }
         }
-    }
 
-    private IDictionary<string, string> substitute(IDictionary<string, string> headers)
-    {
-        IDictionary<string, string> sub = new Dictionary<string, string>();
-        foreach (KeyValuePair<string, string> e in headers.SetOfKeyValuePairs())
+        private IDictionary<string, string> substitute(IDictionary<string, string> headers)
         {
-            sub[e.Key] = GLOBALS.substitute(e.Value);
+            IDictionary<string, string> sub = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> e in headers.SetOfKeyValuePairs())
+            {
+                sub[e.Key] = GLOBALS.substitute(e.Value);
+            }
+            return sub;
         }
-        return sub;
-    }
 
-    protected internal virtual RestResponse LastResponse
-    {
-        get
+        protected internal virtual RestResponse LastResponse
         {
-            return lastResponse;
+            get
+            {
+                return lastResponse;
+            }
+            set
+            {
+                this.lastResponse = value;
+            }
         }
-        set
-        {
-            this.lastResponse = value;
-        }
-    }
 
-    protected internal virtual RestRequest LastRequest
-    {
-        get
+        protected internal virtual RestRequest LastRequest
         {
-            return lastRequest;
+            get
+            {
+                return lastRequest;
+            }
+            set
+            {
+                this.lastRequest = value;
+            }
         }
-        set
-        {
-            this.lastRequest = value;
-        }
-    }
 
-    private string[] buildThisRequestUrl(string uri)
-    {
-        string[] parts = new string[2];
-        if (baseUrl == null || uri.StartsWith(baseUrl.ToString(), StringComparison.Ordinal))
+        private string[] buildThisRequestUrl(string uri)
         {
-            Url url = new Url(uri);
-            parts[0] = url.BaseUrl;
-            parts[1] = url.Resource;
+            string[] parts = new string[2];
+            if (baseUrl == null || uri.StartsWith(baseUrl.ToString(), StringComparison.Ordinal))
+            {
+                Url url = new Url(uri);
+                parts[0] = url.BaseUrl;
+                parts[1] = url.Resource;
+            }
+            else
+            {
+                try
+                {
+                    Url attempted = new Url(uri);
+                    parts[0] = attempted.BaseUrl;
+                    parts[1] = attempted.Resource;
+                }
+                catch (Exception)
+                {
+                    parts[0] = baseUrl.ToString();
+                    parts[1] = uri;
+
+                }
+            }
+            return parts;
         }
-        else
+
+
+
+        protected internal virtual LinkedHashMap<string, string> parseHeaders(string str)
         {
+            return Tools.convertStringToMap(str, ":", LINE_SEPARATOR, true);
+        }
+
+        private IDictionary<string, string> parseNamespaceContext(string str)
+        {
+            return Tools.convertStringToMap(str, "=", LINE_SEPARATOR, true);
+        }
+
+        private string stripTag(string somethingWithinATag)
+        {
+            return Tools.fromSimpleTag(somethingWithinATag);
+        }
+
+        private void configFormatter()
+        {
+            formatter = partsFactory.buildCellFormatter(runner);
+        }
+
+        /// <summary>
+        /// Configure the fixture with data from <seealso cref="RestFixtureConfig"/>.
+        /// </summary>
+        private void configFixture()
+        {
+
+            GLOBALS = createRunnerVariables();
+
+            displayActualOnRight = config.getAsBoolean("restfixture.display.actual.on.right", displayActualOnRight);
+
+            displayAbsoluteURLInFull = config.getAsBoolean("restfixture.display.absolute.url.in.full", displayAbsoluteURLInFull);
+
+            resourceUrisAreEscaped = config.getAsBoolean("restfixture.resource.uris.are.escaped", resourceUrisAreEscaped);
+
+            followRedirects = config.getAsBoolean("restfixture.requests.follow.redirects", followRedirects);
+
+            minLenForCollapseToggle = config.getAsInteger("restfixture.display.toggle.for.cells.larger.than", minLenForCollapseToggle);
+
+            string str = config.get("restfixture.default.headers", "");
+            defaultHeaders = parseHeaders(str);
+
+            str = config.get("restfixture.xml.namespace.context", "");
+            namespaceContext = parseNamespaceContext(str);
+
+            ContentType.resetDefaultMapping();
+            ContentType.config(config);
+        }
+
+        /// <summary>
+        /// Allows to config the rest client implementation. the method shoudl
+        /// configure the instance attribute <seealso cref="RestFixture#restClient"/> created
+        /// by the <seealso cref="smartrics.rest.fitnesse.fixture.PartsFactory#buildRestClient(smartrics.rest.fitnesse.fixture.support.Config)"/>.
+        /// </summary>
+        private void configRestClient()
+        {
+            restClient = partsFactory.buildRestClient(Config);
+        }
+
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void renderReplacement(CellWrapper<object> cell, String actual)
+        private void renderReplacement(CellWrapper<object> cell, string actual)
+        {
+            StringTypeAdapter adapter = new StringTypeAdapter();
+            adapter.set(actual);
+            if (!adapter.Equals(actual, cell.body()))
+            {
+                // eg - a substitution has occurred
+                cell.body(actual);
+                Formatter.right(cell, adapter);
+            }
+        }
+
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void processSlimRow(List<List<String>> resultTable, List<String> row)
+        private void processSlimRow(IList<IList<string>> resultTable, IList<string> row)
+        {
+            RowWrapper currentRow = new SlimRow(row);
             try
             {
-                Url attempted = new Url(uri);
-                parts[0] = attempted.BaseUrl;
-                parts[1] = attempted.Resource;
+                processRow(currentRow);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                parts[0] = baseUrl.ToString();
-                parts[1] = uri;
-
+                LOG.error("Exception raised when processing row " + row[0], e);
+                Formatter.exception(currentRow.getCell(0), e);
             }
-        }
-        return parts;
-    }
-
-
-
-    protected internal virtual IDictionary<string, string> parseHeaders(string str)
-    {
-        return Tools.convertStringToMap(str, ":", LINE_SEPARATOR, true);
-    }
-
-    private IDictionary<string, string> parseNamespaceContext(string str)
-    {
-        return Tools.convertStringToMap(str, "=", LINE_SEPARATOR, true);
-    }
-
-    private string stripTag(string somethingWithinATag)
-    {
-        return Tools.fromSimpleTag(somethingWithinATag);
-    }
-
-    private void configFormatter()
-    {
-        formatter = partsFactory.buildCellFormatter(runner);
-    }
-
-    /// <summary>
-    /// Configure the fixture with data from <seealso cref="RestFixtureConfig"/>.
-    /// </summary>
-    private void configFixture()
-    {
-
-        GLOBALS = createRunnerVariables();
-
-        displayActualOnRight = config.getAsBoolean("restfixture.display.actual.on.right", displayActualOnRight);
-
-        displayAbsoluteURLInFull = config.getAsBoolean("restfixture.display.absolute.url.in.full", displayAbsoluteURLInFull);
-
-        resourceUrisAreEscaped = config.getAsBoolean("restfixture.resource.uris.are.escaped", resourceUrisAreEscaped);
-
-        followRedirects = config.getAsBoolean("restfixture.requests.follow.redirects", followRedirects);
-
-        minLenForCollapseToggle = config.getAsInteger("restfixture.display.toggle.for.cells.larger.than", minLenForCollapseToggle);
-
-        string str = config.get("restfixture.default.headers", "");
-        defaultHeaders = parseHeaders(str);
-
-        str = config.get("restfixture.xml.namespace.context", "");
-        namespaceContext = parseNamespaceContext(str);
-
-        ContentType.resetDefaultMapping();
-        ContentType.config(config);
-    }
-
-    /// <summary>
-    /// Allows to config the rest client implementation. the method shoudl
-    /// configure the instance attribute <seealso cref="RestFixture#restClient"/> created
-    /// by the <seealso cref="smartrics.rest.fitnesse.fixture.PartsFactory#buildRestClient(smartrics.rest.fitnesse.fixture.support.Config)"/>.
-    /// </summary>
-    private void configRestClient()
-    {
-        restClient = partsFactory.buildRestClient(Config);
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void renderReplacement(CellWrapper cell, String actual)
-    private void renderReplacement(CellWrapper cell, string actual)
-    {
-        StringTypeAdapter adapter = new StringTypeAdapter();
-        adapter.set(actual);
-        if (!adapter.Equals(actual, cell.body()))
-        {
-            // eg - a substitution has occurred
-            cell.body(actual);
-            Formatter.right(cell, adapter);
-        }
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void processSlimRow(List<List<String>> resultTable, List<String> row)
-    private void processSlimRow(IList<IList<string>> resultTable, IList<string> row)
-    {
-        RowWrapper currentRow = new SlimRow(row);
-        try
-        {
-            processRow(currentRow);
-        }
-        catch (Exception e)
-        {
-            LOG.error("Exception raised when processing row " + row[0], e);
-            Formatter.exception(currentRow.getCell(0), e);
-        }
-        finally
-        {
-            IList<string> rowAsList = mapSlimRow(row, currentRow);
-            resultTable.Add(rowAsList);
-        }
-    }
-
-    //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-    //ORIGINAL LINE: @SuppressWarnings("rawtypes") private List<String> mapSlimRow(List<String> resultRow, RowWrapper currentRow)
-    private IList<string> mapSlimRow(IList<string> resultRow, RowWrapper currentRow)
-    {
-        IList<string> rowAsList = ((SlimRow)currentRow).asList();
-        for (int c = 0; c < rowAsList.Count; c++)
-        {
-            // HACK: it seems that even if the content is unchanged,
-            // Slim renders red cell
-            string v = rowAsList[c];
-            if (v.Equals(resultRow[c]))
+            finally
             {
-                rowAsList[c] = "";
+                IList<string> rowAsList = mapSlimRow(row, currentRow);
+                resultTable.Add(rowAsList);
             }
         }
-        return rowAsList;
-    }
 
-    private string deHtmlify(string someHtml)
-    {
-        return Tools.fromHtml(someHtml);
-    }
-
-    private void configureCredentials()
-    {
-        string username = config.get("http.basicauth.username");
-        string password = config.get("http.basicauth.password");
-        if (!string.ReferenceEquals(username, null) && !string.ReferenceEquals(password, null))
+        //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+        //ORIGINAL LINE: @SuppressWarnings("rawtypes") private List<String> mapSlimRow(List<String> resultRow, RowWrapper currentRow)
+        private IList<string> mapSlimRow(IList<string> resultRow, RowWrapper currentRow)
         {
-            string newUsername = GLOBALS.substitute(username);
-            string newPassword = GLOBALS.substitute(password);
-            Config newConfig = Config;
-            newConfig.add("http.basicauth.username", newUsername);
-            newConfig.add("http.basicauth.password", newPassword);
-            restClient = partsFactory.buildRestClient(newConfig);
+            IList<string> rowAsList = ((SlimRow)currentRow).asList();
+            for (int c = 0; c < rowAsList.Count; c++)
+            {
+                // HACK: it seems that even if the content is unchanged,
+                // Slim renders red cell
+                string v = rowAsList[c];
+                if (v.Equals(resultRow[c]))
+                {
+                    rowAsList[c] = "";
+                }
+            }
+            return rowAsList;
         }
-    }
 
-    public override StatementExecutorInterface StatementExecutor
-    {
-        set
+        private string deHtmlify(string someHtml)
         {
-            this.slimStatementExecutor = value;
+            return Tools.fromHtml(someHtml);
         }
-    }
+
+        private void configureCredentials()
+        {
+            string username = config.get("http.basicauth.username");
+            string password = config.get("http.basicauth.password");
+            if (!string.ReferenceEquals(username, null) && !string.ReferenceEquals(password, null))
+            {
+                string newUsername = GLOBALS.substitute(username);
+                string newPassword = GLOBALS.substitute(password);
+                Config newConfig = Config;
+                newConfig.add("http.basicauth.username", newUsername);
+                newConfig.add("http.basicauth.password", newPassword);
+                restClient = partsFactory.buildRestClient(newConfig);
+            }
+        }
+
+        //public override StatementExecutorInterface StatementExecutor
+        //{
+        //    set
+        //    {
+        //        this.slimStatementExecutor = value;
+        //    }
+        //}
 }

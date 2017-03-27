@@ -38,51 +38,6 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		public const string DEFAULT_CONFIG_NAME = "default";
 
-		private class BodyTypeAdapterCreatorAnonymousInnerClass : BodyTypeAdapterCreator
-		{
-			private readonly MissingClass outerInstance;
-
-			public BodyTypeAdapterCreatorAnonymousInnerClass(MissingClass outerInstance)
-			{
-				this.outerInstance = outerInstance;
-			}
-
-			public override BodyTypeAdapter createBodyTypeAdapter()
-			{
-				return new JSONBodyTypeAdapter(variablesProvider, config);
-			}
-		}
-
-		private class BodyTypeAdapterCreatorAnonymousInnerClass2 : BodyTypeAdapterCreator
-		{
-			private readonly MissingClass outerInstance;
-
-			public BodyTypeAdapterCreatorAnonymousInnerClass2(MissingClass outerInstance)
-			{
-				this.outerInstance = outerInstance;
-			}
-
-			public override BodyTypeAdapter createBodyTypeAdapter()
-			{
-				return new XPathBodyTypeAdapter();
-			}
-		}
-
-		private class BodyTypeAdapterCreatorAnonymousInnerClass3 : BodyTypeAdapterCreator
-		{
-			private readonly MissingClass outerInstance;
-
-			public BodyTypeAdapterCreatorAnonymousInnerClass3(MissingClass outerInstance)
-			{
-				this.outerInstance = outerInstance;
-			}
-
-			public override BodyTypeAdapter createBodyTypeAdapter()
-			{
-				return new TextBodyTypeAdapter();
-			}
-		}
-
 		/// <summary>
 		/// the static bucket where the config data is stored.
 		/// </summary>
@@ -168,7 +123,12 @@ namespace RestFixture.Net.Support
 		/// <returns> the value </returns>
 		public string get(string key)
 		{
-			return data[key];
+            if (key != null && data.ContainsKey(key))
+		    {
+		        return data[key];
+		    }
+
+		    return null;
 		}
 
 		/// <summary>
@@ -269,10 +229,18 @@ namespace RestFixture.Net.Support
 			string val = get(key);
 			try
 			{
-				IDictionary<string, string> result = Tools.convertStringToMap(val, "=", "\n", true);
-//JAVA TO C# CONVERTER TODO TASK: There is no .NET Dictionary equivalent to the Java 'putAll' method:
-				returnMap.putAll(result);
-				return returnMap;
+			    if (val != null)
+			    {
+			        IDictionary<string, string> result = Tools.convertStringToMap(val, "=", "\n", true);
+			        if (result != null && result.Keys.Count > 0)
+			        {
+			            foreach (string key2 in result.Keys)
+			            {
+			                returnMap[key2] = result[key2];
+			            }
+			        }
+			    }
+			    return returnMap;
 			}
 			catch (Exception)
 			{

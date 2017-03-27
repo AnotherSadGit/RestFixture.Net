@@ -26,7 +26,7 @@ namespace RestFixture.Net.Support
 	/// 
 	/// @author smartrics
 	/// </summary>
-	/// @param <E> the type of the cell </param>
+    /// <typeparam name="E">the type of the cell</typeparam>
 	public interface CellFormatter<E>
 	{
 
