@@ -1,4 +1,5 @@
 ﻿using System;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,8 +21,6 @@
  */
 namespace RestFixture.Net
 {
-
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
 	using Parse = fit.Parse;
 
 	/// <summary>
@@ -43,11 +42,11 @@ namespace RestFixture.Net
 			this.cell = c;
 		}
 
-		public override string text()
+		public string text()
 		{
 			try
 			{
-				return cell.text();
+				return cell.Text;
 			}
 			catch (Exception)
 			{
@@ -55,22 +54,22 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override void body(string @string)
+		public void body(string @string)
 		{
-			cell.body = @string;
+            cell.SetBody(@string);
 		}
 
-		public override string body()
+		public string body()
 		{
-			return cell.body;
+			return cell.Body;
 		}
 
-		public override void addToBody(string @string)
+		public void addToBody(string @string)
 		{
-			cell.addToBody(@string);
+			cell.AddToBody(@string);
 		}
 
-		public override Parse Wrapped
+		public Parse Wrapped
 		{
 			get
 			{
