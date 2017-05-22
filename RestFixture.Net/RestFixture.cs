@@ -27,7 +27,7 @@ using RestClient.Data;
  */
 namespace RestFixture.Net
 {
-    using RestClient = RestClient.RestClient;
+    using RestClient = RestClient.IRestClient;
 
 	//using smartrics.rest.fitnesse.fixture.support;
 
@@ -367,33 +367,32 @@ namespace RestFixture.Net
 			}
 		}
 
-		/// <summary>
-		/// The base URL as defined by the rest fixture ctor or input args.
-		/// </summary>
-		/// <returns> the base URL as string </returns>
-		public virtual string getBaseUrl()
-		{
-			if (_baseUrl != null)
-			{
-				return _baseUrl.ToString();
-			}
-			return null;
-		}
+	    public virtual Url BaseUrl
+	    {
+	        get
+	        {
+	            return _baseUrl;
+	        }
 
-		/// <summary>
-		/// sets the base url.
-		/// </summary>
-		/// <param name="url"> the url </param>
-		public virtual void setBaseUrl(Url url)
-		{
-			this._baseUrl = url;
-		}
+	        set { this._baseUrl = value; }
+	    }
 
-		public virtual void baseUrl(string url)
-		{ //mqm  - it comes as a string in a scenario.
-			this.setBaseUrl(new Url(url));
-		}
+	    public virtual string BaseUrlString
+	    {
+	        get
+	        {
+	            if (_baseUrl != null)
+			    {
+				    return _baseUrl.ToString();
+			    }
+			    return null;
+	        }
 
+	        set
+	        {
+	            this.BaseUrl = new Url(value);
+	        }
+	    }
 
 		/// <summary>
 		/// The default headers as defined in the config used to initialise this
@@ -1303,8 +1302,8 @@ namespace RestFixture.Net
             //sglebs dirty workaround for #96
             configureCredentials();
 
-            restClient.BaseUrl = thisRequestUrlParts[0];
-            RestResponse response = restClient.execute(LastRequest);
+            restClient.BaseUrlString = thisRequestUrlParts[0];
+            RestResponse response = restClient.Execute(LastRequest);
             LastResponse = response;
         }
 
@@ -1318,7 +1317,7 @@ namespace RestFixture.Net
             {
                 uri = uri + "?" + query;
             }
-            string clientBaseUri = restClient.BaseUrl;
+            string clientBaseUri = restClient.BaseUrlString;
             string u = clientBaseUri + uri;
             CellWrapper<object> uriCell = row.getCell(1);
             Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, uri);
@@ -1457,10 +1456,11 @@ namespace RestFixture.Net
         private string[] buildThisRequestUrl(string uri)
         {
             string[] parts = new string[2];
-            if (baseUrl == null || uri.StartsWith(baseUrl.ToString(), StringComparison.Ordinal))
+            if (BaseUrlString == null || uri.StartsWith(BaseUrlString, 
+                                                        StringComparison.OrdinalIgnoreCase))
             {
                 Url url = new Url(uri);
-                parts[0] = url.BaseUrl;
+                parts[0] = url.BaseUrlString;
                 parts[1] = url.Resource;
             }
             else
@@ -1468,12 +1468,12 @@ namespace RestFixture.Net
                 try
                 {
                     Url attempted = new Url(uri);
-                    parts[0] = attempted.BaseUrl;
+                    parts[0] = attempted.BaseUrlString;
                     parts[1] = attempted.Resource;
                 }
                 catch (Exception)
                 {
-                    parts[0] = baseUrl.ToString();
+                    parts[0] = BaseUrlString;
                     parts[1] = uri;
 
                 }

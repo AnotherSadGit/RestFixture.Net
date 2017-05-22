@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -22,16 +23,6 @@ using NLog;
  */
 namespace RestFixture.Net
 {
-
-	using Logger = org.slf4j.Logger;
-	using LoggerFactory = org.slf4j.LoggerFactory;
-
-	using Runner = smartrics.rest.fitnesse.fixture.RestFixture.Runner;
-	using CellFormatter = smartrics.rest.fitnesse.fixture.support.CellFormatter;
-	using Config = smartrics.rest.fitnesse.fixture.support.Config;
-	using RowWrapper = smartrics.rest.fitnesse.fixture.support.RowWrapper;
-	using Tools = smartrics.rest.fitnesse.fixture.support.Tools;
-	using Url = smartrics.rest.fitnesse.fixture.support.Url;
 	using ActionFixture = fit.ActionFixture;
 	using Parse = fit.Parse;
 
@@ -65,25 +56,28 @@ namespace RestFixture.Net
 			}
 		}
 
-		/// <returns> delegates to <seealso cref="RestFixture#getBaseUrl()"/> </returns>
-		public virtual string getBaseUrl()
-		{
-			return restFixture.BaseUrl;
-		}
+        public virtual Support.Url BaseUrl
+        {
+            get
+            {
+                return restFixture.BaseUrl;
+            }
 
-		public virtual void baseUrl(string url)
-		{ //mqm  - it comes as a string in a scenario.
-			this.setBaseUrl(new Url(url));
-		}
+            set { restFixture.BaseUrl = value; }
+        }
 
-		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setBaseUrl(Url)"/>
-		/// </summary>
-		/// <param name="url">
-		///            the base url. </param>
-		public virtual void setBaseUrl(Url url)
+        /// <returns> delegates to <seealso cref="RestFixture.BaseUrlString"/> </returns>
+		public virtual string BaseUrlString
 		{
-			restFixture.BaseUrl = url;
+			get
+			{
+			    return restFixture.BaseUrlString;
+            }
+
+            set
+            {
+                this.BaseUrl = new Url(value);
+            }
 		}
 
 		/// <summary>
@@ -301,7 +295,7 @@ namespace RestFixture.Net
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Override @SuppressWarnings({ "rawtypes", "unchecked" }) public void doCells(fit.Parse parse)
-		public override void doCells(Parse parse)
+        public override void DoCells(Parse parse)
 		{
 			if (restFixture == null)
 			{
@@ -312,18 +306,21 @@ namespace RestFixture.Net
 				{
 					restFixture.BaseUrl = new Url(Tools.fromSimpleTag(url));
 				}
-				restFixture.initialize(Runner.FIT);
+				restFixture.initialize(RestFixture.Runner.FIT);
 				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
 			}
-			RowWrapper currentRow = new FitRow(parse);
+            RowWrapper<Parse> currentRow = new FitRow(parse);
 			try
 			{
 				restFixture.processRow(currentRow);
 			}
 			catch (Exception exception)
 			{
-				LOG.error("Exception when processing row " + currentRow.getCell(0).text(), exception);
-				restFixture.Formatter.exception(currentRow.getCell(0), exception);
+                // TODO: Sort out CellWrapper<object> vs CellWrapper<Parse>.
+                CellWrapper<Parse> firstCell = currentRow.getCell(0);
+				LOG.Error(exception, "Exception when processing row {0}", firstCell.text());
+			    CellFormatter<object> cellFormatter = restFixture.Formatter;
+                cellFormatter.exception(firstCell, exception);
 			}
 		}
 
@@ -332,24 +329,24 @@ namespace RestFixture.Net
 		{
 			get
 			{
-				if (args.length >= 2)
+				if (Args.Length >= 2)
 				{
-					return args[1];
+					return Args[1];
 				}
 				return null;
 			}
 		}
 
-		/// <returns> Process args (<seealso cref="fit.Fixture"/>) for Fit runner to extract the
+		/// <returns> Process Args (<seealso cref="fit.Fixture"/>) for Fit runner to extract the
 		///         baseUrl of each Rest request, first parameter of each RestFixture
 		///         table. </returns>
 		protected internal virtual string BaseUrlFromArgs
 		{
 			get
 			{
-				if (args.length > 0)
+				if (Args.Length > 0)
 				{
-					return args[0];
+					return Args[0];
 				}
 				return null;
 			}

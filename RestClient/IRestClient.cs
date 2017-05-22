@@ -27,7 +27,7 @@ namespace RestClient
 	/// 
 	/// A Rest Client is geared to operate of REST resources.
 	/// </summary>
-	public interface RestClient
+	public interface IRestClient
 	{
 
 		/// <summary>
@@ -38,12 +38,10 @@ namespace RestClient
 		/// /resourcetype, the base Url is http://host:8888/domain.
 		/// It is meant to serve as a default value to be appended to compose the
 		/// full Url when
-		/// <seealso cref="smartrics.rest.client.RestClient#execute(RestRequest)"/>
+		/// <seealso cref="smartrics.rest.client.RestClient#Execute(RestRequest)"/>
 		/// is used.
 		/// </summary>
-		/// <param name="bUrl">A string with the base Url.
-		/// See <seealso cref="smartrics.rest.client.RestClient#execute(RestRequest)"/> </param>
-		string BaseUrl {set;get;}
+		string BaseUrlString {set;get;}
 
 
 		/// <summary>
@@ -51,18 +49,18 @@ namespace RestClient
 		/// </summary>
 		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request </returns>
-		RestResponse execute(RestRequest request);
+        RestResponse Execute(RestRequest requestDetails);
 
 		/// <summary>
 		/// Executes the rest request.
 		/// 
 		/// This method offers the possibility to override the base Url set on this client.
 		/// </summary>
-		/// <param name="baseUrl">The base Url </param>
+        /// <param name="baseAddress">The base Url </param>
 		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request.
-		/// See <seealso cref="smartrics.rest.client.RestClient#setBaseUrl(java.lang.String)"/> </returns>
-		RestResponse execute(string baseUrl, RestRequest request);
+		/// See <seealso cref="smartrics.rest.client.RestClient.BaseUrlString"/> </returns>
+        RestResponse Execute(string baseAddress, RestRequest requestDetails);
 
 	}
 }

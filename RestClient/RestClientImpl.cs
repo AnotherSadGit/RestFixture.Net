@@ -31,14 +31,14 @@ namespace RestClient
     /// A client for making HTTP requests.
     /// </summary>
     /// <remarks>Very loosely based on the original Java version of RestClient.RestClientImpl.</remarks>
-	public class RestClientImpl
+	public class RestClientImpl: IRestClient
 	{
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private string _baseAddress;
-        public string BaseAddress
+        private string _baseUrlString;
+        public string BaseUrlString
         {
-            get { return _baseAddress; }
+            get { return _baseUrlString; }
             set
             {
                 string _baseUri = value;
@@ -56,9 +56,9 @@ namespace RestClient
             {
                 if (_client == null)
                 {
-                    if (!string.IsNullOrWhiteSpace(_baseAddress))
+                    if (!string.IsNullOrWhiteSpace(_baseUrlString))
                     {
-                        _client = new RestSharp.RestClient(_baseAddress);
+                        _client = new RestSharp.RestClient(_baseUrlString);
                     }
                     else
                     {
@@ -81,29 +81,29 @@ namespace RestClient
         /// <summary>
         /// Initializes a new instance of the HttpClient class with the specified URL.
         /// </summary>
-        public RestClientImpl(string baseAddress)
+        public RestClientImpl(string baseUrlString)
         {
-            this.BaseAddress = baseAddress;
+            this.BaseUrlString = baseUrlString;
         }
 
         // Unfortunately both RestClient, used by the Java RestFixture which is being ported 
         //  to .NET, and RestSharp have classes called RestRequest and RestResponse.  So we must 
         //  always specify which RestRequest or RestResponse class we're using.
 
-        public Data.RestResponse execute(Data.RestRequest requestDetails)
+        public Data.RestResponse Execute(Data.RestRequest requestDetails)
         {
-            return execute(this.Client, requestDetails);
+            return Execute(this.Client, requestDetails);
         }
 
-        public Data.RestResponse execute(string hostAddress, 
+        public Data.RestResponse Execute(string hostAddress, 
             Data.RestRequest requestDetails)
         {
             Uri hostUri = GetHostUri(hostAddress);
-            IRestClient client = new RestSharp.RestClient(hostUri);
-            return execute(client, requestDetails);
+            RestSharp.IRestClient client = new RestSharp.RestClient(hostUri);
+            return Execute(client, requestDetails);
         }
 
-        private Data.RestResponse execute(RestSharp.IRestClient client,
+        private Data.RestResponse Execute(RestSharp.IRestClient client,
             Data.RestRequest requestDetails)
         {
             if (client == null)
@@ -113,7 +113,7 @@ namespace RestClient
 
             if (client.BaseUrl == null || string.IsNullOrWhiteSpace(client.BaseUrl.AbsoluteUri))
             {
-                client.BaseUrl = new Uri(this.BaseAddress);
+                client.BaseUrl = new Uri(this.BaseUrlString);
             }
 
             // We're using RestSharp to execute HTTP requests.  RestSharp copes with trailing "/" 

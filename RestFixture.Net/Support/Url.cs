@@ -30,44 +30,44 @@ namespace RestFixture.Net.Support
 	public class Url
 	{
 
-		private URL baseUrl;
+		private Uri _baseUrl;
 
-		/// <param name="url">
+		/// <param name="urlString">
 		///            the string representation of url. </param>
-		public Url(string url)
+		public Url(string urlString)
 		{
 			try
 			{
-				if (string.ReferenceEquals(url, null) || "".Equals(url.Trim()))
+                if (string.IsNullOrWhiteSpace(urlString))
 				{
-					throw new System.ArgumentException("Null or empty input: " + url);
+					throw new System.ArgumentException("Null or empty input: " + urlString);
 				}
-				string u = url;
-				if (url.EndsWith("/", StringComparison.Ordinal))
+				string u = urlString;
+				if (urlString.EndsWith("/", StringComparison.Ordinal))
 				{
-					u = url.Substring(0, u.Length - 1);
+					u = urlString.Substring(0, u.Length - 1);
 				}
-				baseUrl = new URL(u);
-				if ("".Equals(baseUrl.Host))
+				_baseUrl = new Uri(u);
+				if ("".Equals(_baseUrl.Host))
 				{
-					throw new System.ArgumentException("No host specified in base URL: " + url);
+					throw new System.ArgumentException("No host specified in base URL: " + urlString);
 				}
 			}
-			catch (MalformedURLException e)
+            catch (UriFormatException e)
 			{
-				throw new System.ArgumentException("Malformed base URL: " + url, e);
+				throw new System.ArgumentException("Malformed base URL: " + urlString, e);
 			}
 		}
 
 		/// <returns> the base url </returns>
-		public virtual URL getUrl()
+		public virtual Uri GetUrl()
 		{
-			return baseUrl;
+			return _baseUrl;
 		}
 
 		public override string ToString()
 		{
-			return getUrl().toExternalForm();
+			return GetUrl().ToString();
 		}
 
 		/// <returns> the resource </returns>
@@ -75,7 +75,7 @@ namespace RestFixture.Net.Support
 		{
 			get
 			{
-				string res = getUrl().Path.Trim();
+                string res = GetUrl().AbsolutePath.Trim();
 				if (res.Length == 0)
 				{
 					return "/";
@@ -86,7 +86,7 @@ namespace RestFixture.Net.Support
 
 		/// 
 		/// <returns> the base url. </returns>
-		public virtual string BaseUrl
+		public virtual string BaseUrlString
 		{
 			get
 			{
@@ -95,7 +95,7 @@ namespace RestFixture.Net.Support
 				{
 					return ToString();
 				}
-				int index = ToString().IndexOf(Resource, StringComparison.Ordinal);
+				int index = ToString().IndexOf(Resource, StringComparison.OrdinalIgnoreCase);
 				if (index >= 0)
 				{
 					return ToString().Substring(0, index);
@@ -113,13 +113,13 @@ namespace RestFixture.Net.Support
 		/// <param name="file">
 		///            the file </param>
 		/// <returns> the full url. </returns>
-		public virtual URL buildURL(string file)
+		public virtual Uri BuildUrl(string file)
 		{
 			try
 			{
-				return new URL(baseUrl, file);
+				return new Uri(_baseUrl, file);
 			}
-			catch (MalformedURLException)
+            catch (UriFormatException)
 			{
 				throw new System.ArgumentException("Invalid URL part: " + file);
 			}
