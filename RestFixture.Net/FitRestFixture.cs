@@ -276,7 +276,7 @@ namespace RestFixture.Net
 		/// </summary>
 		/// <param name="currentRow">
 		///            the row to process. </param>
-		public virtual void processRow<T1>(IRowWrapper<T1> currentRow)
+		public virtual void processRow(IRowWrapper currentRow)
 		{
 			restFixture.processRow(currentRow);
 		}
@@ -317,7 +317,7 @@ namespace RestFixture.Net
 			catch (Exception exception)
 			{
                 // TODO: Sort out CellWrapper vs CellWrapper<Parse>.
-                IFitCellWrapper firstCell = currentRow.getCell(0);
+                ICellWrapper firstCell = currentRow.getCell(0);
 				LOG.Error(exception, "Exception when processing row {0}", firstCell.text());
 			    ICellFormatter cellFormatter = restFixture.Formatter;
                 cellFormatter.exception(firstCell, exception);
