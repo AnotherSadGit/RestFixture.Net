@@ -117,5 +117,26 @@ namespace RestClient
                 this[key] = sourceMap[key];
             }
         }
+
+        public Dictionary<TKey, TValue> GetDictionary()
+        {
+            Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
+            foreach (KeyValuePair<TKey, TValue> kvp in this._list)
+            {
+                dictionary.Add(kvp.Key, kvp.Value);
+            }
+
+            return dictionary;
+        }
+
+        public List<KeyValuePair<TKey, TValue>> GetList()
+        {
+            return this._list;
+        }
+
+        public bool IsEmpty()
+        {
+            return _list.Count == 0;
+        }
     }
 }
