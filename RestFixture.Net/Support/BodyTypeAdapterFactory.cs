@@ -35,10 +35,10 @@ namespace RestFixture.Net.Support
     /// </summary>
     public class BodyTypeAdapterFactory
     {
-        private RunnerVariablesProvider variablesProvider;
+        private IRunnerVariablesProvider variablesProvider;
         private Config config;
 
-        public BodyTypeAdapterFactory(RunnerVariablesProvider variablesProvider, Config config)
+        public BodyTypeAdapterFactory(IRunnerVariablesProvider variablesProvider, Config config)
         {
             this.variablesProvider = variablesProvider;
             this.config = config;

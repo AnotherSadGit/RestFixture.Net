@@ -31,10 +31,10 @@ namespace RestFixture.Net.Support
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class LetHeaderHandler : LetHandler
+	public class LetHeaderHandler : ILetHandler
 	{
 
-		public override string handle(RunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public override string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
 		{
 			IList<string> content = new List<string>();
 			if (response != null)

@@ -606,7 +606,7 @@ namespace RestFixture.Net.Support
 		/// <param name="minLenForToggle"> the value determining whether the content should be rendered
 		///                        as a collapseable section. </param>
 		/// <returns> the formatted content for a cell with a wrong expectation </returns>
-		public static string makeContentForWrongCell<T1>(string expected, RestDataTypeAdapter typeAdapter, CellFormatter<T1> formatter, int minLenForToggle)
+		public static string makeContentForWrongCell<T1>(string expected, RestDataTypeAdapter typeAdapter, ICellFormatter<T1> formatter, int minLenForToggle)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append(Tools.toHtml(expected));
@@ -651,7 +651,7 @@ namespace RestFixture.Net.Support
 		/// <param name="minLenForToggle"> the value determining whether the content should be rendered
 		///                        as a collapseable section. </param>
 		/// <returns> the formatted content for a cell with a right expectation </returns>
-		public static string makeContentForRightCell<T1>(string expected, RestDataTypeAdapter typeAdapter, CellFormatter<T1> formatter, int minLenForToggle)
+		public static string makeContentForRightCell<T1>(string expected, RestDataTypeAdapter typeAdapter, ICellFormatter<T1> formatter, int minLenForToggle)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append(toHtml(expected));

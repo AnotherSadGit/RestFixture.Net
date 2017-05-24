@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using RestFixture.Net.Support;
+using fit;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,24 +22,18 @@
  */
 namespace RestFixture.Net
 {
-
-
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
-	using RowWrapper = smartrics.rest.fitnesse.fixture.support.RowWrapper;
-	using Parse = fit.Parse;
-
 	/// <summary>
 	/// Wrapper class for table row for Fit Runner.
 	/// 
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class FitRow : RowWrapper<Parse>
+	public class FitRow : IRowWrapper<Parse>
 	{
 
 		private readonly Parse cells;
 
-		private readonly IList<CellWrapper<Parse>> row;
+		private readonly IList<ICellWrapper<Parse>> row;
 
 		/// <summary>
 		/// a fit row </summary>
@@ -46,7 +42,7 @@ namespace RestFixture.Net
 		{
 			this.cells = parse;
 			Parse next = cells;
-			row = new List<CellWrapper<Parse>>();
+			row = new List<ICellWrapper<Parse>>();
 			while (next != null)
 			{
 				row.Add(new FitCell(next));
@@ -63,7 +59,7 @@ namespace RestFixture.Net
 			return 0;
 		}
 
-		public virtual CellWrapper<Parse> getCell(int c)
+		public virtual ICellWrapper<Parse> getCell(int c)
 		{
 			if (c < row.Count)
 			{
@@ -72,7 +68,7 @@ namespace RestFixture.Net
 			return null;
 		}
 
-		public virtual CellWrapper<Parse> removeCell(int c)
+		public virtual ICellWrapper<Parse> removeCell(int c)
 		{
 			if (c < row.Count)
 			{

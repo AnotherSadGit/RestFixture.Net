@@ -47,9 +47,9 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		public const string JSON_OBJ_NAME = "jsonbody";
 		private const long _64K = 65534;
-		private RunnerVariablesProvider variablesProvider;
+		private IRunnerVariablesProvider variablesProvider;
 
-		public JavascriptWrapper(RunnerVariablesProvider variablesProvider)
+		public JavascriptWrapper(IRunnerVariablesProvider variablesProvider)
 		{
 			this.variablesProvider = variablesProvider;
 		}

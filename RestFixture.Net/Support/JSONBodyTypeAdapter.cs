@@ -38,7 +38,7 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		/// <param name="variablesProvider"> used for substitutions </param>
 		/// <param name="config">            the config </param>
-		public JSONBodyTypeAdapter(RunnerVariablesProvider variablesProvider, Config config)
+		public JSONBodyTypeAdapter(IRunnerVariablesProvider variablesProvider, Config config)
 		{
 			wrapper = new JavascriptWrapper(variablesProvider);
 			imports = config.getAsMap("restfixture.javascript.imports.map", new Dictionary<string, string>());

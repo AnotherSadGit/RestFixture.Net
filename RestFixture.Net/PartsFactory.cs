@@ -1,4 +1,7 @@
 ﻿using RestFixture.Net.Support;
+using RestClient;
+using RestClient.Data;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -25,18 +28,7 @@ namespace RestFixture.Net
 	using HttpURL = org.apache.commons.httpclient.HttpURL;
 	using URI = org.apache.commons.httpclient.URI;
 	using URIException = org.apache.commons.httpclient.URIException;
-
-	using RestClient = smartrics.rest.client.RestClient;
-	using RestClientImpl = smartrics.rest.client.RestClientImpl;
-	using RestRequest = smartrics.rest.client.RestRequest;
-	using Runner = smartrics.rest.fitnesse.fixture.RestFixture.Runner;
-	using BodyTypeAdapter = smartrics.rest.fitnesse.fixture.support.BodyTypeAdapter;
-	using BodyTypeAdapterFactory = smartrics.rest.fitnesse.fixture.support.BodyTypeAdapterFactory;
-	using CellFormatter = smartrics.rest.fitnesse.fixture.support.CellFormatter;
-	using Config = smartrics.rest.fitnesse.fixture.support.Config;
-	using ContentType = smartrics.rest.fitnesse.fixture.support.ContentType;
-	using HttpClientBuilder = smartrics.rest.fitnesse.fixture.support.HttpClientBuilder;
-
+    
 	/// <summary>
 	/// Factory of all dependencies the rest fixture needs.
 	/// 
@@ -50,7 +42,7 @@ namespace RestFixture.Net
 
 //JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
 //ORIGINAL LINE: public PartsFactory(final RunnerVariablesProvider variablesProvider, smartrics.rest.fitnesse.fixture.support.Config config)
-        public PartsFactory(RunnerVariablesProvider variablesProvider, Support.Config config)
+        public PartsFactory(IRunnerVariablesProvider variablesProvider, Support.Config config)
 		{
 			this.bodyTypeAdapterFactory = new BodyTypeAdapterFactory(variablesProvider, config);
 		}
@@ -63,7 +55,7 @@ namespace RestFixture.Net
 		/// <returns> the rest client </returns>
 //JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
 //ORIGINAL LINE: public smartrics.rest.client.RestClient buildRestClient(final smartrics.rest.fitnesse.fixture.support.Config config)
-		public virtual RestClient buildRestClient(Config config)
+		public virtual IRestClient buildRestClient(Config config)
 		{
 			HttpClient httpClient = (new HttpClientBuilder()).createHttpClient(config);
 			return new RestClientImplAnonymousInnerClass(this, httpClient, config);
@@ -122,7 +114,7 @@ namespace RestFixture.Net
 		/// <returns> a formatter instance of CellFormatter </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
 //ORIGINAL LINE: public smartrics.rest.fitnesse.fixture.support.CellFormatter<?> buildCellFormatter(smartrics.rest.fitnesse.fixture.RestFixture.Runner runner)
-		public virtual CellFormatter<object> buildCellFormatter(Runner runner)
+		public virtual ICellFormatter<object> buildCellFormatter(Runner runner)
 		{
 			if (runner == null)
 			{

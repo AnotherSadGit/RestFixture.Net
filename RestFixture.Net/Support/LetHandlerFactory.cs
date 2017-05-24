@@ -49,7 +49,7 @@ namespace RestFixture.Net.Support
 	/// </summary>
 	public class LetHandlerFactory
 	{
-		private static IDictionary<string, LetHandler> strategies = new Dictionary<string, LetHandler>();
+		private static IDictionary<string, ILetHandler> strategies = new Dictionary<string, ILetHandler>();
 
 		static LetHandlerFactory()
 		{
@@ -67,7 +67,7 @@ namespace RestFixture.Net.Support
 
 		/// <param name="part"> the part to consider in the let expression </param>
 		/// <returns> the handler for the given strategy. null if not found. </returns>
-		public static LetHandler getHandlerFor(string part)
+		public static ILetHandler getHandlerFor(string part)
 		{
 			return strategies[part];
 		}

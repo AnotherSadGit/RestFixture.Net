@@ -1,4 +1,5 @@
-﻿using RestClient.Data;
+﻿using RestFixture.Net.Support;
+
 /*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
@@ -17,24 +18,20 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net.Support
+namespace RestFixture.Net
 {
 	/// <summary>
-	/// Strategy to handle LET expressions.
-	/// 
-	/// @author smartrics
+	/// The fixture provides the variables of the runner.
+	/// This interface abstracts the fixture so that it can
+	/// be tested easily.
 	/// </summary>
-	public interface LetHandler
+	public interface IRunnerVariablesProvider
 	{
-
-		/// <param name="variablesProvider"> the variables provider for substitutions </param>
-		/// <param name="config">            the config </param>
-		/// <param name="response">          the http response </param>
-		/// <param name="expressionContext"> the json expression context </param>
-		/// <param name="expression">        the expression </param>
-		/// <returns> applies the expression to response within the given context. </returns>
-		string handle(RunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression);
-
+		/// <summary>
+		/// Get a variable store linked to the current runner environment.
+		/// </summary>
+		/// <returns> the variables </returns>
+		Variables createRunnerVariables();
 	}
 
 }

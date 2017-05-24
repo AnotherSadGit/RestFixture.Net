@@ -25,12 +25,12 @@ namespace RestFixture.Net.Support
 	/// @author smartrics
 	/// </summary>
 	/// @param <E> the type of the row cells </param>
-	public interface RowWrapper<E>
+	public interface IRowWrapper<E>
 	{
 
 		/// <param name="c"> the cell index </param>
-		/// <returns> the <seealso cref="CellWrapper"/> at a given position </returns>
-		CellWrapper<E> getCell(int c);
+		/// <returns> the <seealso cref="ICellWrapper{E}"/> at a given position </returns>
+		ICellWrapper<E> getCell(int c);
 
 		/// <returns> the row size. </returns>
 		int size();
@@ -40,7 +40,7 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		/// <param name="c"> the cell index </param>
 		/// <returns> the removed cell. </returns>
-		CellWrapper<E> removeCell(int c);
+		ICellWrapper<E> removeCell(int c);
 	}
 
 }

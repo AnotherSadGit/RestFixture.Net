@@ -27,11 +27,11 @@ namespace RestFixture.Net.Support
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class LetBodyConstHandler : LetHandler
+	public class LetBodyConstHandler : ILetHandler
 	{
 
 
-		public virtual string handle(RunnerVariablesProvider variablesProvider, Config cOnfig, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config cOnfig, RestResponse response, object expressionContext, string expression)
 		{
 			return expression;
 		}

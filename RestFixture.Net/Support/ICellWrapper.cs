@@ -1,8 +1,6 @@
-﻿using RestFixture.Net.Support;
-
-/*  Copyright 2017 Simon Elms
+﻿/*  Copyright 2017 Simon Elms
  *
-  *  This file is part of RestFixture.Net, a .NET port of the original Java 
+ *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
  *
  *  RestFixture.Net is free software:
@@ -18,20 +16,38 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net
+namespace RestFixture.Net.Support
 {
+
 	/// <summary>
-	/// The fixture provides the variables of the runner.
-	/// This interface abstracts the fixture so that it can
-	/// be tested easily.
+	/// Wrapper of a Slim/Fit cell.
+	/// 
+	/// @author smartrics
 	/// </summary>
-	public interface RunnerVariablesProvider
+	/// @param <E> the type of the cell content </param>
+	public interface ICellWrapper<E>
 	{
+
+		/// 
+		/// <returns> the underlying cell object. </returns>
+		E Wrapped {get;}
+
+		/// <returns> the text in the cell. </returns>
+		string text();
+
+		/// <param name="string">
+		///            the body of the cell to set. </param>
+		void body(string @string);
+
+		/// <returns> the current body of the cell. </returns>
+		string body();
+
 		/// <summary>
-		/// Get a variable store linked to the current runner environment.
+		/// appends to the current cell body.
 		/// </summary>
-		/// <returns> the variables </returns>
-		Variables createRunnerVariables();
+		/// <param name="string">
+		///            the string to append. </param>
+		void addToBody(string @string);
 	}
 
 }

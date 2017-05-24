@@ -35,7 +35,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class FitFormatter : CellFormatter<Parse>
+	public class FitFormatter : ICellFormatter<Parse>
 	{
 
 		private ActionFixture fixture;
@@ -88,19 +88,19 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override void exception(CellWrapper<Parse> cell, string exceptionMessage)
+		public override void exception(ICellWrapper<Parse> cell, string exceptionMessage)
 		{
 			Parse wrapped = cell.Wrapped;
 			fixture.exception(wrapped, new FitFailureException(exceptionMessage));
 		}
 
-		public override void exception(CellWrapper<Parse> cell, Exception exception)
+		public override void exception(ICellWrapper<Parse> cell, Exception exception)
 		{
 			Parse wrapped = cell.Wrapped;
 			fixture.exception(wrapped, exception);
 		}
 
-		public override void check(CellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
+		public override void check(ICellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
 		{
 			valueCell.body(Tools.toHtml(valueCell.body()));
 			fixture.check(valueCell.Wrapped, adapter);
@@ -111,7 +111,7 @@ namespace RestFixture.Net
 			return ActionFixture.label(@string);
 		}
 
-		public override void wrong(CellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
+		public override void wrong(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
 			string expectedContent = expected.body();
 			string body = Tools.makeContentForWrongCell(expectedContent, typeAdapter, this, minLenForToggle);
@@ -119,7 +119,7 @@ namespace RestFixture.Net
 			fixture.wrong(expected.Wrapped);
 		}
 
-		public override void right(CellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
+		public override void right(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
 			string expectedContent = expected.body();
 			expected.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
@@ -131,7 +131,7 @@ namespace RestFixture.Net
 			return ActionFixture.gray(Tools.toHtml(@string));
 		}
 
-		public override void asLink(CellWrapper<Parse> cell, string resolvedUrl, string link, string text)
+		public override void asLink(ICellWrapper<Parse> cell, string resolvedUrl, string link, string text)
 		{
 			string actualText = text;
 			string parsed = null;

@@ -33,14 +33,14 @@ namespace RestFixture.Net.Support
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class LetBodyHandler : LetHandler
+	public class LetBodyHandler : ILetHandler
 	{
 
 		public LetBodyHandler()
 		{
 		}
 
-		public virtual string handle(RunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
 		{
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") java.util.Map<String, String> namespaceContext = (java.util.Map<String, String>) expressionContext;

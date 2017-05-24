@@ -178,7 +178,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// </para>
 	/// </summary>
-	public class RestFixture : RunnerVariablesProvider
+	public class RestFixture : IRunnerVariablesProvider
 	{
         private static Version _fitSharpVersion = Assembly.GetEntryAssembly().GetName().Version;
 
@@ -266,9 +266,9 @@ namespace RestFixture.Net
 
 		private Url _baseUrl;
 
-		protected internal RowWrapper<object> row;
+		protected internal IRowWrapper<object> row;
 
-		private CellFormatter<object> formatter;
+		private ICellFormatter<object> formatter;
 
 		private PartsFactory partsFactory;
 
@@ -411,7 +411,7 @@ namespace RestFixture.Net
 		/// The formatter for this instance of the RestFixture.
 		/// </summary>
 		/// <returns> the formatter for the cells </returns>
-		public virtual CellFormatter<object> Formatter
+		public virtual ICellFormatter<object> Formatter
 		{
 			get
 			{
@@ -478,7 +478,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setMultipartFileName()
 		public virtual void setMultipartFileName()
 		{
-			CellWrapper<object> cell = row.getCell(1);
+			ICellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -503,10 +503,10 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addMultipartFile()
 		public virtual void addMultipartFile()
 		{
-			CellWrapper<object> cellFileName = row.getCell(1);
-			CellWrapper<object> cellParamName = row.getCell(2);
-			CellWrapper<object> cellContentType = row.getCell(3);
-			CellWrapper<object> cellCharset = row.getCell(4);
+			ICellWrapper<object> cellFileName = row.getCell(1);
+			ICellWrapper<object> cellParamName = row.getCell(2);
+			ICellWrapper<object> cellContentType = row.getCell(3);
+			ICellWrapper<object> cellCharset = row.getCell(4);
 			if (cellFileName == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -530,10 +530,10 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addMultipartString()
 		public virtual void addMultipartString()
 		{
-			CellWrapper<object> cellFileName = row.getCell(1);
-			CellWrapper<object> cellParamName = row.getCell(2);
-			CellWrapper<object> cellContentType = row.getCell(3);
-			CellWrapper<object> cellCharset = row.getCell(4);
+			ICellWrapper<object> cellFileName = row.getCell(1);
+			ICellWrapper<object> cellParamName = row.getCell(2);
+			ICellWrapper<object> cellContentType = row.getCell(3);
+			ICellWrapper<object> cellCharset = row.getCell(4);
 			if (cellFileName == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a multipart string content to set");
@@ -545,7 +545,7 @@ namespace RestFixture.Net
 		}
 
 
-		private RestMultipart registerMultipartRow(RestMultipart.RestMultipartType type, CellWrapper<object> cellFileName, CellWrapper<object> cellParamName, CellWrapper<object> cellContentType, CellWrapper<object> cellCharset)
+		private RestMultipart registerMultipartRow(RestMultipart.RestMultipartType type, ICellWrapper<object> cellFileName, ICellWrapper<object> cellParamName, ICellWrapper<object> cellContentType, ICellWrapper<object> cellCharset)
 		{
 	// Param Name
 			string multipartParamName = FILE;
@@ -609,7 +609,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setFileName()
 		public virtual void setFileName()
 		{
-			CellWrapper<object> cell = row.getCell(1);
+			ICellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a file name to set");
@@ -644,7 +644,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setMultipartFileParameterName()
 		public virtual void setMultipartFileParameterName()
 		{
-			CellWrapper<object> cell = row.getCell(1);
+			ICellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a parameter name to set");
@@ -676,7 +676,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void setBody()
 		public virtual void setBody()
 		{
-			CellWrapper<object> cell = row.getCell(1);
+			ICellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a body to set");
@@ -724,7 +724,7 @@ namespace RestFixture.Net
 //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void addHeader()
 		public virtual void addHeader()
 		{
-			CellWrapper<object> cell = row.getCell(1);
+			ICellWrapper<object> cell = row.getCell(1);
 			if (cell == null)
 			{
 				Formatter.exception(row.getCell(0), "You must pass a header map to set");
@@ -1004,17 +1004,17 @@ namespace RestFixture.Net
             }
             string label = row.getCell(1).text().Trim();
             string loc = row.getCell(2).text();
-            CellWrapper<object> exprCell = row.getCell(3);
+            ICellWrapper<object> exprCell = row.getCell(3);
             try
             {
                 exprCell.body(GLOBALS.substitute(exprCell.body()));
                 string expr = exprCell.text();
-                CellWrapper<object> valueCell = row.getCell(4);
+                ICellWrapper<object> valueCell = row.getCell(4);
                 string valueCellText = valueCell.body();
                 string valueCellTextReplaced = GLOBALS.substitute(valueCellText);
                 valueCell.body(valueCellTextReplaced);
                 string sValue = null;
-                LetHandler letHandler = LetHandlerFactory.getHandlerFor(loc);
+                ILetHandler letHandler = LetHandlerFactory.getHandlerFor(loc);
                 if (letHandler != null)
                 {
                     StringTypeAdapter adapter = new StringTypeAdapter();
@@ -1058,7 +1058,7 @@ namespace RestFixture.Net
             debugMethodCallStart();
             //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
             //ORIGINAL LINE: @SuppressWarnings("rawtypes") CellWrapper messageCell = row.getCell(1);
-            CellWrapper<object> messageCell = row.getCell(1);
+            ICellWrapper<object> messageCell = row.getCell(1);
             try
             {
                 string message = messageCell.text().Trim();
@@ -1084,7 +1084,7 @@ namespace RestFixture.Net
         //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) public void evalJs()
         public virtual void evalJs()
         {
-            CellWrapper<object> jsCell = row.getCell(1);
+            ICellWrapper<object> jsCell = row.getCell(1);
             if (jsCell == null)
             {
                 Formatter.exception(row.getCell(0), "Missing string to evaluate)");
@@ -1118,10 +1118,10 @@ namespace RestFixture.Net
         /// <param name="currentRow"> the current row </param>
         //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
         //ORIGINAL LINE: @SuppressWarnings("rawtypes") public void processRow(RowWrapper<?> currentRow)
-        public virtual void processRow<T1>(RowWrapper<T1> currentRow)
+        public virtual void processRow(IRowWrapper<object> currentRow)
         {
             row = currentRow;
-            CellWrapper<object> cell0 = row.getCell(0);
+            ICellWrapper<object> cell0 = row.getCell(0);
             if (cell0 == null)
             {
                 throw new Exception("Current RestFixture row is not parseable (maybe empty or not existent)");
@@ -1229,7 +1229,7 @@ namespace RestFixture.Net
         //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) protected void doMethod(String body, String method)
         protected internal virtual void doMethod(string body, string method)
         {
-            CellWrapper<object> urlCell = row.getCell(1);
+            ICellWrapper<object> urlCell = row.getCell(1);
             string url = deHtmlify(stripTag(urlCell.text()));
             string resUrl = GLOBALS.substitute(url);
             string rBody = GLOBALS.substitute(body);
@@ -1258,7 +1258,7 @@ namespace RestFixture.Net
             LastRequest.Method = RestRequest.Method.valueOf(method);
             LastRequest.addHeaders(headers);
             LastRequest.FollowRedirect = followRedirects;
-            LastRequest.ResourceUriEscaped = resourceUrisAreEscaped;
+            LastRequest.IsResourceUriEscaped = resourceUrisAreEscaped;
             if (fileName != null)
             {
                 LastRequest.FileName = fileName;
@@ -1319,18 +1319,18 @@ namespace RestFixture.Net
             }
             string clientBaseUri = restClient.BaseUrlString;
             string u = clientBaseUri + uri;
-            CellWrapper<object> uriCell = row.getCell(1);
+            ICellWrapper<object> uriCell = row.getCell(1);
             Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, uri);
-            CellWrapper<object> cellStatusCode = row.getCell(2);
+            ICellWrapper<object> cellStatusCode = row.getCell(2);
             if (cellStatusCode == null)
             {
                 throw new System.InvalidOperationException("You must specify a status code cell");
             }
             int? lastStatusCode = LastResponse.StatusCode;
             process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
-            IList<Header> lastHeaders = LastResponse.Headers;
+            IList<RestData.Header> lastHeaders = LastResponse.Headers;
             process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
-            CellWrapper<object> bodyCell = row.getCell(4);
+            ICellWrapper<object> bodyCell = row.getCell(4);
             if (bodyCell == null)
             {
                 throw new System.InvalidOperationException("You must specify a body cell");
@@ -1359,7 +1359,7 @@ namespace RestFixture.Net
 
         //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
         //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void process(CellWrapper<object> expected, Object actual, RestDataTypeAdapter ta)
-        private void process(CellWrapper expected, object actual, RestDataTypeAdapter ta)
+        private void process<T>(ICellWrapper<T> expected, object actual, RestDataTypeAdapter ta)
         {
             if (expected == null)
             {
@@ -1543,7 +1543,7 @@ namespace RestFixture.Net
 
         //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
         //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void renderReplacement(CellWrapper<object> cell, String actual)
-        private void renderReplacement(CellWrapper<object> cell, string actual)
+        private void renderReplacement(ICellWrapper<object> cell, string actual)
         {
             StringTypeAdapter adapter = new StringTypeAdapter();
             adapter.set(actual);
@@ -1559,7 +1559,7 @@ namespace RestFixture.Net
         //ORIGINAL LINE: @SuppressWarnings({ "rawtypes", "unchecked" }) private void processSlimRow(List<List<String>> resultTable, List<String> row)
         private void processSlimRow(IList<IList<string>> resultTable, IList<string> row)
         {
-            RowWrapper currentRow = new SlimRow(row);
+            IRowWrapper<> currentRow = new SlimRow(row);
             try
             {
                 processRow(currentRow);
@@ -1578,7 +1578,7 @@ namespace RestFixture.Net
 
         //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
         //ORIGINAL LINE: @SuppressWarnings("rawtypes") private List<String> mapSlimRow(List<String> resultRow, RowWrapper currentRow)
-        private IList<string> mapSlimRow(IList<string> resultRow, RowWrapper currentRow)
+        private IList<string> mapSlimRow(IList<string> resultRow, IRowWrapper<> currentRow)
         {
             IList<string> rowAsList = ((SlimRow)currentRow).asList();
             for (int c = 0; c < rowAsList.Count; c++)

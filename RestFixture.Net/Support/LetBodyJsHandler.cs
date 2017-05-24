@@ -34,12 +34,12 @@ namespace RestFixture.Net.Support
 	/// 
 	/// @author smartrics
 	/// </summary>
-	public class LetBodyJsHandler : LetHandler
+	public class LetBodyJsHandler : ILetHandler
 	{
 
 		private static readonly Logger LOG = getLogger(typeof(LetBodyJsHandler));
 
-		public virtual string handle(RunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
 		{
 			JavascriptWrapper js = new JavascriptWrapper(variablesProvider);
 //JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':

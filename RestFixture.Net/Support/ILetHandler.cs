@@ -1,6 +1,7 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using RestClient.Data;
+/*  Copyright 2017 Simon Elms
  *
- *  This file is part of RestFixture.Net, a .NET port of the original Java 
+  *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
  *
  *  RestFixture.Net is free software:
@@ -18,36 +19,22 @@
  */
 namespace RestFixture.Net.Support
 {
-
 	/// <summary>
-	/// Wrapper of a Slim/Fit cell.
+	/// Strategy to handle LET expressions.
 	/// 
 	/// @author smartrics
 	/// </summary>
-	/// @param <E> the type of the cell content </param>
-	public interface CellWrapper<E>
+	public interface ILetHandler
 	{
 
-		/// 
-		/// <returns> the underlying cell object. </returns>
-		E Wrapped {get;}
+		/// <param name="variablesProvider"> the variables provider for substitutions </param>
+		/// <param name="config">            the config </param>
+		/// <param name="response">          the http response </param>
+		/// <param name="expressionContext"> the json expression context </param>
+		/// <param name="expression">        the expression </param>
+		/// <returns> applies the expression to response within the given context. </returns>
+		string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression);
 
-		/// <returns> the text in the cell. </returns>
-		string text();
-
-		/// <param name="string">
-		///            the body of the cell to set. </param>
-		void body(string @string);
-
-		/// <returns> the current body of the cell. </returns>
-		string body();
-
-		/// <summary>
-		/// appends to the current cell body.
-		/// </summary>
-		/// <param name="string">
-		///            the string to append. </param>
-		void addToBody(string @string);
 	}
 
 }
