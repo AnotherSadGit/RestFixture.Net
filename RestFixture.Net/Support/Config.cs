@@ -181,14 +181,16 @@ namespace RestFixture.Net.Support
 		///            the default value for value not existent or not parseable </param>
 		/// <returns> a Boolean representing the value, def if the value cannot be
 		///         parsed as Boolean </returns>
-		public bool? getAsBoolean(string key, bool? def)
+		public bool getAsBoolean(string key, bool def)
 		{
 			string val = get(key);
-			if (string.ReferenceEquals(val, null))
+			if (val == null)
 			{
 				return def;
 			}
-			return bool.Parse(val);
+		    bool returnValue;
+		    bool.TryParse(val, out returnValue);
+            return returnValue;
 		}
 
 		/// <summary>
@@ -200,17 +202,16 @@ namespace RestFixture.Net.Support
 		///            the default value for value not existent or not parseable </param>
 		/// <returns> a Integer representing the value, def if the value cannot be
 		///         parsed as Integer </returns>
-		public int? getAsInteger(string key, int? def)
+		public int getAsInteger(string key, int def)
 		{
 			string val = get(key);
-			try
-			{
-				return int.Parse(val);
-			}
-			catch (System.FormatException)
+		    int returnValue;
+            if(!int.TryParse(val, out returnValue))
 			{
 				return def;
 			}
+
+            return returnValue;
 		}
 
 		/// <summary>
