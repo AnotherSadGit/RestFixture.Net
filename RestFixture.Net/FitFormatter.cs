@@ -1,4 +1,5 @@
 ﻿using System;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,13 +22,9 @@
 namespace RestFixture.Net
 {
 
-	using CellFormatter = smartrics.rest.fitnesse.fixture.support.CellFormatter;
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
-	using RestDataTypeAdapter = smartrics.rest.fitnesse.fixture.support.RestDataTypeAdapter;
-	using Tools = smartrics.rest.fitnesse.fixture.support.Tools;
 	using ActionFixture = fit.ActionFixture;
 	using Parse = fit.Parse;
-	using FitFailureException = fit.exception.FitFailureException;
+    using FitFailureException = fitSharp.Fit.Exception.FitFailureException;
 
 	/// <summary>
 	/// Cell formatter for the Fit runner.
@@ -35,12 +32,11 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class FitFormatter : ICellFormatter<Parse>
+    public class FitFormatter : ICellFormatter
 	{
 
 		private ActionFixture fixture;
-		private bool displayActual;
-		private int minLenForToggle = -1;
+	    private int minLenForToggle = -1;
 		private bool displayAbsoluteURLInFull;
 
 		public FitFormatter()
@@ -59,19 +55,9 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override bool DisplayActual
-		{
-			get
-			{
-				return displayActual;
-			}
-			set
-			{
-				this.displayActual = value;
-			}
-		}
+	    public bool DisplayActual { get; set; }
 
-		public override int MinLengthForToggleCollapse
+	    public int MinLengthForToggleCollapse
 		{
 			set
 			{
@@ -80,7 +66,7 @@ namespace RestFixture.Net
 		}
 
 
-		public override bool DisplayAbsoluteURLInFull
+		public bool DisplayAbsoluteURLInFull
 		{
 			set
 			{
@@ -88,50 +74,55 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override void exception(ICellWrapper<Parse> cell, string exceptionMessage)
+		public void exception(ICellWrapper cell, string exceptionMessage)
 		{
-			Parse wrapped = cell.Wrapped;
+		    IFitCellWrapper fitCell = cell as IFitCellWrapper;
+            Parse wrapped = fitCell.Wrapped;
 			fixture.exception(wrapped, new FitFailureException(exceptionMessage));
 		}
 
-		public override void exception(ICellWrapper<Parse> cell, Exception exception)
+	    public void exception(ICellWrapper cell, Exception exception)
 		{
-			Parse wrapped = cell.Wrapped;
+            IFitCellWrapper fitCell = cell as IFitCellWrapper;
+            Parse wrapped = fitCell.Wrapped;
 			fixture.exception(wrapped, exception);
 		}
 
-		public override void check(ICellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
+        public void check(ICellWrapper valueCell, RestDataTypeAdapter adapter)
+        {
+            IFitCellWrapper fitCell = valueCell as IFitCellWrapper;
+            fitCell.body(Tools.toHtml(fitCell.body()));
+            fixture.check(fitCell.Wrapped, adapter);
+        }
+
+		public string label(string text)
 		{
-			valueCell.body(Tools.toHtml(valueCell.body()));
-			fixture.check(valueCell.Wrapped, adapter);
+			return ActionFixture.label(text);
 		}
 
-		public override string label(string @string)
+	    public void wrong(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
 		{
-			return ActionFixture.label(@string);
-		}
-
-		public override void wrong(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
-		{
-			string expectedContent = expected.body();
+            IFitCellWrapper fitCell = expected as IFitCellWrapper;
+            string expectedContent = fitCell.body();
 			string body = Tools.makeContentForWrongCell(expectedContent, typeAdapter, this, minLenForToggle);
-			expected.body(body);
-			fixture.wrong(expected.Wrapped);
+            fitCell.body(body);
+            fixture.wrong(fitCell.Wrapped);
 		}
 
-		public override void right(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
+		public void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
 		{
-			string expectedContent = expected.body();
-			expected.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
-			fixture.right(expected.Wrapped);
+            IFitCellWrapper fitCell = expected as IFitCellWrapper;
+            string expectedContent = fitCell.body();
+            fitCell.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
+            fixture.right(fitCell.Wrapped);
 		}
 
-		public override string gray(string @string)
+		public string gray(string text)
 		{
-			return ActionFixture.gray(Tools.toHtml(@string));
+			return ActionFixture.gray(Tools.toHtml(text));
 		}
 
-		public override void asLink(ICellWrapper<Parse> cell, string resolvedUrl, string link, string text)
+        public void asLink(ICellWrapper cell, string resolvedUrl, string link, string text)
 		{
 			string actualText = text;
 			string parsed = null;
@@ -146,7 +137,7 @@ namespace RestFixture.Net
 			cell.body(Tools.toHtmlLink(link, actualText));
 		}
 
-		public override string fromRaw(string text)
+		public string fromRaw(string text)
 		{
 			return text;
 		}

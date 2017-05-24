@@ -20,16 +20,11 @@
  */
 namespace RestFixture.Net.Support
 {
-
 	/// <summary>
 	/// Formatter of the content of a cell.
-	/// 
-	/// @author smartrics
 	/// </summary>
-    /// <typeparam name="E">the type of the cell</typeparam>
-	public interface ICellFormatter<E>
+	public interface ICellFormatter
 	{
-
 		/// <summary>
 		/// formats a cell containing an exception.
 		/// </summary>
@@ -37,7 +32,7 @@ namespace RestFixture.Net.Support
 		///            the cell wrapper </param>
 		/// <param name="exception">
 		///            the excteption to render. </param>
-		void exception(ICellWrapper<E> cellWrapper, Exception exception);
+		void exception(ICellWrapper cellWrapper, Exception exception);
 
 		/// <summary>
 		/// formats a cell containing an exception.
@@ -46,7 +41,7 @@ namespace RestFixture.Net.Support
 		///            the cell wrapper </param>
 		/// <param name="exceptionMessage">
 		///            the exception message to render. </param>
-		void exception(ICellWrapper<E> cellWrapper, string exceptionMessage);
+		void exception(ICellWrapper cellWrapper, string exceptionMessage);
 
 		/// <summary>
 		/// formats a check cell.
@@ -55,15 +50,15 @@ namespace RestFixture.Net.Support
 		///            the cell value. </param>
 		/// <param name="adapter">
 		///            the adapter interpreting the value. </param>
-		void check(ICellWrapper<E> valueCell, RestDataTypeAdapter adapter);
+		void check(ICellWrapper valueCell, RestDataTypeAdapter adapter);
 
 		/// <summary>
 		/// formats a cell label
 		/// </summary>
-		/// <param name="string">
+		/// <param name="text">
 		///            the label </param>
 		/// <returns> the cell content as a label. </returns>
-		string label(string @string);
+		string label(string text);
 
 		/// <summary>
 		/// formats a cell representing a wrong expectation.
@@ -72,7 +67,7 @@ namespace RestFixture.Net.Support
 		///            the expected value </param>
 		/// <param name="typeAdapter">
 		///            the adapter with the actual value. </param>
-		void wrong(ICellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+		void wrong(ICellWrapper expected, RestDataTypeAdapter typeAdapter);
 
 		/// <summary>
 		/// formats a cell representing a right expectation.
@@ -81,16 +76,16 @@ namespace RestFixture.Net.Support
 		///            the expected value </param>
 		/// <param name="typeAdapter">
 		///            the adapter with the actual value. </param>
-		void right(ICellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+		void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter);
 
 		/// <summary>
 		/// formats a cell with a gray background. used to ignore the content or for
 		/// comments.
 		/// </summary>
-		/// <param name="string">
+		/// <param name="text">
 		///            the content </param>
 		/// <returns> the content grayed out. </returns>
-		string gray(string @string);
+		string gray(string text);
 
 		/// <summary>
 		/// formats the content as a hyperlink.
@@ -103,14 +98,12 @@ namespace RestFixture.Net.Support
 		///            the uri in the href. </param>
 		/// <param name="text">
 		///            the text. </param>
-		void asLink(ICellWrapper<E> cell, string resolvedUrl, string link, string text);
+		void asLink(ICellWrapper cell, string resolvedUrl, string link, string text);
 
 		/// <summary>
 		/// sets whether the cell should display the actual value after evaluation.
 		/// </summary>
-		/// <param name="displayActual">
-		///            true if actual value has to be rendered. </param>
-		bool DisplayActual {set;get;}
+		bool DisplayActual { get; set; }
 
 		/// <summary>
 		/// sets whether absolute urls are displayed in full

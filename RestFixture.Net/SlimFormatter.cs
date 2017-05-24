@@ -1,4 +1,5 @@
 ﻿using System;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,20 +21,13 @@
  */
 namespace RestFixture.Net
 {
-
-	using CellFormatter = smartrics.rest.fitnesse.fixture.support.CellFormatter;
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
-	using RestDataTypeAdapter = smartrics.rest.fitnesse.fixture.support.RestDataTypeAdapter;
-	using Tools = smartrics.rest.fitnesse.fixture.support.Tools;
-
-
 	/// <summary>
 	/// Formatter of cells handled by Slim.
 	/// 
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimFormatter : CellFormatter<string>
+	public class SlimFormatter : ICellFormatter
 	{
 
 		private int minLenForToggle = -1;
@@ -44,7 +38,7 @@ namespace RestFixture.Net
 		{
 		}
 
-		public override bool DisplayActual
+	    public bool DisplayActual
 		{
 			set
 			{
@@ -56,7 +50,7 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override bool DisplayAbsoluteURLInFull
+		public bool DisplayAbsoluteURLInFull
 		{
 			set
 			{
@@ -65,7 +59,7 @@ namespace RestFixture.Net
 		}
 
 
-		public override int MinLengthForToggleCollapse
+		public int MinLengthForToggleCollapse
 		{
 			set
 			{
@@ -74,12 +68,12 @@ namespace RestFixture.Net
 		}
 
 
-		public override void exception(CellWrapper<string> cell, string exceptionMessage)
+		public void exception(ICellWrapper cell, string exceptionMessage)
 		{
 			cell.body("error:" + Tools.wrapInDiv(exceptionMessage));
 		}
 
-		public override void exception(CellWrapper<string> cell, Exception exception)
+		public void exception(ICellWrapper cell, Exception exception)
 		{
 			System.IO.MemoryStream @out = new System.IO.MemoryStream();
 			PrintStream ps = new PrintStream(@out);
@@ -90,7 +84,7 @@ namespace RestFixture.Net
 			//cell.body("error:" + m);
 		}
 
-		public override void check(CellWrapper<string> expected, RestDataTypeAdapter actual)
+		public void check(ICellWrapper expected, RestDataTypeAdapter actual)
 		{
 			if (null == expected.body() || "".Equals(expected.body()))
 			{
@@ -115,29 +109,29 @@ namespace RestFixture.Net
 			}
 		}
 
-		public override string label(string @string)
+	    public string label(string @string)
 		{
 			return Tools.toHtmlLabel(@string);
 		}
 
-		public override void wrong(CellWrapper<string> expected, RestDataTypeAdapter ta)
+	    public void wrong(ICellWrapper expected, RestDataTypeAdapter ta)
 		{
 			string expectedContent = expected.body();
 			expected.body(Tools.makeContentForWrongCell(expectedContent, ta, this, minLenForToggle));
 			expected.body("fail:" + Tools.wrapInDiv(expected.body()));
 		}
 
-		public override void right(CellWrapper<string> expected, RestDataTypeAdapter typeAdapter)
+		public void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
 		{
 			expected.body("pass:" + Tools.wrapInDiv(Tools.makeContentForRightCell(expected.body(), typeAdapter, this, minLenForToggle)));
 		}
 
-		public override string gray(string @string)
+		public string gray(string @string)
 		{
 			return "report:" + Tools.wrapInDiv(Tools.toHtml(@string));
 		}
 
-		public override void asLink(CellWrapper<string> cell, string resolvedUrl, string link, string text)
+		public void asLink(ICellWrapper cell, string resolvedUrl, string link, string text)
 		{
 			string actualText = text;
 			string parsed = null;
@@ -152,7 +146,7 @@ namespace RestFixture.Net
 			cell.body("report:" + Tools.wrapInDiv(Tools.toHtmlLink(link, actualText)));
 		}
 
-		public override string fromRaw(string text)
+		public string fromRaw(string text)
 		{
 			return Tools.fromHtml(text);
 		}

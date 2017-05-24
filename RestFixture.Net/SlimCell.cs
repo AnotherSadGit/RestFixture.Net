@@ -16,18 +16,18 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using RestFixture.Net.Support;
+
 namespace RestFixture.Net
 {
-
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
-
 	/// <summary>
 	/// Wrapper for a cell in the table when running on Slim.
 	/// 
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimCell : CellWrapper<string>
+	public class SlimCell : ICellWrapper
 	{
 
 		private string cell;
@@ -40,27 +40,27 @@ namespace RestFixture.Net
 			this.cell = c;
 		}
 
-		public override string text()
+		public string text()
 		{
 			return cell;
 		}
 
-		public override void body(string @string)
+		public void body(string @string)
 		{
 			cell = @string;
 		}
 
-		public override string body()
+		public string body()
 		{
 			return cell;
 		}
 
-		public override void addToBody(string @string)
+		public void addToBody(string @string)
 		{
 			cell = cell + @string;
 		}
 
-		public override string Wrapped
+		public string Wrapped
 		{
 			get
 			{

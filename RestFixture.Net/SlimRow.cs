@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,33 +21,28 @@
  */
 namespace RestFixture.Net
 {
-
-
-	using CellWrapper = smartrics.rest.fitnesse.fixture.support.CellWrapper;
-	using RowWrapper = smartrics.rest.fitnesse.fixture.support.RowWrapper;
-
 	/// <summary>
 	/// Wrapper class for a row when running with Slim.
 	/// 
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimRow : RowWrapper<string>
+    public class SlimRow : IRowWrapper
 	{
 
-		private readonly IList<CellWrapper<string>> row;
+		private readonly IList<ICellWrapper> row;
 
 		/// <param name="rawRow"> a list of string representing the row cells as passed by Slim. </param>
 		public SlimRow(IList<string> rawRow)
 		{
-			this.row = new List<CellWrapper<string>>();
+			this.row = new List<ICellWrapper>();
 			foreach (string r in rawRow)
 			{
 				this.row.Add(new SlimCell(r));
 			}
 		}
 
-		public virtual CellWrapper<string> getCell(int c)
+		public virtual ICellWrapper getCell(int c)
 		{
 			if (c < this.row.Count)
 			{
@@ -68,18 +64,20 @@ namespace RestFixture.Net
 		public virtual IList<string> asList()
 		{
 			IList<string> ret = new List<string>();
-			foreach (CellWrapper<string> w in row)
+			foreach (ICellWrapper w in row)
 			{
 				ret.Add(w.body());
 			}
 			return ret;
 		}
 
-		public virtual CellWrapper<string> removeCell(int c)
+		public virtual ICellWrapper removeCell(int c)
 		{
 			if (c < this.row.Count)
 			{
-				return this.row.RemoveAt(c);
+			    ICellWrapper removedCell = this.row[c];
+			    this.row.Remove(removedCell);
+			    return removedCell;
 			}
 			return null;
 		}

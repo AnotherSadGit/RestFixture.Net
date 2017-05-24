@@ -29,7 +29,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class FitCell : ICellWrapper<Parse>
+	public class FitCell : IFitCellWrapper
 	{
 
 		private readonly Parse cell;

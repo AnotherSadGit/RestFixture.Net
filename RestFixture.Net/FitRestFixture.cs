@@ -98,7 +98,7 @@ namespace RestFixture.Net
 		/// <returns> the cell formatter for Fit. </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
 //ORIGINAL LINE: public smartrics.rest.fitnesse.fixture.support.CellFormatter<?> getFormatter()
-		public virtual ICellFormatter<object> Formatter
+		public virtual ICellFormatter Formatter
 		{
 			get
 			{
@@ -309,17 +309,17 @@ namespace RestFixture.Net
 				restFixture.initialize(RestFixture.Runner.FIT);
 				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
 			}
-            IRowWrapper<Parse> currentRow = new FitRow(parse);
+            IRowWrapper currentRow = new FitRow(parse);
 			try
 			{
 				restFixture.processRow(currentRow);
 			}
 			catch (Exception exception)
 			{
-                // TODO: Sort out CellWrapper<object> vs CellWrapper<Parse>.
-                ICellWrapper<Parse> firstCell = currentRow.getCell(0);
+                // TODO: Sort out CellWrapper vs CellWrapper<Parse>.
+                IFitCellWrapper firstCell = currentRow.getCell(0);
 				LOG.Error(exception, "Exception when processing row {0}", firstCell.text());
-			    ICellFormatter<object> cellFormatter = restFixture.Formatter;
+			    ICellFormatter cellFormatter = restFixture.Formatter;
                 cellFormatter.exception(firstCell, exception);
 			}
 		}

@@ -18,26 +18,19 @@
  */
 namespace RestFixture.Net.Support
 {
-
-	/// <summary>
+    /// <summary>
 	/// Wrapper of a Slim/Fit cell.
 	/// 
 	/// @author smartrics
 	/// </summary>
-	/// @param <E> the type of the cell content </param>
-	public interface ICellWrapper<E>
+	public interface ICellWrapper
 	{
-
-		/// 
-		/// <returns> the underlying cell object. </returns>
-		E Wrapped {get;}
-
 		/// <returns> the text in the cell. </returns>
 		string text();
 
-		/// <param name="string">
+		/// <param name="text">
 		///            the body of the cell to set. </param>
-		void body(string @string);
+		void body(string text);
 
 		/// <returns> the current body of the cell. </returns>
 		string body();
@@ -45,9 +38,9 @@ namespace RestFixture.Net.Support
 		/// <summary>
 		/// appends to the current cell body.
 		/// </summary>
-		/// <param name="string">
+		/// <param name="text">
 		///            the string to append. </param>
-		void addToBody(string @string);
+		void addToBody(string text);
 	}
 
 }

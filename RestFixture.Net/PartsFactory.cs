@@ -114,17 +114,13 @@ namespace RestFixture.Net
 		/// <returns> a formatter instance of CellFormatter </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
 //ORIGINAL LINE: public smartrics.rest.fitnesse.fixture.support.CellFormatter<?> buildCellFormatter(smartrics.rest.fitnesse.fixture.RestFixture.Runner runner)
-		public virtual ICellFormatter<object> buildCellFormatter(Runner runner)
+		public virtual ICellFormatter buildCellFormatter(RestFixture.Runner runner)
 		{
-			if (runner == null)
-			{
-				throw new System.ArgumentException("Runner is null");
-			}
-			if (Runner.SLIM.Equals(runner))
+			if (RestFixture.Runner.SLIM.Equals(runner))
 			{
 				return new SlimFormatter();
 			}
-			if (Runner.FIT.Equals(runner))
+			if (RestFixture.Runner.FIT.Equals(runner))
 			{
 				return new FitFormatter();
 			}
