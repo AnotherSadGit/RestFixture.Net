@@ -1,0 +1,112 @@
+Usage of Adapter Classes
+========================
+TypeAdapter
+---------------
+Note: From Java fit project.  No equivalent in FitSharp.
+
+Not used directly.
+
+RestDataTypeAdapter : TypeAdapter
+---------------------------------
+1) FitFormatter
+a) Parameter of check method: Passed down as parameter to ActionFixture.check method
+b) Parameter of wrong method: Passed to ActionFixture.wrong
+c) Parameter of right method: Passed to ActionFixture.right
+
+2) RestFixture.process: Passed as parameter ta
+a) ta.set(actual);
+b) ta.ToString();
+c) ta.parse(substitute);
+d) ta.Equals(parse, actual);
+e) Formatter.right(expected, ta);  where Formatter = CellFormatter<object>
+f) Formatter.wrong(expected, ta);
+
+3) Support.Tools
+a) Passed as parameter typeAdapter of makeContentForWrongCell<T1>: 
+i) string actual = typeAdapter.ToString();
+ii) IList<string> errors = typeAdapter.Errors;
+b) Passed as parameter typeAdapter of makeContentForWrongCell<T1>: 
+i) string actual = typeAdapter.ToString();
+
+4) interface CellFormatter<E>
+a) void check(CellWrapper<E> valueCell, RestDataTypeAdapter adapter);
+b) void wrong(CellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+c) void right(CellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+
+BodyTypeAdapter : RestDataTypeAdapter
+-------------------------------------
+1) BodyTypeAdapterFactory
+a) getBodyTypeAdapter(ContentType content, String charset)
+b) BodyTypeAdapter adapter = null;
+i) adapter = new JSONBodyTypeAdapter(variablesProvider, config);
+ii) adapter = new XPathBodyTypeAdapter();
+iii) adapter = new TextBodyTypeAdapter();
+
+2) LetBodyHandler
+a) BodyTypeAdapter bodyTypeAdapter = (new BodyTypeAdapterFactory(variablesProvider, config)).getBodyTypeAdapter(contentType, charset);
+b) string body = bodyTypeAdapter.toXmlString(response.Body);
+
+3) RestFixture
+a) completeHttpMethodExecution
+i) BodyTypeAdapter bodyTypeAdapter = createBodyTypeAdapter();
+ii) process(bodyCell, LastResponse.Body, bodyTypeAdapter);
+b) BodyTypeAdapter createBodyTypeAdapter()
+i) return createBodyTypeAdapter(ContentType.parse(LastResponse.ContentType));
+b) BodyTypeAdapter createBodyTypeAdapter(ContentType ct)
+i) BodyTypeAdapter bodyTypeAdapter = partsFactory.buildBodyTypeAdapter(ct, charset);
+ii) bodyTypeAdapter.Context = namespaceContext;
+iii) return bodyTypeAdapter;
+
+4) PartsFactory
+a) BodyTypeAdapter buildBodyTypeAdapter(ContentType ct, string charset)
+i) return bodyTypeAdapterFactory.getBodyTypeAdapter(ct, charset);
+
+HeadersTypeAdapter : RestDataTypeAdapter
+----------------------------------------
+1) RestFixture.completeHttpMethodExecution
+a) process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
+	calls
+	process(CellWrapper expected, object actual, RestDataTypeAdapter ta)
+
+StatusCodeTypeAdapter : RestDataTypeAdapter
+-------------------------------------------
+1) RestFixture.completeHttpMethodExecution
+a) process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
+	calls
+	process(CellWrapper expected, object actual, RestDataTypeAdapter ta)
+
+StringTypeAdapter : RestDataTypeAdapter
+---------------------------------------
+1) RestFixture
+a) let()
+i) StringTypeAdapter adapter = new StringTypeAdapter();
+ii) adapter.set(sValue);
+iii) Formatter.check(valueCell, adapter);
+b) evalJs()
+i) StringTypeAdapter adapter = new StringTypeAdapter();
+ii )adapter.set(lastEvaluation);
+iii) Formatter.right(row.getCell(1), adapter);
+c) renderReplacement(CellWrapper<object> cell, string actual)
+i) StringTypeAdapter adapter = new StringTypeAdapter();
+    adapter.set(actual);
+    if (!adapter.Equals(actual, cell.body()))
+    {
+        // eg - a substitution has occurred
+        cell.body(actual);
+        Formatter.right(cell, adapter);
+    }
+
+TextBodyTypeAdapter : BodyTypeAdapter
+-------------------------------------
+1) BodyTypeAdapterFactory
+a) getBodyTypeAdapter(ContentType content, String charset)
+
+XPathBodyTypeAdapter : BodyTypeAdapter
+--------------------------------------
+1) BodyTypeAdapterFactory
+a) getBodyTypeAdapter(ContentType content, String charset)
+
+JSONBodyTypeAdapter : XPathBodyTypeAdapter
+------------------------------------------
+1) BodyTypeAdapterFactory
+a) getBodyTypeAdapter(ContentType content, String charset)

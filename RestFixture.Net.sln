@@ -12,6 +12,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestClient", "RestClient\RestClient.csproj", "{8F093637-0E71-4DE2-800B-A83984569112}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89-D6FF-44F3-83C8-CFF7AFBC0A68}"
+	ProjectSection(SolutionItems) = preProject
+		Notes\RestFixture_Notes.txt = Notes\RestFixture_Notes.txt
+		Notes\AdapterClassUsage.txt = Notes\AdapterClassUsage.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
