@@ -23,9 +23,6 @@ using RestFixture.Net.Support;
  */
 namespace RestFixture.Net
 {
-	using ActionFixture = fit.ActionFixture;
-	using Parse = fit.Parse;
-
 	/// <summary>
 	/// A <seealso cref="RestFixture"/> implementation for Fit runner. The class is simply an
 	/// <seealso cref="ActionFixture"/> implementation that delegates to an instance of
@@ -111,7 +108,7 @@ namespace RestFixture.Net
 		/// </summary>
 		public virtual void setMultipartFileName()
 		{
-			restFixture.setMultipartFileName();
+			restFixture.SetMultipartFileName();
 		}
 
 		/// <summary>
@@ -127,13 +124,6 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setFileName()"/>
-		/// </summary>
-		public virtual void setFileName()
-		{
-			restFixture.setFileName();
-		}
-
 		/// <summary>
 		/// delegates to <seealso cref="RestFixture#getFileName()"/>
 		/// </summary>
@@ -144,6 +134,11 @@ namespace RestFixture.Net
 			{
 				return restFixture.FileName;
 			}
+
+		    set
+		    {
+                restFixture.FileName = value;
+		    }
 		}
 
 		/// <summary>
