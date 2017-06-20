@@ -116,7 +116,7 @@ namespace RestFixture.Net.Support
 
 		private void injectFitNesseSymbolMap(ScriptableObject scope)
 		{
-			Variables v = variablesProvider.createRunnerVariables();
+			Variables v = variablesProvider.CreateRunnerVariables();
 			object wrappedVariables = Context.javaToJS(v, scope);
 			ScriptableObject.putProperty(scope, SYMBOLS_OBJ_NAME, wrappedVariables);
 		}

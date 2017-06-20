@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NLog;
 using RestFixture.Net.Support;
+using fit;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -34,7 +35,7 @@ namespace RestFixture.Net
 	{
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-		private RestFixture restFixture;
+        private CommonRestFixture restFixture;
 
 		public override string ToString()
 		{
@@ -42,7 +43,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// See <seealso cref="RestFixture#getLastEvaluation()"/>
+		/// See <seealso cref="CommonRestFixture#getLastEvaluation()"/>
 		/// </summary>
 		/// <returns> last JS evaluation </returns>
 		public virtual string LastEvaluation
@@ -63,7 +64,7 @@ namespace RestFixture.Net
             set { restFixture.BaseUrl = value; }
         }
 
-        /// <returns> delegates to <seealso cref="RestFixture.BaseUrlString"/> </returns>
+        /// <returns> delegates to <seealso cref="CommonRestFixture.BaseUrlString"/> </returns>
 		public virtual string BaseUrlString
 		{
 			get
@@ -78,7 +79,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getDefaultHeaders()"/>
+		/// delegates to <seealso cref="CommonRestFixture#getDefaultHeaders()"/>
 		/// </summary>
 		/// <returns> the default headers. </returns>
 		public virtual IDictionary<string, string> DefaultHeaders
@@ -90,7 +91,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getFormatter()"/>
+		/// delegates to <seealso cref="CommonRestFixture#getFormatter()"/>
 		/// </summary>
 		/// <returns> the cell formatter for Fit. </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
@@ -104,7 +105,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setMultipartFileName()"/>
+		/// delegates to <seealso cref="CommonRestFixture#setMultipartFileName()"/>
 		/// </summary>
 		public virtual void setMultipartFileName()
 		{
@@ -112,7 +113,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getMultipartFileName()"/>
+		/// delegates to <seealso cref="CommonRestFixture#getMultipartFileName()"/>
 		/// </summary>
 		/// <returns> the multipart filename to upload. </returns>
 		public virtual string MultipartFileName
@@ -124,8 +125,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getFileName()"/>
+		/// delegates to <seealso cref="CommonRestFixture#FileName()"/>
 		/// </summary>
 		/// <returns> the name of the file to upload </returns>
 		public virtual string FileName
@@ -142,7 +142,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setMultipartFileParameterName()"/>
+		/// delegates to <seealso cref="CommonRestFixture#setMultipartFileParameterName()"/>
 		/// </summary>
 		public virtual void setMultipartFileParameterName()
 		{
@@ -150,7 +150,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getMultipartFileParameterName()"/>
+		/// delegates to <seealso cref="CommonRestFixture#getMultipartFileParameterName()"/>
 		/// </summary>
 		/// <returns> the name of the parameter containing the multipart file to
 		///         upload. </returns>
@@ -163,7 +163,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setBody()"/>
+		/// delegates to <seealso cref="CommonRestFixture#setBody()"/>
 		/// </summary>
 		public virtual void setBody()
 		{
@@ -171,7 +171,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setHeader()"/>
+		/// delegates to <seealso cref="CommonRestFixture#setHeader()"/>
 		/// </summary>
 		public virtual void setHeader()
 		{
@@ -179,7 +179,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#setHeaders()"/>
+		/// delegates to <seealso cref="CommonRestFixture#setHeaders()"/>
 		/// </summary>
 		public virtual void setHeaders()
 		{
@@ -187,7 +187,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#PUT()"/>
+		/// delegates to <seealso cref="CommonRestFixture#PUT()"/>
 		/// </summary>
 		public virtual void PUT()
 		{
@@ -195,7 +195,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#GET()"/>
+		/// delegates to <seealso cref="CommonRestFixture#GET()"/>
 		/// </summary>
 		public virtual void GET()
 		{
@@ -203,7 +203,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#DELETE()"/>
+		/// delegates to <seealso cref="CommonRestFixture#DELETE()"/>
 		/// </summary>
 		public virtual void DELETE()
 		{
@@ -211,7 +211,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#POST()"/>
+		/// delegates to <seealso cref="CommonRestFixture#POST()"/>
 		/// </summary>
 		public virtual void POST()
 		{
@@ -219,7 +219,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#HEAD()"/>
+		/// delegates to <seealso cref="CommonRestFixture#HEAD()"/>
 		/// </summary>
 		public virtual void HEAD()
 		{
@@ -227,7 +227,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#OPTIONS()"/>
+		/// delegates to <seealso cref="CommonRestFixture#OPTIONS()"/>
 		/// </summary>
 		public virtual void OPTIONS()
 		{
@@ -235,7 +235,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#TRACE()"/>
+		/// delegates to <seealso cref="CommonRestFixture#TRACE()"/>
 		/// </summary>
 		public virtual void TRACE()
 		{
@@ -243,7 +243,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#let()"/>
+		/// delegates to <seealso cref="CommonRestFixture#let()"/>
 		/// </summary>
 		public virtual void let()
 		{
@@ -251,7 +251,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#comment()"/>
+		/// delegates to <seealso cref="CommonRestFixture#comment()"/>
 		/// </summary>
 		public virtual void comment()
 		{
@@ -259,7 +259,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#evalJs()"/>
+		/// delegates to <seealso cref="CommonRestFixture#evalJs()"/>
 		/// </summary>
 		public virtual void evalJs()
 		{
@@ -267,7 +267,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#processRow(RowWrapper)"/>
+		/// delegates to <seealso cref="CommonRestFixture#processRow(RowWrapper)"/>
 		/// </summary>
 		/// <param name="currentRow">
 		///            the row to process. </param>
@@ -277,7 +277,7 @@ namespace RestFixture.Net
 		}
 
 		/// <summary>
-		/// delegates to <seealso cref="RestFixture#getHeaders()"/>
+		/// delegates to <seealso cref="CommonRestFixture#getHeaders()"/>
 		/// </summary>
 		/// <returns> the headers. </returns>
 		public virtual IDictionary<string, string> Headers
@@ -294,14 +294,14 @@ namespace RestFixture.Net
 		{
 			if (restFixture == null)
 			{
-				restFixture = new RestFixture();
+                restFixture = new CommonRestFixture();
 				restFixture.Config = Config.getConfig(ConfigNameFromArgs);
 				string url = BaseUrlFromArgs;
 				if (!string.ReferenceEquals(url, null))
 				{
 					restFixture.BaseUrl = new Url(Tools.fromSimpleTag(url));
 				}
-				restFixture.initialize(RestFixture.Runner.FIT);
+                restFixture.initialize(CommonRestFixture.Runner.FIT);
 				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
 			}
             IRowWrapper currentRow = new FitRow(parse);

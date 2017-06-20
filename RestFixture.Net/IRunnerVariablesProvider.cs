@@ -31,7 +31,7 @@ namespace RestFixture.Net
 		/// Get a variable store linked to the current runner environment.
 		/// </summary>
 		/// <returns> the variables </returns>
-		Variables createRunnerVariables();
+		Variables CreateRunnerVariables();
 	}
 
 }

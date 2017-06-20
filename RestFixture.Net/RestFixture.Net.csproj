@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonRestFixture.cs" />
     <Compile Include="FitCell.cs" />
     <Compile Include="FitFormatter.cs" />
     <Compile Include="FitRestFixture.cs" />
