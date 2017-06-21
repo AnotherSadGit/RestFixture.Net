@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RestClient.Data;
 
 /*  Copyright 2017 SImon Elms
  *
@@ -22,10 +23,6 @@ using System.Text;
  */
 namespace RestFixture.Net.Support
 {
-
-
-	using RestData = smartrics.rest.client.RestData;
-
 	/// <summary>
 	/// Supported content types.
 	/// 
@@ -128,7 +125,8 @@ namespace RestFixture.Net.Support
 		///            the config </param>
 		public static void config(Config config)
 		{
-			RestData.DEFAULT_ENCODING = config.get("restfixture.content.default.charset", Charset.defaultCharset().name());
+			RestData.DEFAULT_ENCODING = config.get("restfixture.content.default.charset", 
+                Encoding.Default.EncodingName);
 			string htmlConfig = config.get("restfixture.content.handlers.map", "");
 			string configStr = Tools.fromHtml(htmlConfig);
 			IDictionary<string, string> map = Tools.convertStringToMap(configStr, "=", "\n", true);
@@ -139,7 +137,7 @@ namespace RestFixture.Net.Support
 				ContentType ct = ContentType.valueOf(enumName);
 				if (null == ct)
 				{
-					ContentType[] values = ContentType.values();
+					IList<ContentType> values = ContentType.values();
 					StringBuilder sb = new StringBuilder();
 					sb.Append("[");
 					foreach (ContentType cType in values)
@@ -147,7 +145,8 @@ namespace RestFixture.Net.Support
 						sb.Append("'").Append(cType.ToString()).Append("' ");
 					}
 					sb.Append("]");
-					throw new System.ArgumentException("I don't know how to handle " + value + ". Use one of " + values);
+                    throw new System.ArgumentException(
+                        "I don't know how to handle " + value + ". Use one of " + sb.ToString());
 				}
 				contentTypeToEnum[e.Key] = ct;
 			}
