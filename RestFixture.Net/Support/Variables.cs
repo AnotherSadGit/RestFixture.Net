@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using fit;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -30,22 +33,24 @@ namespace RestFixture.Net.Support
 	/// </summary>
 	public abstract class Variables
 	{
-		/// <summary>
-		/// pattern matching a variable name: {@code \%([a-zA-Z0-9_]+)\%}
-		/// </summary>
-		public static Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
-		// exclude 0-9, A-F from the first variable name as those are confused with URL encodings.
-		public static readonly Pattern VARIABLES_PATTERN = Pattern.compile("\\%([a-zG-Z_][a-zA-Z0-9_]*)\\%");
-		// original regex pattern, allowing all initial characters.
-		//	public static final Pattern VARIABLES_PATTERN = Pattern.compile("\\%([a-zA-Z0-9_]+)\\%");
-		private static readonly string FIT_NULL_VALUE = fitSymbolForNull();
-		protected internal string nullValue = "null";
+        /// <summary>
+        /// pattern matching a variable name: {@code \%([a-zA-Z0-9_]+)\%}
+        /// </summary>
+        public static Regex _specialCharactersRegex = new Regex("[{}()\\[\\].+*?^$\\\\|]", RegexOptions.Compiled);
+
+        // exclude 0-9, A-F from the first variable name as those are confused with URL encodings.
+        //  original regex pattern, allowing all initial characters: "\\%([a-zA-Z0-9_]+)\\%"
+        public static Regex _variablesRegex = new Regex("\\%([a-zG-Z_][a-zA-Z0-9_]*)\\%", RegexOptions.Compiled);
+
+		private static readonly string FIT_NULL_VALUE = (string)null;
+		protected internal string _nullValue = "null";
 
 		/// <summary>
 		/// initialises variables with default config. See @link
 		/// <seealso cref="#Variables(Config)"/>
 		/// </summary>
-		internal Variables() : this(Config.Config)
+        internal Variables()
+            : this(Config.getConfig())
 		{
 		}
 
@@ -59,7 +64,7 @@ namespace RestFixture.Net.Support
 		{
 			if (c != null)
 			{
-				this.nullValue = c.get("restfixture.null.value.representation", "null");
+				this._nullValue = c.get("restfixture.null.value.representation", "null");
 			}
 		}
 
@@ -83,56 +88,60 @@ namespace RestFixture.Net.Support
 		/// <returns> the substituted text. </returns>
 		public string substitute(string text)
 		{
-			if (string.ReferenceEquals(text, null))
+			if (text == null)
 			{
 				return null;
 			}
-			Matcher m = VARIABLES_PATTERN.matcher(text);
-			IDictionary<string, string> replacements = new Dictionary<string, string>();
-			while (m.find())
-			{
-				int gc = m.groupCount();
-				if (gc == 1)
-				{
-					string g0 = m.group(0);
-					string g1 = m.group(1);
-					string value = get(g1);
-					if (FIT_NULL_VALUE.Equals(value))
-					{
-						value = nullValue;
-					}
-					replacements[g0] = value;
-				}
-			}
-			string newText = text;
-			foreach (KeyValuePair<string, string> en in replacements.SetOfKeyValuePairs())
-			{
-				string k = en.Key;
-				string replacement = replacements[k];
-				if (!string.ReferenceEquals(replacement, null))
-				{
-					// this fixes issue #118
-					string sanitisedReplacement = SPECIAL_REGEX_CHARS.matcher(replacement).replaceAll("\\\\$0");
-					newText = newText.replaceAll(k, sanitisedReplacement);
-				}
-			}
-			return newText;
-		}
 
-		private static string fitSymbolForNull()
-		{
-			const string k = "somerandomvaluetogettherepresentationofnull-1234567890";
-			Fixture.setSymbol(k, null);
-			return Fixture.getSymbol(k).ToString();
+			IDictionary<string, string> replacements = new Dictionary<string, string>();
+		    MatchCollection matches = _variablesRegex.Matches(text);
+		    foreach (Match match in matches)
+		    {
+		        GroupCollection groups = match.Groups;
+                // First group is always the entire match so a match will always have at least one 
+                //  group.
+		        if (groups.Count == 2)
+		        {
+		            string textToSubstitute = groups[0].Value;
+                    string variableName = groups[1].Value;
+		            string variableValue = get(variableName);
+                    if (variableValue == FIT_NULL_VALUE)
+                    {
+                        variableValue = _nullValue;
+                    }
+                    replacements[textToSubstitute] = variableValue;
+		        }
+		    }
+
+			string newText = text;
+		    foreach (string textToSubstitute in replacements.Keys)
+		    {
+		        string replacement = replacements[textToSubstitute];
+
+		        if (replacement != null)
+		        {
+                    // Cope with text that appears to be a regex.  
+                    //  See https://github.com/smartrics/RestFixture/issues/118
+
+                    //TODO: Check that the substitution expression works. 
+                    //  The original Java substitution expression was "\\\\$0" but Java 
+                    //  substitution expressions can include character escapes while .NET ones 
+                    //  can't.  So the Java substitution expression "\\\\$0" probably 
+                    //  translates to "\\$0" in .NET.  But we need to check this.
+                    string sanitisedReplacement = _specialCharactersRegex.Replace(replacement, "\\$0");
+		            newText = newText.Replace(textToSubstitute, sanitisedReplacement);
+		        }
+            }
+            return newText;
 		}
 
 		/// <param name="s"> the string to process </param>
 		/// <returns> the null representation if the input is null. </returns>
 		public string replaceNull(string s)
 		{
-			if (string.ReferenceEquals(s, null))
+			if (s == null)
 			{
-				return nullValue;
+				return _nullValue;
 			}
 			return s;
 		}

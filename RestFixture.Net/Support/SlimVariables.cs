@@ -1,4 +1,6 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using System.Collections.Generic;
+
+/*  Copyright 2017 Simon Elms
  *
  *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -18,9 +20,6 @@
  */
 namespace RestFixture.Net.Support
 {
-
-	using StatementExecutorInterface = fitnesse.slim.StatementExecutorInterface;
-
 	/// <summary>
 	/// Facade to FitNesse global symbols map for SliM.
 	/// 
@@ -29,20 +28,12 @@ namespace RestFixture.Net.Support
 	public class SlimVariables : Variables
 	{
 
-		//private readonly StatementExecutorInterface executor;
+		private IDictionary<string, string> _symbols = new Dictionary<string, string>(); 
 
 	    /// <summary>
-	    /// initialises the variables. reade
-	    /// {@code restfixture.null.value.representation} to know how to render
-	    /// {@code null}s.
+	    /// initialises the variables.
 	    /// </summary>
 	    /// <param name="c">        the config object </param>
-	    /// <param name="executor"> the executor </param>
-	    //public SlimVariables(Config c, StatementExecutorInterface executor) : base(c)
-	    //{
-	    //    this.executor = executor;
-	    //}
-
 	    public SlimVariables(Config c) : base(c)
 	    {
 	    }
@@ -52,15 +43,15 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		/// <param name="label"> the symbol </param>
 		/// <param name="val">   the value to store </param>
-		public virtual void put(string label, string val)
+        public override void put(string label, string val)
 		{
-			if (string.ReferenceEquals(val, null) || val.Equals(base.nullValue))
+			if (string.ReferenceEquals(val, null) || val.Equals(base._nullValue))
 			{
-				executor.assign(label, null);
+				_symbols[label] = null;
 			}
 			else
 			{
-				executor.assign(label, val);
+				_symbols[label] = val;
 			}
 		}
 
@@ -69,16 +60,14 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		/// <param name="label"> the symbol </param>
 		/// <returns> the value. </returns>
-		public virtual string get(string label)
+		public override string get(string label)
 		{
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final Object symbol = executor.getSymbol(label);
-			object symbol = executor.getSymbol(label);
-			if (symbol == null)
+			string value = _symbols.GetValueOrNull(label);
+            if (value == null)
 			{
-				return base.nullValue;
+				return base._nullValue;
 			}
-			return symbol.ToString();
+            return value;
 		}
 
 	}

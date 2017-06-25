@@ -16,6 +16,9 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using fitSharp.Machine.Engine;
+
 namespace RestFixture.Net.Support
 {
 
@@ -28,6 +31,7 @@ namespace RestFixture.Net.Support
 	/// </summary>
 	public class FitVariables : Variables
 	{
+	    private static Symbols _symbols;
 
 		/// <summary>
 		/// initialises variables with default config. See @link
@@ -47,6 +51,11 @@ namespace RestFixture.Net.Support
 		{
 		}
 
+	    static FitVariables()
+	    {
+	        _symbols = new Fixture().Symbols;
+	    }
+
 		/// <summary>
 		/// puts a value.
 		/// </summary>
@@ -54,7 +63,7 @@ namespace RestFixture.Net.Support
 		/// <param name="val"> the value </param>
 		public override void put(string label, string val)
 		{
-			Fixture.setSymbol(label, val);
+			_symbols.Save(label, val);
 		}
 
 		/// <summary>
@@ -64,10 +73,10 @@ namespace RestFixture.Net.Support
 		/// <returns> the value. </returns>
 		public override string get(string label)
 		{
-			if (Fixture.hasSymbol(label))
-			{
-				return Fixture.getSymbol(label).ToString();
-			}
+			if (_symbols.HasValue(label))
+		    {
+                return (string)_symbols.GetValue(label);
+		    }
 			return null;
 		}
 
@@ -77,7 +86,7 @@ namespace RestFixture.Net.Support
 		/// </summary>
 		public virtual void clearAll()
 		{
-			Fixture.ClearSymbols();
+			_symbols.Clear();
 		}
 
 	}
