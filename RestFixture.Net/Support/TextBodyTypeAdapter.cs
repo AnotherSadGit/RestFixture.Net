@@ -59,7 +59,7 @@ namespace RestFixture.Net.Support
 					addError("no string match found: " + expected);
 				}
 			}
-			return Errors.size() == 0;
+			return Errors.Count == 0;
 		}
 
 		public override object parse(string s)

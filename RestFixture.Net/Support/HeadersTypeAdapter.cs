@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -22,10 +23,6 @@ using System.Text;
  */
 namespace RestFixture.Net.Support
 {
-
-
-	using Header = smartrics.rest.client.RestData.Header;
-
 	/// <summary>
 	/// Type adapter for HTTP header cell in a RestFixture table.
 	/// 
@@ -34,9 +31,6 @@ namespace RestFixture.Net.Support
 	/// </summary>
 	public class HeadersTypeAdapter : RestDataTypeAdapter
 	{
-
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Override @SuppressWarnings("unchecked") public boolean equals(Object expectedObj, Object actualObj)
 		public override bool Equals(object expectedObj, object actualObj)
 		{
 			if (expectedObj == null || actualObj == null)
@@ -46,22 +40,22 @@ namespace RestFixture.Net.Support
 			// r1 and r2 are Map<String, String> containing either the header
 			// from the HTTP response or the data value in the expected cell
 			// equals checks for r1 being a subset of r2
-			ICollection<Header> expected = (ICollection<Header>) expectedObj;
-			ICollection<Header> actual = (ICollection<Header>) actualObj;
-			foreach (Header k in expected)
+			ICollection<RestData.Header> expected = (ICollection<RestData.Header>) expectedObj;
+			ICollection<RestData.Header> actual = (ICollection<RestData.Header>) actualObj;
+			foreach (RestData.Header k in expected)
 			{
-				Header aHdr = find(actual, k);
+				RestData.Header aHdr = find(actual, k);
 				if (aHdr == null)
 				{
 					addError("not found: [" + k.Name + " : " + k.Value + "]");
 				}
 			}
-			return Errors.size() == 0;
+			return Errors.Count == 0;
 		}
 
-		private Header find(ICollection<Header> actual, Header k)
+		private RestData.Header find(ICollection<RestData.Header> actual, RestData.Header k)
 		{
-			foreach (Header h in actual)
+			foreach (RestData.Header h in actual)
 			{
 				bool nameMatches = h.Name.Equals(k.Name);
 				bool valueMatches = Tools.regex(h.Value, k.Value);
@@ -73,23 +67,21 @@ namespace RestFixture.Net.Support
 			return null;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: @Override public Object parse(String s) throws Exception
 		public override object parse(string s)
 		{
 			// parses a cell content as a map of headers.
 			// syntax is name:value\n*
-			IList<Header> expected = new List<Header>();
+			IList<RestData.Header> expected = new List<RestData.Header>();
 			if (!"".Equals(s.Trim()))
 			{
 				string expStr = Tools.fromHtml(s.Trim());
-				string[] nvpArray = expStr.Split("\n", true);
+				string[] nvpArray = expStr.Split(new char[] {'\n'});
 				foreach (string nvp in nvpArray)
 				{
 					try
 					{
-						string[] nvpEl = nvp.Split(":", 2);
-						expected.Add(new Header(nvpEl[0].Trim(), nvpEl[1].Trim()));
+						string[] nvpEl = nvp.Split(new char[] {':'}, 2);
+						expected.Add(new RestData.Header(nvpEl[0].Trim(), nvpEl[1].Trim()));
 					}
 					catch (Exception)
 					{
@@ -100,13 +92,11 @@ namespace RestFixture.Net.Support
 			return expected;
 		}
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Override @SuppressWarnings("unchecked") public String toString(Object obj)
 		public override string ToString(object obj)
 		{
 			StringBuilder b = new StringBuilder();
-			IList<Header> list = (IList<Header>) obj;
-			foreach (Header h in list)
+			IList<RestData.Header> list = (IList<RestData.Header>) obj;
+			foreach (RestData.Header h in list)
 			{
 				b.Append(h.Name).Append(" : ").Append(h.Value).Append("\n");
 			}

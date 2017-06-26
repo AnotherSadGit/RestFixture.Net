@@ -84,7 +84,7 @@ namespace RestFixture.Net.Support
 					throw new System.ArgumentException("Cannot evaluate '" + expr + "' in " + actual.ToString(), e);
 				}
 			}
-			return Errors.size() == 0;
+			return Errors.Count == 0;
 		}
 
 		protected internal virtual bool eval(string expr, string content)

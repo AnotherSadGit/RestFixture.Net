@@ -21,9 +21,7 @@ using System.Collections.Generic;
  */
 namespace RestFixture.Net.Support
 {
-
-
-	using TypeAdapter = fit.TypeAdapter;
+    //using TypeAdapter = fit.TypeAdapter;
 
 	/// <summary>
 	/// Base class for all Type Adapters used by RestFixture.
@@ -31,7 +29,7 @@ namespace RestFixture.Net.Support
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public abstract class RestDataTypeAdapter : TypeAdapter, fitnesse.slim.Converter
+	public abstract class RestDataTypeAdapter : TypeAdapter
 	{
 		private readonly IList<string> errors = new List<string>();
 
@@ -60,11 +58,11 @@ namespace RestFixture.Net.Support
 		}
 
 		/// <returns> an unmodifiable list of errors. </returns>
-		public virtual IList<string> Errors
+        public virtual IReadOnlyList<string> Errors
 		{
 			get
 			{
-				return Collections.unmodifiableList(errors);
+				return errors as IReadOnlyList<string>;
 			}
 		}
 
@@ -93,7 +91,6 @@ namespace RestFixture.Net.Support
 			}
 			catch (Exception)
 			{
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 				throw new Exception("Unable to parse as " + this.GetType().FullName + ": " + o);
 			}
 		}
