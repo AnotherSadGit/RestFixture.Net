@@ -190,20 +190,16 @@ namespace RestFixture.Net.Support
             set { field.SetValue(target, value); }
         }
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public Object invoke() throws IllegalAccessException, InvocationTargetException
         public virtual object invoke()
         {
             object[] @params = new object[] { };
             return method.Invoke(target, @params);
         }
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public Object parse(String s) throws Exception
         public virtual object parse(string s)
         {
             object obj;
-            obj = isRegex ? s : fixture.parse(s, type);
+            obj = isRegex ? s : Tools.parse(s, type);
             return obj;
         }
 

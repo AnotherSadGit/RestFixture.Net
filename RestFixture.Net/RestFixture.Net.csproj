@@ -123,6 +123,7 @@
     <Compile Include="Support\TextBodyTypeAdapter.cs" />
     <Compile Include="Support\Tools.cs" />
     <Compile Include="Support\TypeAdapter.cs" />
+    <Compile Include="Support\TypeParseException.cs" />
     <Compile Include="Support\Url.cs" />
     <Compile Include="Support\Variables.cs" />
     <Compile Include="Support\XPathBodyTypeAdapter.cs" />
