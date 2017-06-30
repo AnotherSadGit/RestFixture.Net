@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using fit;
 using RestClient.Data;
 
@@ -186,6 +187,8 @@ namespace RestFixture.Net.Support
                 {
                     return invoke();
                 }
+
+                return null;
             }
             set { field.SetValue(target, value); }
         }
@@ -211,7 +214,7 @@ namespace RestFixture.Net.Support
             {
                 if (b != null)
                 {
-                    isEqual = Pattern.matches(a.ToString(), b.ToString());
+                    isEqual = Regex.IsMatch(a.ToString(), b.ToString());
                 }
             }
             else
@@ -285,11 +288,10 @@ namespace RestFixture.Net.Support
 
         internal class ByteAdapter : ClassByteAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setByte(target, ((sbyte?)i).Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (sbyte?)value); }
             }
         }
 
@@ -303,11 +305,10 @@ namespace RestFixture.Net.Support
 
         internal class ShortAdapter : ClassShortAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setShort(target, ((short?)i).Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (short?)value); }
             }
         }
 
@@ -321,11 +322,10 @@ namespace RestFixture.Net.Support
 
         internal class IntAdapter : ClassIntegerAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setInt(target, ((int?)i).Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (int?)value); }
             }
         }
 
@@ -339,11 +339,10 @@ namespace RestFixture.Net.Support
 
         internal class LongAdapter : ClassLongAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: public void set(Nullable<long> i) throws IllegalAccessException
-            public virtual void set(long? i)
+            public override object Target
             {
-                field.setLong(target, i.Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (long?)value); }
             }
         }
 
@@ -357,11 +356,10 @@ namespace RestFixture.Net.Support
 
         internal class FloatAdapter : ClassFloatAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setFloat(target, ((Number)i).floatValue());
+                get { return base.Target; }
+                set { field.SetValue(target, (float?)value); }
             }
 
             public override object parse(string s)
@@ -380,11 +378,10 @@ namespace RestFixture.Net.Support
 
         internal class DoubleAdapter : ClassDoubleAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setDouble(target, ((Number)i).doubleValue());
+                get { return base.Target; }
+                set { field.SetValue(target, (double?)value); }
             }
 
             public override object parse(string s)
@@ -403,11 +400,10 @@ namespace RestFixture.Net.Support
 
         internal class CharAdapter : ClassCharacterAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setChar(target, ((char?)i).Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (char?)value); }
             }
         }
 
@@ -421,11 +417,10 @@ namespace RestFixture.Net.Support
 
         internal class BooleanAdapter : ClassBooleanAdapter
         {
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public void set(Object i) throws IllegalAccessException
-            public override void set(object i)
+            public override object Target
             {
-                field.setBoolean(target, ((bool?)i).Value);
+                get { return base.Target; }
+                set { field.SetValue(target, (bool?)value); }
             }
         }
 
