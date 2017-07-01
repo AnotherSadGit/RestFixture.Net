@@ -1,0 +1,68 @@
+CLONING .NET OBJECTS
+====================
+Simon Elms, 1 Jul 2017
+
+In Java the object type has a clone() method.  If a class implements the Cloneable interface 
+then calling super.clone() from within an instance of the class will call object.clone().  This 
+will clone (perform a deep copy of) the instance. 
+
+It's not so simple in .NET.  .NET has no built-in method that will do a deep copy of an object.  
+object.MemberwiseClone() will perform a shallow copy.  This will copy fields that are value types 
+and copy references to fields that are reference types.  The reference type fields in the copied 
+object will not be indepedent of the original object: Changing the value of a reference type field 
+in one object will change the value of the field in the other object.
+
+Various approaches have been developed to perform a deep copy of a .NET object.  Some of them are:
+
+1) AutoMapper: Use the AutoMapper NuGet package to clone an object;
+
+2) Binary Serializer: Serialize the object then deserialize it.  The deserialized object will be a 
+deep copy of the original object.  See http://stackoverflow.com/a/1213649;
+
+3) JSON Serializer: Similar to binary serialization but serializes the object into JSON.  Use a 
+NuGet package like Json.NET;
+
+4) Hybrid JSON Serializer: Json.NET can be slow so use the faster NuGet package System.Text.Json 
+for deserialization.  System.Text.Json can only deserialize so Json.NET will still be needed for 
+serialization;
+
+5) Nested MemberwiseClone: Requires that the class has a method named something like DeepCopy() 
+which performs a MemberwiseClone of the object.  If any of the properties or fields of the class 
+are reference types then those types will each need a DeepCopy() method which will be called from 
+the parent class' DeepCopy().  If any of the child types have properties or fields that are 
+themselves reference types then those reference types will also need DeepCopy() methods.  And so on 
+until types are reached which only have value types for properties and fields.  
+See http://stackoverflow.com/a/8683002
+
+6) Reflection: An extension method for the object type that uses reflection to perform a deep 
+copy.  See https://github.com/Burtsev-Alexey/net-object-deep-copy
+
+7) FastClone: Use the FastClone library to perform a deep copy.  The source code can be downloaded 
+from http://fastclone.codeplex.com/ (at least until Codeplex is shut down.  It appears Ymris has 
+not ported the source code to GitHub so once Codeplex is shut down it may be hard to obtain);
+
+8) CloneExtensions: Use the Nuget package CloneExtensions to perform a deep copy.
+
+Speed Comparison
+----------------
+250,000 clone opeartions were performed with each deep copy method above to see which was fastest.
+The results are:
+    AutoMapper:					11,839 ms
+    Binary Serializer			17,223 ms
+    JSON Serializer				12,894 ms
+    Hybrid JSON Serializer		 7,892 ms
+    Nested MemberwiseClone		   119 ms
+    Reflection					 3,959 ms
+    FastClone					   611 ms
+    CloneExtensions				 1,141 ms
+
+The fastest method by far is Nested MemberwiseClone.  However, this involves modifying every class 
+that may possibly need to be cloned so it's not a generalized approach. 
+
+The second fastest method is to use the FastClone library.  Unfortunately the developer appears to 
+have abandoned the code and hasn't posted a NuGet package for it.  The code can be downloaded and 
+included in a solution as a separate class library project, though.
+
+A third alternative would be to use the CloneExtensions NuGet package.  This is almost twice as 
+slow as the FastClone library but if it's fast enough for your particular scenario it has the 
+advantage of simplicity: Just install the package and you're ready to go. 
