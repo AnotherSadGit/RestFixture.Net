@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using fit;
+using FastClone;
 using RestClient.Data;
 
 // Modified or written by Object Mentor, Inc. for inclusion with FitNesse.
@@ -99,11 +101,11 @@ namespace RestFixture.Net.Support
                 object @delegate = PARSE_DELEGATES[type];
                 if (@delegate is DelegateClassAdapter)
                 {
-                    return (TypeAdapter)((DelegateClassAdapter)@delegate).clone();
+                    return (TypeAdapter)((DelegateClassAdapter)@delegate).Clone();
                 }
                 if (@delegate is DelegateObjectAdapter)
                 {
-                    return (TypeAdapter)((DelegateObjectAdapter)@delegate).clone();
+                    return (TypeAdapter)((DelegateObjectAdapter)@delegate).Clone();
                 }
                 if (type.Equals(typeof(Byte)))
                 {
@@ -469,52 +471,61 @@ namespace RestFixture.Net.Support
                 componentAdapter = on(target, componentType);
             }
 
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public Object parse(String s) throws Exception
             public override object parse(string s)
             {
-                StringTokenizer t = new StringTokenizer(s, ",");
-                object array = Array.CreateInstance(componentType, t.countTokens());
-                for (int i = 0; t.hasMoreTokens(); i++)
+                string[] stringArray = s.Split(new char[] {','});
+                Array array = Array.CreateInstance(componentType, stringArray.Length);
+                for (int i = 0; i < stringArray.Length; i++)
                 {
-                    ((System.Array)array).SetValue(componentAdapter.parse(t.nextToken().Trim()), i);
+                    array.SetValue(componentAdapter.parse(stringArray[i].Trim()), i);
                 }
                 return array;
             }
 
             public override string ToString(object o)
             {
+                object[] array = o as object[];
+
                 if (o == null)
                 {
                     return "";
                 }
-                int length = Array.getLength(o);
-                StringBuilder b = new StringBuilder(5 * length);
-                for (int i = 0; i < length; i++)
-                {
-                    b.Append(componentAdapter.ToString(Array.get(o, i)));
-                    if (i < (length - 1))
-                    {
-                        b.Append(", ");
-                    }
-                }
-                return b.ToString();
+
+                IEnumerable<string> strings = array.Select(obj => componentAdapter.ToString(obj));
+                string commaSeparatedList = string.Join(", ", strings);
+                return commaSeparatedList;
             }
 
             public override bool Equals(object a, object b)
             {
-                int length = Array.getLength(a);
-                if (length != Array.getLength(b))
+                if (a == null && b == null)
+                {
+                    return true;
+                }
+
+                object[] arrayA = a as object[];
+                object[] arrayB = b as object[];
+
+                if (arrayA == null || arrayB == null)
                 {
                     return false;
                 }
+
+                int length = arrayA.Length;
+
+                if (length != arrayB.Length)
+                {
+                    return false;
+                }
+
                 for (int i = 0; i < length; i++)
                 {
-                    if (!componentAdapter.Equals(Array.get(a, i), Array.get(b, i)))
+                    if (!componentAdapter.Equals(arrayA[i], arrayB[i]))
                     {
                         return false;
                     }
                 }
+
                 return true;
             }
         }
@@ -523,32 +534,35 @@ namespace RestFixture.Net.Support
         {
             internal MethodInfo parseMethod;
 
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: public DelegateClassAdapter(Class parseDelegate) throws SecurityException, NoSuchMethodException
             public DelegateClassAdapter(Type parseDelegate)
             {
                 this.parseMethod = parseDelegate.GetMethod("parse", new Type[] { typeof(string) });
-                int modifiers = parseMethod.Modifiers;
-                if (!Modifier.isStatic(modifiers) || !Modifier.isPublic(modifiers) || parseMethod.ReturnType == typeof(Void))
+
+                // The logic here seems wrong, like it will always fail.  However, that was what 
+                //  it was in the original Java implementation.
+                // if (!Modifier.isStatic(modifiers) || !Modifier.isPublic(modifiers) || parseMethod.ReturnType == typeof(Void))
+                if (!parseMethod.IsStatic || !parseMethod.IsPublic
+                    || parseMethod.ReturnType == typeof(Void))
                 {
-                    throw new NoSuchMethodException();
+                    // Original Java implementation threw a NoSuchMethodException but .NET has no 
+                    //  similar exception.
+                    throw new TargetException(
+                        "Invalid method: Method is either not static, not public, or returns void");
                 }
             }
 
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public Object parse(String s) throws Exception
             public override object parse(string s)
             {
-                return parseMethod.invoke(null, new object[] { s });
+                return parseMethod.Invoke(null, new object[] { s });
             }
 
-            protected internal override object clone()
+            public object Clone()
             {
                 try
                 {
-                    return base.clone();
+                    return Cloner.Clone(this);
                 }
-                catch (CloneNotSupportedException)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -560,28 +574,24 @@ namespace RestFixture.Net.Support
             internal object @delegate;
             internal MethodInfo parseMethod;
 
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: public DelegateObjectAdapter(Object delegate) throws SecurityException, NoSuchMethodException
             public DelegateObjectAdapter(object @delegate)
             {
                 this.@delegate = @delegate;
                 this.parseMethod = @delegate.GetType().GetMethod("parse", new Type[] { typeof(string) });
             }
 
-            //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-            //ORIGINAL LINE: @Override public Object parse(String s) throws Exception
             public override object parse(string s)
             {
-                return parseMethod.invoke(@delegate, new object[] { s });
+                return parseMethod.Invoke(@delegate, new object[] { s });
             }
 
-            protected internal override object clone()
+            public object Clone()
             {
                 try
                 {
-                    return base.clone();
+                    return Cloner.Clone(this);
                 }
-                catch (CloneNotSupportedException)
+                catch (Exception)
                 {
                     return null;
                 }
