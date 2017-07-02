@@ -33,26 +33,28 @@ namespace RestFixture.Net.Support
 	{
 		private readonly IList<string> errors = new List<string>();
 
-		private object actual;
+		//private object actual;
 
 		private IDictionary<string, string> context;
 
 		public override string ToString()
 		{
-			return ToString(get());
+			return ToString(this.Target);
 		}
 
-		public override void set(object a)
-		{
-			this.actual = a;
-		}
+        //public override void set(object a)
+        //{
+        //    this.actual = a;
+        //}
 
-		public override object get()
-		{
-			return actual;
-		}
+        //public override object get()
+        //{
+        //    return actual;
+        //}
 
-		protected internal virtual void addError(string e)
+	    public override object Target { get; set; }
+
+	    protected internal virtual void addError(string e)
 		{
 			errors.Add(e);
 		}

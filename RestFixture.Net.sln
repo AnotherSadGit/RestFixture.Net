@@ -15,7 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89-D6FF-44F3-83C8-CFF7AFBC0A68}"
 	ProjectSection(SolutionItems) = preProject
 		Notes\AdapterClassUsage.txt = Notes\AdapterClassUsage.txt
-		CLoning_Notes.txt = CLoning_Notes.txt
+		Cloning_Notes.txt = Cloning_Notes.txt
 		Notes\RestFixture_Notes.txt = Notes\RestFixture_Notes.txt
 	EndProjectSection
 EndProject

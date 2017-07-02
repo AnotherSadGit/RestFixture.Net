@@ -76,7 +76,6 @@
     <Compile Include="FitFormatter.cs" />
     <Compile Include="FitRestFixture.cs" />
     <Compile Include="FitRow.cs" />
-    <Compile Include="HashMapHelperClass.cs" />
     <Compile Include="PartsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestFixture.cs" />
@@ -86,15 +85,15 @@
     <Compile Include="SlimFormatter.cs" />
     <Compile Include="SlimRow.cs" />
     <Compile Include="StringHelperClass.cs" />
-    <Compile Include="Support\BodyTypeAdapter.cs" />
-    <Compile Include="Support\BodyTypeAdapterFactory.cs" />
+    <Compile Include="TypeAdapters\BodyTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\BodyTypeAdapterFactory.cs" />
     <Compile Include="Support\ICellFormatter.cs" />
     <Compile Include="Support\ICellWrapper.cs" />
     <Compile Include="Support\Config.cs" />
     <Compile Include="Support\ContentType.cs" />
-    <Compile Include="Support\FitVariables.cs" />
+    <Compile Include="Variables\FitVariables.cs" />
     <Compile Include="Support\HashMapHelperClass.cs" />
-    <Compile Include="Support\HeadersTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\HeadersTypeAdapter.cs" />
     <Compile Include="Support\HttpClientBuilder.cs" />
     <Compile Include="Support\Http\DeleteMethod.cs" />
     <Compile Include="Support\Http\GetMethod.cs" />
@@ -106,27 +105,27 @@
     <Compile Include="Support\Http\URIBuilder.cs" />
     <Compile Include="Support\JavascriptException.cs" />
     <Compile Include="Support\JavascriptWrapper.cs" />
-    <Compile Include="Support\JSONBodyTypeAdapter.cs" />
-    <Compile Include="Support\LetBodyConstHandler.cs" />
-    <Compile Include="Support\LetBodyHandler.cs" />
-    <Compile Include="Support\LetBodyJsHandler.cs" />
-    <Compile Include="Support\LetBodyXmlHandler.cs" />
-    <Compile Include="Support\ILetHandler.cs" />
-    <Compile Include="Support\LetHandlerFactory.cs" />
-    <Compile Include="Support\LetHeaderHandler.cs" />
-    <Compile Include="Support\RestDataTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\JSONBodyTypeAdapter.cs" />
+    <Compile Include="Handlers\LetBodyConstHandler.cs" />
+    <Compile Include="Handlers\LetBodyHandler.cs" />
+    <Compile Include="Handlers\LetBodyJsHandler.cs" />
+    <Compile Include="Handlers\LetBodyXmlHandler.cs" />
+    <Compile Include="Handlers\ILetHandler.cs" />
+    <Compile Include="Handlers\LetHandlerFactory.cs" />
+    <Compile Include="Handlers\LetHeaderHandler.cs" />
+    <Compile Include="TypeAdapters\RestDataTypeAdapter.cs" />
     <Compile Include="Support\IRowWrapper.cs" />
-    <Compile Include="Support\SlimVariables.cs" />
-    <Compile Include="Support\StatusCodeTypeAdapter.cs" />
+    <Compile Include="Variables\SlimVariables.cs" />
+    <Compile Include="TypeAdapters\StatusCodeTypeAdapter.cs" />
     <Compile Include="Support\StringHelperClass.cs" />
-    <Compile Include="Support\StringTypeAdapter.cs" />
-    <Compile Include="Support\TextBodyTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\StringTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\TextBodyTypeAdapter.cs" />
     <Compile Include="Support\Tools.cs" />
-    <Compile Include="Support\TypeAdapter.cs" />
+    <Compile Include="TypeAdapters\TypeAdapter.cs" />
     <Compile Include="Support\TypeParseException.cs" />
     <Compile Include="Support\Url.cs" />
-    <Compile Include="Support\Variables.cs" />
-    <Compile Include="Support\XPathBodyTypeAdapter.cs" />
+    <Compile Include="Variables\Variables.cs" />
+    <Compile Include="TypeAdapters\XPathBodyTypeAdapter.cs" />
     <Compile Include="SvgImage.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +138,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FastClone\FastClone.csproj">
+      <Project>{19ad251e-12e8-4ba0-882e-a84c194ca217}</Project>
+      <Name>FastClone</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RestClient\RestClient.csproj">
       <Project>{8f093637-0e71-4de2-800b-a83984569112}</Project>
       <Name>RestClient</Name>

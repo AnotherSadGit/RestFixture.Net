@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using smartrics.rest.fitnesse.fixture.support;
-
 /*  Copyright 2017 Simon Elms
  *
  *  This file is part of RestFixture.Net, a .NET port of the original Java 
