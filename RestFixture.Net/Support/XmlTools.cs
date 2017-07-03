@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using System.Xml.XPath;
 
 /*  Copyright 2017 Simon Elms
@@ -39,10 +40,44 @@ namespace RestFixture.Net.Support
 	using SAXException = org.xml.sax.SAXException;
 
     /// <summary>
+    /// Specifies the type of object returned when evaluating an XPath expression that has been 
+    /// applied to an XML document.
+    /// </summary>
+    /// <remarks>Based on the Java XPathConstants class, used in the Java implementation of this 
+    /// class.</remarks>
+    public enum XPathEvaluationReturnType
+    {
+        Boolean = 0,
+        Node,
+        Nodeset,
+        Number, 
+        String
+    }
+
+    /// <summary>
     /// Misc tool methods for  xml and xpath manipulation.
     /// </summary>
     public sealed class XmlTools
     {
+        private static IDictionary<XPathEvaluationReturnType, Type> _returnTypeMappings =
+                new Dictionary<XPathEvaluationReturnType, Type>();
+
+        private static IDictionary<XPathEvaluationReturnType, Type> ReturnTypeMappings
+        {
+            get
+            {
+                if (_returnTypeMappings.Count <= 0)
+                {
+                    _returnTypeMappings.Add(XPathEvaluationReturnType.Boolean, typeof(bool));
+                    _returnTypeMappings.Add(XPathEvaluationReturnType.Nodeset, typeof(XPathNodeIterator));
+                    _returnTypeMappings.Add(XPathEvaluationReturnType.Node, typeof(XPathNodeIterator));
+                    _returnTypeMappings.Add(XPathEvaluationReturnType.Number, typeof(double));
+                    _returnTypeMappings.Add(XPathEvaluationReturnType.String, typeof(string));
+                }
+
+                return _returnTypeMappings;
+            }
+        }
 
         /// <param name="ns">              the name space </param>
         /// <param name="xpathExpression"> the expression </param>
@@ -50,7 +85,7 @@ namespace RestFixture.Net.Support
         /// <returns> the list of nodes matching the supplied XPath. </returns>
         public static NodeList extractXPath(IDictionary<string, string> ns, string xpathExpression, string content)
         {
-            return (NodeList)extractXPath(ns, xpathExpression, content, XPathConstants.NODESET, null);
+            return (NodeList)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
         }
 
         /// <param name="ns"> the namespaces map </param>
@@ -61,14 +96,14 @@ namespace RestFixture.Net.Support
         public static NodeList extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
             string encoding)
         {
-            return (NodeList)extractXPath(ns, xpathExpression, content, XPathConstants.NODESET, encoding);
+            return (NodeList)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
         }
 
         /// <param name="xpathExpression"> the xpath </param>
         /// <param name="content"> the content </param>
         /// <param name="returnType"> the result type </param>
         /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static object extractXPath(string xpathExpression, string content, QName returnType)
+        public static object extractXPath(string xpathExpression, string content, XPathEvaluationReturnType returnType)
         {
             return extractXPath(xpathExpression, content, returnType, null);
         }
@@ -78,57 +113,122 @@ namespace RestFixture.Net.Support
         /// <param name="returnType"> the result type </param>
         /// <param name="encoding"> the encoding/charset </param>
         /// <returns> the list of nodes mathching the supplied XPath. </returns>
-        public static object extractXPath(string xpathExpression, string content, QName returnType, string encoding)
+        public static object extractXPath(string xpathExpression, string content, XPathEvaluationReturnType returnType, string encoding)
         {
             // Use the java Xpath API to return a NodeList to the caller so they can
             // iterate through
-            return extractXPath(new Dictionary<string, string>(), xpathExpression, content, returnType, encoding);
-        }
-
-        /// <param name="ns">              the namespaces map </param>
-        /// <param name="xpathExpression"> the XPath expression </param>
-        /// <param name="content">         the content </param>
-        /// <param name="returnType">      the return type </param>
-        /// <returns> the list of nodes mathching the supplied XPath. </returns>
-        public static object extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
-            QName returnType)
-        {
-            return extractXPath(ns, xpathExpression, content, returnType, null);
+            return extractXPath(new Dictionary<string, string>(), xpathExpression, content, returnType);
         }
 
         /// <summary>
-        /// extract the XPath from the content. the return value type is passed in
-        /// input using one of the <seealso cref="XPathConstants"/>. See also
-        /// <seealso cref="XPathExpression#evaluate(Object item, QName returnType)"/> ;
+        /// extract the XPath from the content. the return value type is passed in input.
         /// </summary>
         /// <param name="ns">              the namespaces map </param>
         /// <param name="xpathExpression"> the XPath expression </param>
         /// <param name="content">         the content </param>
         /// <param name="returnType">      the return type </param>
-        /// <param name="charset">         the charset </param>
         /// <returns> the result </returns>
-        public static object extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
-            QName returnType, string charset)
+        public static object extractXPath(IDictionary<string, string> ns, string xpathExpression, 
+            string content, XPathEvaluationReturnType returnType)
         {
-            if (null == ns)
+            // The original Java implementation had a charset parameter for this method.  However, 
+            //  in .NET charset or encoding does not need to be specified as the content being 
+            //  parsed is a .NET string, which does not have encoding associated with it.  It would 
+            //  be different if we had to parse the contents of a stream or a file.
+
+            using (StringReader sr = new StringReader(content))
+            using (XmlReader xr = XmlReader.Create(sr))
             {
-                ns = new Dictionary<string, string>();
+                XPathDocument document = new XPathDocument(xr);
+                XPathNavigator navigator = document.CreateNavigator();
+
+                // There are a couple of overloads of XPathNavigator.Evaluate(xpath):
+                //  1) Evaluate(string xpath, IXmlNamespaceResolver resolver), where 
+                //      IXmlNamespaceResolver is usually an XmlNamespaceManager;
+                //  2) Evaluate(string xpath)
+                // Under the hood both compile the arguments into an XPathExpression object, using   
+                //  XPathExpression.Compile(string xpath, IXmlNamespaceResolver nsResolver).  When 
+                //  XPathNavigator.Evaluate(string xpath) calls XPathExpression.Compile it passes 
+                //  null for the nsResolver argument.  So we can use 
+                //  XPathNavigator.Evaluate(string xpath, IXmlNamespaceResolver resolver) for all 
+                //  scenarios and just pass null into resolver if we have no namespaces.
+                XmlNamespaceManager namespaceManager = GetNamespaceManager(ns, xr.NameTable);
+                object result = null;
+                try
+                {
+                    result = navigator.Evaluate(xpathExpression, namespaceManager);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ArgumentException(
+                        "xPath expression would return a node set: " + xpathExpression,
+                        ex);
+                }
+                catch (XPathException ex)
+                {
+                    throw new ArgumentException(
+                        "xPath expression is not valid: " + xpathExpression);
+                }
+
+                CheckExtractionReturnType(result, returnType);
+
+                if (returnType == XPathEvaluationReturnType.Node)
+                {
+                    XPathNodeIterator iterator = (XPathNodeIterator) result;
+                    iterator.MoveNext();
+                    XPathNavigator singleIteratorNode = iterator.Current;
+                    return singleIteratorNode;
+                }
+
+                return result;
             }
-            string ch = charset;
-            if (string.ReferenceEquals(ch, null))
+        }
+
+        private static XmlNamespaceManager GetNamespaceManager(IDictionary<string, string> ns, 
+            XmlNameTable nameTable)
+        {
+            if (ns == null || ns.Keys.Count <= 0)
             {
-                ch = Charset.defaultCharset().name();
+                return null;
             }
-            Document doc = toDocument(content, ch);
-            XPathExpression expr = toExpression(ns, xpathExpression);
-            try
+
+            XmlNamespaceManager namespaceManager = new XmlNamespaceManager(nameTable);
+            foreach (string prefix in ns.Keys)
             {
-                object o = expr.evaluate(doc, returnType);
-                return o;
+                namespaceManager.AddNamespace(prefix, ns[prefix]);
             }
-            catch (XPathExpressionException)
+
+            return namespaceManager;
+        }
+
+        private static void CheckExtractionReturnType(object returnValue, 
+            XPathEvaluationReturnType expectedReturnType)
+        {
+            // According to https://docs.microsoft.com/en-us/dotnet/api/system.xml.xpath.xpathnavigator.evaluate?view=netframework-4.5
+            //  XPathNavigator.Evaluate can only return one of the following data types: 
+            //  bool, double, string or XPathNodeIterator.  These correspond to the values of the 
+            //  XPathEvaluationReturnType enum, where XPathNodeIterator can represent a Nodeset or 
+            //  a Node.
+
+            IDictionary<XPathEvaluationReturnType, Type> returnTypeMappings = ReturnTypeMappings;
+
+            string errorMessage = null;
+
+            Type expectedType = returnTypeMappings.GetValueOrNull(expectedReturnType);
+            if (expectedType == null)
             {
-                throw new System.ArgumentException("xPath expression cannot be executed: " + xpathExpression);
+                errorMessage = string.Format("Invalid return type.  "
+                                            + "Result of XPath evaluation cannot return type {0}.",
+                    expectedReturnType);
+                throw new ArgumentException(errorMessage);
+            }
+
+            Type actualType = returnValue.GetType();
+            if (actualType != expectedType)
+            {
+                errorMessage = string.Format("XPath expression return type {0} does not match the "
+                            + "supplied return type {1}.", actualType.FullName, expectedReturnType);
+                throw new XPathException(errorMessage);
             }
         }
 
