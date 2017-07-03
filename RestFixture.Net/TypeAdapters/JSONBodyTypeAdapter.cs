@@ -47,7 +47,7 @@ namespace RestFixture.Net.Support
 		protected internal override bool eval(string expr, string json)
 		{
 			// for backward compatibility we should keep for now xpath expectations
-			if (!forceJsEvaluation && Tools.isValidXPath(Context, expr) && !wrapper.looksLikeAJsExpression(expr))
+			if (!forceJsEvaluation && XmlTools.isValidXPath(Context, expr) && !wrapper.looksLikeAJsExpression(expr))
 			{
 				throw new System.ArgumentException("XPath expectations in JSON content are not supported anymore. Please use JavaScript expressions.");
 			}
@@ -113,7 +113,7 @@ namespace RestFixture.Net.Support
 
 		public override string toXmlString(string content)
 		{
-			return Tools.fromJSONtoXML(content);
+			return XmlTools.fromJSONtoXML(content);
 		}
 
 	}

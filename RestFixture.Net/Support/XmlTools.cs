@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -26,19 +28,6 @@ using System.Xml.XPath;
  */
 namespace RestFixture.Net.Support
 {
-
-	using HierarchicalStreamDriver = com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-	using HierarchicalStreamReader = com.thoughtworks.xstream.io.HierarchicalStreamReader;
-	using HierarchicalStreamCopier = com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
-	using JettisonMappedXmlDriver = com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-	using PrettyPrintWriter = com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-	using JSONException = org.json.JSONException;
-	using JSONObject = org.json.JSONObject;
-	using Document = org.w3c.dom.Document;
-	using Node = org.w3c.dom.Node;
-	using NodeList = org.w3c.dom.NodeList;
-	using SAXException = org.xml.sax.SAXException;
-
     /// <summary>
     /// Specifies the type of object returned when evaluating an XPath expression that has been 
     /// applied to an XML document.
@@ -83,9 +72,10 @@ namespace RestFixture.Net.Support
         /// <param name="xpathExpression"> the expression </param>
         /// <param name="content">         the content </param>
         /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static NodeList extractXPath(IDictionary<string, string> ns, string xpathExpression, string content)
+        public static XPathNodeIterator extractXPath(IDictionary<string, string> ns, string xpathExpression, string content)
         {
-            return (NodeList)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
+            // The original Java implementation returned a Java NodeList object.
+            return (XPathNodeIterator)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
         }
 
         /// <param name="ns"> the namespaces map </param>
@@ -93,10 +83,11 @@ namespace RestFixture.Net.Support
         /// <param name="content"> the content </param>
         /// <param name="encoding"> the charset </param>
         /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static NodeList extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
+        public static XPathNodeIterator extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
             string encoding)
         {
-            return (NodeList)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
+            // The original Java implementation returned a Java NodeList object.
+            return (XPathNodeIterator)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
         }
 
         /// <param name="xpathExpression"> the xpath </param>
@@ -174,7 +165,7 @@ namespace RestFixture.Net.Support
 
                 if (returnType == XPathEvaluationReturnType.Node)
                 {
-                    XPathNodeIterator iterator = (XPathNodeIterator) result;
+                    XPathNodeIterator iterator = (XPathNodeIterator)result;
                     iterator.MoveNext();
                     XPathNavigator singleIteratorNode = iterator.Current;
                     return singleIteratorNode;
@@ -245,27 +236,26 @@ namespace RestFixture.Net.Support
             }
             try
             {
-                StringWriter sw = new StringWriter();
-                Transformer serializer = TransformerFactory.newInstance().newTransformer();
-                serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-                serializer.setOutputProperty(OutputKeys.MEDIA_TYPE, "text/xml");
-                if (result is NodeList)
+                object resultToConvert;
+                XPathNodeIterator nodeIterator = result as XPathNodeIterator;
+                if (nodeIterator != null)
                 {
-                    serializer.transform(new DOMSource(((NodeList)result).item(0)), new StreamResult(sw));
-                }
-                else if (result is Node)
-                {
-                    serializer.transform(new DOMSource((Node)result), new StreamResult(sw));
+                    // Original Java implementation only appears to display the first node of the 
+                    //  nodeset.
+                    nodeIterator.MoveNext();
+                    resultToConvert = nodeIterator.Current;
                 }
                 else
                 {
-                    return result.ToString();
+                    resultToConvert = result;
                 }
-                return sw.ToString();
+
+                return resultToConvert.ToString();
             }
             catch (Exception e)
             {
-                throw new Exception("Transformation caused an exception", e);
+                throw new InvalidCastException(
+                    "Attempt to convert XPath evaluation result into a string caused an error.", e);
             }
         }
 
@@ -292,102 +282,20 @@ namespace RestFixture.Net.Support
         {
             try
             {
-                XPathFactory xpathFactory = XPathFactory.newInstance();
-                XPath xpath = xpathFactory.newXPath();
-                if (ns.Count > 0)
-                {
-                    xpath.NamespaceContext = toNsContext(ns);
-                }
-                XPathExpression expr = xpath.compile(xpathExpression);
-                return expr;
+                XmlNamespaceManager namespaceManager = GetNamespaceManager(ns, new NameTable());
+                XPathExpression expression = 
+                    XPathExpression.Compile(xpathExpression, namespaceManager);
+                return expression;
             }
-            catch (XPathExpressionException e)
+            catch (XPathException e)
             {
-                throw new System.ArgumentException("xPath expression can not be compiled: " + xpathExpression, e);
-            }
-        }
-
-        //JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-        //ORIGINAL LINE: private static javax.xml.namespace.NamespaceContext toNsContext(final Map<String, String> ns)
-        private static NamespaceContext toNsContext(IDictionary<string, string> ns)
-        {
-            NamespaceContext ctx = new NamespaceContextAnonymousInnerClass(ns);
-            return ctx;
-        }
-
-        private class NamespaceContextAnonymousInnerClass : NamespaceContext
-        {
-            private IDictionary<string, string> ns;
-
-            public NamespaceContextAnonymousInnerClass(IDictionary<string, string> ns)
-            {
-                this.ns = ns;
-            }
-
-
-            public override string getNamespaceURI(string prefix)
-            {
-                string u = ns[prefix];
-                if (null == u)
-                {
-                    return XMLConstants.NULL_NS_URI;
-                }
-                return u;
-            }
-
-            public override string getPrefix(string namespaceURI)
-            {
-                foreach (string k in ns.Keys)
-                {
-                    if (ns[k].Equals(namespaceURI))
-                    {
-                        return k;
-                    }
-                }
-                return null;
-            }
-
-            //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
-            //ORIGINAL LINE: @Override public Iterator<?> getPrefixes(String namespaceURI)
-            public override IEnumerator<object> getPrefixes(string namespaceURI)
-            {
-                return null;
-            }
-
-        }
-
-        private static Document toDocument(string content, string charset)
-        {
-            string ch = charset;
-            if (string.ReferenceEquals(ch, null))
-            {
-                ch = Charset.defaultCharset().name();
-            }
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.NamespaceAware = true;
-            try
-            {
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document doc = builder.parse(getInputStreamFromString(content, ch));
-                return doc;
-            }
-            catch (ParserConfigurationException e)
-            {
-                throw new System.ArgumentException("parser for last response body caused an error", e);
-            }
-            catch (SAXException e)
-            {
-                throw new System.ArgumentException("last response body cannot be parsed", e);
-            }
-            catch (IOException e)
-            {
-                throw new System.ArgumentException("IO Exception when reading the document", e);
+                throw new System.ArgumentException(
+                    "xPath expression can not be compiled: " + xpathExpression, e);
             }
         }
 
         /// <summary>
-        /// this method uses @link <seealso cref="JSONObject"/> to parse the string and return
-        /// true if parse succeeds.
+        /// Parses the string and returns  true if parse succeeds.
         /// </summary>
         /// <param name="presumeblyJson"> string with some json (possibly). </param>
         /// <returns> true if json is valid </returns>
@@ -396,9 +304,9 @@ namespace RestFixture.Net.Support
             object o = null;
             try
             {
-                o = new JSONObject(presumeblyJson);
+                o = JToken.Parse(presumeblyJson);
             }
-            catch (JSONException)
+            catch (Exception)
             {
                 return false;
             }
@@ -409,29 +317,21 @@ namespace RestFixture.Net.Support
         /// <returns> the string as xml. </returns>
         public static string fromJSONtoXML(string json)
         {
-            HierarchicalStreamDriver driver = new JettisonMappedXmlDriver();
-            StringReader reader = new StringReader(json);
-            HierarchicalStreamReader hsr = driver.createReader(reader);
-            StringWriter writer = new StringWriter();
-            try
+            XmlDocument doc = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
+
+            var stringBuilder = new StringBuilder();
+
+            var settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.Indent = true;
+            settings.NewLineOnAttributes = true;
+
+            using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
-                (new HierarchicalStreamCopier()).copy(hsr, new PrettyPrintWriter(writer));
-                return writer.ToString();
+                doc.Save(xmlWriter);
             }
-            finally
-            {
-                if (writer != null)
-                {
-                    try
-                    {
-                        writer.close();
-                    }
-                    catch (IOException)
-                    {
-                        // ignore
-                    }
-                }
-            }
+
+            return stringBuilder.ToString();
         }
     }
 }
