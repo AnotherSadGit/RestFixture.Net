@@ -15,6 +15,10 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using System;
+using System.Text.RegularExpressions;
+
 namespace RestFixture.Net.Support
 {
 
@@ -39,22 +43,24 @@ namespace RestFixture.Net.Support
 			string expected = exp.ToString();
 			if (exp is Parse)
 			{
-				expected = ((Parse) exp).text();
+				expected = ((Parse) exp).Text;
 			}
 			string actual = (string) act;
 			try
 			{
-				Pattern p = Pattern.compile(expected);
-				Matcher m = p.matcher(actual);
-				if (!m.matches() && !m.find())
-				{
-					addError("no regex match: " + expected);
-				}
-			}
-			catch (PatternSyntaxException)
+				if (!Regex.IsMatch(actual, expected))
+			    {
+                    addError("no regex match: " + expected);
+			    }
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ArgumentException("Either regex or string being searched is null");
+            }
+            catch (ArgumentException)
 			{
 				// lets try to string match just to be kind
-				if (!expected.Equals(actual))
+                if (actual != expected)
 				{
 					addError("no string match found: " + expected);
 				}

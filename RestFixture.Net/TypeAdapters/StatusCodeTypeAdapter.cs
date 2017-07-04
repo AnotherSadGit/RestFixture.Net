@@ -38,7 +38,7 @@ namespace RestFixture.Net.Support
 			string expected = r1.ToString();
 			if (r1 is Parse)
 			{
-				expected = ((Parse) r1).text();
+				expected = ((Parse) r1).Text;
 			}
 			string actual = (string) r2;
 			if (!Tools.regex(actual, expected))

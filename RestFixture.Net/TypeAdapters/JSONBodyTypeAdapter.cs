@@ -59,8 +59,6 @@ namespace RestFixture.Net.Support
 			return bool.Parse(exprResult.ToString());
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: @Override public Object parse(String possibleJsContent) throws Exception
 		public override object parse(string possibleJsContent)
 		{
 			if (string.ReferenceEquals(possibleJsContent, null) || !possibleJsContent.Trim().Contains("/* javascript */"))
@@ -100,7 +98,7 @@ namespace RestFixture.Net.Support
 			return result;
 		}
 
-		public override string ToString(object obj)
+		public string ToString(object obj)
 		{
 			if (obj == null || obj.ToString().Trim().Equals(""))
 			{

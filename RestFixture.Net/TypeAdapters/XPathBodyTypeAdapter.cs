@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.XPath;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,10 +22,6 @@ using System.Collections.Generic;
  */
 namespace RestFixture.Net.Support
 {
-
-	using NodeList = org.w3c.dom.NodeList;
-
-
 	/// <summary>
 	/// Type adapter for body cells with XML content.
 	/// 
@@ -53,9 +50,6 @@ namespace RestFixture.Net.Support
 		///            the body of the REST response returned by the call in the
 		///            current test row </param>
 		/// <seealso cref= fit.TypeAdapter </seealso>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Override @SuppressWarnings("unchecked") public boolean equals(final Object expected, final Object actual)
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
 		public override bool Equals(object expected, object actual)
 		{
 			if (checkNoBody(expected))
@@ -92,13 +86,14 @@ namespace RestFixture.Net.Support
 			bool? b;
 			try
 			{
-				NodeList ret = Tools.extractXPath(Context, expr, content, Charset);
-				return !(ret == null || ret.Length == 0);
+				XPathNodeIterator ret = XmlTools.extractXPath(Context, expr, content);
+                return !(ret == null || ret.Count == 0);
 			}
 			catch (System.ArgumentException)
 			{
 				// may be evaluated as BOOLEAN
-				b = (bool?) Tools.extractXPath(Context, expr, content, XPathConstants.BOOLEAN, Charset);
+                b = (bool?)XmlTools.extractXPath(Context, expr, content,
+                    XPathEvaluationReturnType.Boolean);
 			}
 			return b.Value;
 		}
@@ -133,10 +128,11 @@ namespace RestFixture.Net.Support
 				return expectedXPathAsList;
 			}
 			expStr = Tools.fromHtml(expStr);
-			string[] nvpArray = expStr.Split("\n", true);
+            string[] nvpArray = expStr.Split(new string[] {"\r", "\n", "\r\n"}, 
+                StringSplitOptions.None);
 			foreach (string nvp in nvpArray)
 			{
-				if (!"".Equals(nvp.Trim()))
+                if (!string.IsNullOrWhiteSpace(nvp))
 				{
 					expectedXPathAsList.Add(nvp.Trim());
 				}
