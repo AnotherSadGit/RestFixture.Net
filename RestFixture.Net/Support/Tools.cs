@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.XPath;
 
 /*  Copyright 2017 Simon Elms
@@ -25,20 +26,6 @@ using System.Xml.XPath;
  */
 namespace RestFixture.Net.Support
 {
-
-	using HierarchicalStreamDriver = com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-	using HierarchicalStreamReader = com.thoughtworks.xstream.io.HierarchicalStreamReader;
-	using HierarchicalStreamCopier = com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
-	using JettisonMappedXmlDriver = com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-	using PrettyPrintWriter = com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-	using JSONException = org.json.JSONException;
-	using JSONObject = org.json.JSONObject;
-	using Document = org.w3c.dom.Document;
-	using Node = org.w3c.dom.Node;
-	using NodeList = org.w3c.dom.NodeList;
-	using SAXException = org.xml.sax.SAXException;
-
-
     /// <summary>
     /// Misc tool methods for string manipulation.
     /// </summary>
@@ -48,99 +35,6 @@ namespace RestFixture.Net.Support
         private Tools()
         {
 
-        }
-
-        /// <summary>
-        /// Yet another stream 2 string function.
-        /// </summary>
-        /// <param name="is"> the stream </param>
-        /// <returns> the string. </returns>
-        public static string getStringFromInputStream(System.IO.Stream @is)
-        {
-            return getStringFromInputStream(@is, Charset.defaultCharset().name());
-        }
-
-        /// <summary>
-        /// Yet another stream 2 string function.
-        /// </summary>
-        /// <param name="is">       the stream </param>
-        /// <param name="encoding"> the encoding of the bytes in the stream </param>
-        /// <returns> the string. </returns>
-        public static string getStringFromInputStream(System.IO.Stream @is, string encoding)
-        {
-            string line = null;
-            if (@is == null)
-            {
-                return "";
-            }
-            System.IO.StreamReader @in = null;
-            try
-            {
-                @in = new System.IO.StreamReader(@is, encoding);
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                throw new System.ArgumentException("Unsupported encoding: " + encoding, e);
-            }
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                while (!string.ReferenceEquals((line = @in.ReadLine()), null))
-                {
-                    sb.Append(line);
-                }
-            }
-            catch (IOException e)
-            {
-                throw new System.ArgumentException("Unable to read from stream", e);
-            }
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Yet another stream 2 string function.
-        /// </summary>
-        /// <param name="string">   the string </param>
-        /// <param name="encoding"> the encoding of the bytes in the stream </param>
-        /// <returns> the input stream. </returns>
-        public static System.IO.Stream getInputStreamFromString(string @string, string encoding)
-        {
-            if (string.ReferenceEquals(@string, null))
-            {
-                throw new System.ArgumentException("null input");
-            }
-            try
-            {
-                sbyte[] byteArray = @string.GetBytes(encoding);
-                return new System.IO.MemoryStream(byteArray);
-            }
-            catch (UnsupportedEncodingException)
-            {
-                throw new System.ArgumentException("Unsupported encoding: " + encoding);
-            }
-        }
-
-        /// <summary>
-        /// converts a map to string
-        /// </summary>
-        /// <param name="map">      the map to convert </param>
-        /// <param name="nvSep">    the nvp separator </param>
-        /// <param name="entrySep"> the separator of each entry </param>
-        /// <returns> the serialised map. </returns>
-        public static string convertMapToString(IDictionary<string, string> map, string nvSep, string entrySep)
-        {
-            StringBuilder sb = new StringBuilder();
-            if (map != null)
-            {
-                foreach (KeyValuePair<string, string> entry in map.SetOfKeyValuePairs())
-                {
-                    string el = entry.Key;
-                    sb.Append(convertEntryToString(el, map[el], nvSep)).Append(entrySep);
-                }
-            }
-            string repr = sb.ToString();
-            int pos = repr.LastIndexOf(entrySep, StringComparison.Ordinal);
-            return repr.Substring(0, pos);
         }
 
         /// <param name="name">  the name </param>
@@ -159,13 +53,15 @@ namespace RestFixture.Net.Support
         {
             try
             {
-                Pattern p = Pattern.compile(expr);
-                bool find = p.matcher(text).find();
-                return find;
+                return Regex.IsMatch(text, expr);
             }
-            catch (PatternSyntaxException)
+            catch (ArgumentNullException)
             {
-                throw new System.ArgumentException("Invalid regex " + expr);
+                throw new ArgumentException("Either regex or string being searched is null");
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException("Invalid regex " + expr, ex);
             }
         }
 
@@ -177,29 +73,31 @@ namespace RestFixture.Net.Support
         /// <param name="entrySep">  the separator for entries in the map. </param>
         /// <param name="cleanTags"> if true the value is cleaned from any present html tag. </param>
         /// <returns> the parsed map. </returns>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: public static Map<String, String> convertStringToMap(final String expStr, final String nvSep, final String entrySep, boolean cleanTags)
-        public static IDictionary<string, string> convertStringToMap(string expStr, string nvSep, string entrySep,
-            bool cleanTags)
+        public static IDictionary<string, string> convertStringToMap(string expStr, string nvSep, 
+            string entrySep, bool cleanTags)
         {
             string sanitisedExpStr = expStr.Trim();
             sanitisedExpStr = removeOpenEscape(sanitisedExpStr);
             sanitisedExpStr = removeCloseEscape(sanitisedExpStr);
             sanitisedExpStr = sanitisedExpStr.Trim();
-            string[] nvpArray = sanitisedExpStr.Split(entrySep, true);
+            string[] nvpArray = sanitisedExpStr.Split(new string[] {entrySep}, 
+                StringSplitOptions.None);
+
             IDictionary<string, string> ret = new Dictionary<string, string>();
+
             foreach (string nvp in nvpArray)
             {
                 try
                 {
-                    nvp = nvp.Trim();
-                    if ("".Equals(nvp))
+                    string keyValueText = nvp.Trim();
+                    if (string.IsNullOrEmpty(keyValueText))
                     {
                         continue;
                     }
-                    nvp = removeOpenEscape(nvp).Trim();
-                    nvp = removeCloseEscape(nvp).Trim();
-                    string[] nvpArr = nvp.Split(nvSep, true);
+                    keyValueText = removeOpenEscape(keyValueText).Trim();
+                    keyValueText = removeCloseEscape(keyValueText).Trim();
+                    string[] nvpArr = keyValueText.Split(new string[] { nvSep }, 
+                        StringSplitOptions.None);
                     string k, v;
                     k = nvpArr[0].Trim();
                     v = "";
@@ -209,8 +107,8 @@ namespace RestFixture.Net.Support
                     }
                     else if (nvpArr.Length > 2)
                     {
-                        int pos = nvp.IndexOf(nvSep, StringComparison.Ordinal) + nvSep.Length;
-                        v = nvp.Substring(pos).Trim();
+                        int pos = keyValueText.IndexOf(nvSep, StringComparison.Ordinal) + nvSep.Length;
+                        v = keyValueText.Substring(pos).Trim();
                     }
                     if (cleanTags)
                     {
@@ -221,10 +119,13 @@ namespace RestFixture.Net.Support
                         ret[k] = v;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new System.ArgumentException("Each entry in the must be separated by '" + entrySep +
-                                                       "' and each entry must be expressed as a name" + nvSep + "value");
+                    string errorMessage =
+                        string.Format("Each entry in the must be separated by '{0}' and "
+                                      + "each entry must be expressed as a name{1}value",
+                                    entrySep, nvSep);
+                    throw new System.ArgumentException(errorMessage, ex);
                 }
             }
             return ret;
@@ -237,7 +138,9 @@ namespace RestFixture.Net.Support
         public static string makeToggleCollapseable(string message, string content)
         {
             Random random = new Random();
-            string id = Convert.ToString(content.GetHashCode()) + Convert.ToString(random.nextLong());
+            // The Java implementation used random.nextLong but the .NET Random class only has 
+            //  Next, which returns an int.
+            string id = Convert.ToString(content.GetHashCode()) + Convert.ToString(random.Next());
             StringBuilder sb = new StringBuilder();
             sb.Append("<div class='collapsible closed'>");
             sb.Append(
@@ -278,14 +181,14 @@ namespace RestFixture.Net.Support
         public static string toHtml(string text)
         {
             return
-                text.replaceAll("<pre>", "")
-                    .replaceAll("</pre>", "")
-                    .replaceAll("<", "&lt;")
-                    .replaceAll(">", "&gt;")
-                    .replaceAll("\n", "<br/>")
-                    .replaceAll("\t", "    ")
-                    .replaceAll(" ", "&nbsp;")
-                    .replaceAll("-----", "<hr/>");
+                text.Replace("<pre>", "")
+                    .Replace("</pre>", "")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;")
+                    .RegexReplace(@"\r\n?|\n", "<br/>")
+                    .Replace("\t", "    ")
+                    .Replace(" ", "&nbsp;")
+                    .Replace("-----", "<hr/>");
         }
 
         /// <param name="c"> some text </param>
@@ -299,7 +202,7 @@ namespace RestFixture.Net.Support
         /// <returns> the text within the tag. </returns>
         public static string fromSimpleTag(string somethingWithinATag)
         {
-            return somethingWithinATag.replaceAll("<[^>]+>", "").replace("</[^>]+>", "");
+            return somethingWithinATag.RegexReplace("<[^>]+>", "").RegexReplace("</[^>]+>", "");
         }
 
         /// <param name="text"> some html </param>
@@ -308,17 +211,17 @@ namespace RestFixture.Net.Support
         {
             string ls = "\n";
             return
-                text.replaceAll("<br[\\s]*/>", ls)
-                    .replaceAll("<BR[\\s]*/>", ls)
-                    .replaceAll("<span[^>]*>", "")
-                    .replaceAll("</span>", "")
-                    .replaceAll("<pre>", "")
-                    .replaceAll("</pre>", "")
-                    .replaceAll("&nbsp;", " ")
-                    .replaceAll("&gt;", ">")
-                    .replaceAll("&amp;", "&")
-                    .replaceAll("&lt;", "<")
-                    .replaceAll("&nbsp;", " ");
+                text.RegexReplace("<br[\\s]*/>", ls)
+                    .RegexReplace("<BR[\\s]*/>", ls)
+                    .RegexReplace("<span[^>]*>", "")
+                    .Replace("</span>", "")
+                    .Replace("<pre>", "")
+                    .Replace("</pre>", "")
+                    .Replace("&nbsp;", " ")
+                    .Replace("&gt;", ">")
+                    .Replace("&amp;", "&")
+                    .Replace("&lt;", "<")
+                    .Replace("&nbsp;", " ");
         }
 
         /// <param name="string"> a string </param>

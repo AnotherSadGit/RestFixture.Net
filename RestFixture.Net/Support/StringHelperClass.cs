@@ -4,6 +4,9 @@
 //
 //	This class is used to convert some aspects of the Java String class.
 //-------------------------------------------------------------------------------------------
+
+using System.Text.RegularExpressions;
+
 internal static class StringHelperClass
 {
 	//----------------------------------------------------------------------------------
@@ -91,4 +94,13 @@ internal static class StringHelperClass
 		encoding.GetBytes(s, 0, s.Length, (byte[])(object)sbytes, 0);
 		return sbytes;
 	}
+
+    //--------------------------------------------------------------------------------
+    //	These methods are used to replace calls to the Java String.replace methods.
+    //--------------------------------------------------------------------------------
+    internal static string RegexReplace(this string self, string regexPattern, 
+        string replacementText)
+    {
+        return Regex.Replace(self, regexPattern, replacementText);
+    }
 }
