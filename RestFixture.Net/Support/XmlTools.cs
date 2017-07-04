@@ -72,31 +72,12 @@ namespace RestFixture.Net.Support
         /// <param name="xpathExpression"> the expression </param>
         /// <param name="content">         the content </param>
         /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static XPathNodeIterator extractXPath(IDictionary<string, string> ns, string xpathExpression, string content)
+        public static XPathNodeIterator extractXPath(IDictionary<string, string> ns, 
+            string xpathExpression, string content)
         {
             // The original Java implementation returned a Java NodeList object.
-            return (XPathNodeIterator)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
-        }
-
-        /// <param name="ns"> the namespaces map </param>
-        /// <param name="xpathExpression"> the xpath </param>
-        /// <param name="content"> the content </param>
-        /// <param name="encoding"> the charset </param>
-        /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static XPathNodeIterator extractXPath(IDictionary<string, string> ns, string xpathExpression, string content,
-            string encoding)
-        {
-            // The original Java implementation returned a Java NodeList object.
-            return (XPathNodeIterator)extractXPath(ns, xpathExpression, content, XPathEvaluationReturnType.Nodeset);
-        }
-
-        /// <param name="xpathExpression"> the xpath </param>
-        /// <param name="content"> the content </param>
-        /// <param name="returnType"> the result type </param>
-        /// <returns> the list of nodes matching the supplied XPath. </returns>
-        public static object extractXPath(string xpathExpression, string content, XPathEvaluationReturnType returnType)
-        {
-            return extractXPath(xpathExpression, content, returnType, null);
+            return (XPathNodeIterator)extractXPath(ns, xpathExpression, content, 
+                XPathEvaluationReturnType.Nodeset);
         }
 
         /// <param name="xpathExpression"> the xpath </param>
@@ -104,11 +85,13 @@ namespace RestFixture.Net.Support
         /// <param name="returnType"> the result type </param>
         /// <param name="encoding"> the encoding/charset </param>
         /// <returns> the list of nodes mathching the supplied XPath. </returns>
-        public static object extractXPath(string xpathExpression, string content, XPathEvaluationReturnType returnType, string encoding)
+        public static object extractXPath(string xpathExpression, string content, 
+            XPathEvaluationReturnType returnType)
         {
             // Use the java Xpath API to return a NodeList to the caller so they can
             // iterate through
-            return extractXPath(new Dictionary<string, string>(), xpathExpression, content, returnType);
+            return extractXPath(new Dictionary<string, string>(), xpathExpression, content, 
+                returnType);
         }
 
         /// <summary>
