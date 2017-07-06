@@ -92,7 +92,6 @@
     <Compile Include="SlimCell.cs" />
     <Compile Include="SlimFormatter.cs" />
     <Compile Include="SlimRow.cs" />
-    <Compile Include="StringHelperClass.cs" />
     <Compile Include="Support\XmlTools.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapter.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapterFactory.cs" />
