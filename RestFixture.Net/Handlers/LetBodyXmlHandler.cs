@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.XPath;
+using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,11 +23,6 @@ using System.Collections.Generic;
  */
 namespace RestFixture.Net.Support
 {
-
-	using NodeList = org.w3c.dom.NodeList;
-
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 	/// <summary>
 	/// Handles let expressions on XML content, returning XML string rather than the
 	/// string with the content within the tags.
@@ -36,13 +33,13 @@ namespace RestFixture.Net.Support
 	public class LetBodyXmlHandler : ILetHandler
 	{
 
-		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, 
+            RestResponse response, object expressionContext, string expression)
 		{
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") java.util.Map<String, String> namespaceContext = (java.util.Map<String, String>) expressionContext;
 			IDictionary<string, string> namespaceContext = (IDictionary<string, string>) expressionContext;
-			NodeList list = Tools.extractXPath(namespaceContext, expression, response.Body);
-			string val = Tools.xPathResultToXmlString(list);
+			XPathNodeIterator list = 
+                XmlTools.extractXPath(namespaceContext, expression, response.Body);
+			string val = XmlTools.xPathResultToXmlString(list);
 			int pos = val.IndexOf("?>", StringComparison.Ordinal);
 			if (pos >= 0)
 			{

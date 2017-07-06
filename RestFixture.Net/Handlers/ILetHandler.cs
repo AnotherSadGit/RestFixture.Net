@@ -1,4 +1,5 @@
 ﻿using RestClient.Data;
+
 /*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
@@ -33,7 +34,8 @@ namespace RestFixture.Net.Support
 		/// <param name="expressionContext"> the json expression context </param>
 		/// <param name="expression">        the expression </param>
 		/// <returns> applies the expression to response within the given context. </returns>
-		string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression);
+		string handle(IRunnerVariablesProvider variablesProvider, Config config, 
+            RestResponse response, object expressionContext, string expression);
 
 	}
 

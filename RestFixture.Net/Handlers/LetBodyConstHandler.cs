@@ -1,4 +1,6 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using RestClient.Data;
+
+/*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -18,9 +20,6 @@
  */
 namespace RestFixture.Net.Support
 {
-
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 	/// <summary>
 	/// Handles let expressions to assign constant values to symbols.
 	/// 
@@ -29,13 +28,11 @@ namespace RestFixture.Net.Support
 	/// </summary>
 	public class LetBodyConstHandler : ILetHandler
 	{
-
-
-		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config cOnfig, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config cOnfig, 
+            RestResponse response, object expressionContext, string expression)
 		{
 			return expression;
 		}
-
 	}
 
 }

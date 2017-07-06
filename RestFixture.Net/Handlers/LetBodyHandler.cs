@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Xml.XPath;
+using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,18 +22,8 @@
  */
 namespace RestFixture.Net.Support
 {
-
-
-	using Node = org.w3c.dom.Node;
-	using NodeList = org.w3c.dom.NodeList;
-
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 	/// <summary>
 	/// Handles body of the last response on behalf of LET in RestFixture.
-	/// 
-	/// @author smartrics
-	/// 
 	/// </summary>
 	public class LetBodyHandler : ILetHandler
 	{
@@ -40,10 +32,9 @@ namespace RestFixture.Net.Support
 		{
 		}
 
-		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, 
+            RestResponse response, object expressionContext, string expression)
 		{
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") java.util.Map<String, String> namespaceContext = (java.util.Map<String, String>) expressionContext;
 			IDictionary<string, string> namespaceContext = (IDictionary<string, string>) expressionContext;
 			string contentTypeString = response.ContentType;
 			string charset = response.Charset;
@@ -57,19 +48,21 @@ namespace RestFixture.Net.Support
 			string val = null;
 			try
 			{
-				NodeList list = Tools.extractXPath(namespaceContext, expression, body);
-				Node item = list.item(0);
-				if (item != null)
-				{
-					val = item.TextContent;
-				}
+                XPathNavigator singleNode = (XPathNavigator)XmlTools.extractXPath(
+                    namespaceContext, expression, body, XPathEvaluationReturnType.Node);
+				
+                if (singleNode != null)
+                {
+                    val = singleNode.Value;
+                }
 			}
 			catch (System.ArgumentException)
 			{
 				// ignore - may be that it's evaluating to a string
-				val = (string) Tools.extractXPath(namespaceContext, expression, body, XPathConstants.STRING, charset);
+				val = (string) XmlTools.extractXPath(namespaceContext, expression, body,
+                    XPathEvaluationReturnType.String);
 			}
-			if (!string.ReferenceEquals(val, null))
+			if (val != null)
 			{
 				val = val.Trim();
 			}

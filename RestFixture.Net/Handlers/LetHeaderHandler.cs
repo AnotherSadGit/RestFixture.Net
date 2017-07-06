@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using RestClient.Data;
+
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,11 +23,6 @@
  */
 namespace RestFixture.Net.Support
 {
-
-
-	using Header = smartrics.rest.client.RestData.Header;
-	using RestResponse = smartrics.rest.client.RestResponse;
-
 	/// <summary>
 	/// Handles header (a list of Header objects) LET manipulations.
 	/// 
@@ -34,12 +32,13 @@ namespace RestFixture.Net.Support
 	public class LetHeaderHandler : ILetHandler
 	{
 
-		public override string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public string handle(IRunnerVariablesProvider variablesProvider, Config config, 
+            RestResponse response, object expressionContext, string expression)
 		{
 			IList<string> content = new List<string>();
 			if (response != null)
 			{
-				foreach (Header e in response.Headers)
+				foreach (RestData.Header e in response.Headers)
 				{
 					string @string = Tools.convertEntryToString(e.Name, e.Value, ":");
 					content.Add(@string);
@@ -49,16 +48,16 @@ namespace RestFixture.Net.Support
 			string value = null;
 			if (content.Count > 0)
 			{
-				Pattern p = Pattern.compile(expression);
+				Regex regex = new Regex(expression);
 				foreach (string c in content)
 				{
-					Matcher m = p.matcher(c);
-					if (m.find())
-					{
-						int cc = m.groupCount();
-						value = m.group(cc);
-						break;
-					}
+					Match match = regex.Match(c);
+				    if (match.Success)
+				    {
+				        int cc = match.Groups.Count;
+				        value = match.Groups[cc - 1].Value;
+				        break;
+				    }
 				}
 			}
 			return value;
