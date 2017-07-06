@@ -1,0 +1,212 @@
+JavaScript Engines for .NET
+===========================
+Simon Elms, 6 Jul 2017
+
+The original Java implementation of RestFixture uses the JVM Rhino JavaScript engine.
+
+-------------------------------------------------
+Speed Comparison for Some .NET JavaScript Engines
+-------------------------------------------------
+https://rushfrisby.com/which-net-javascript-engine-is-the-fastest/
+
+Compares the following engines at 17 Jun 2015: 
+* jint – version 2.5.0.0
+* IronJS – version 0.2.0.1
+* JavaScript.Net – version 0.7.1.0
+* Jurassic – version 2.1.0.0
+* ClearScript – version 5.4.2.0
+* NiL.JS – version 1.4.740.0
+
+Result: JavaScript.Net was the clear winner.  The times were:
+
+Array test results:
+jint					14,028 ms
+IronJS					 1,622 ms
+JavaScript.Net				20 ms
+Jurassic				   237 ms
+ClearScript				   263 ms
+ClearScript (compiled)	   111 ms
+NiL.JS					 1,680 ms
+
+Linq.js load results:
+jint						17 ms
+IronJS					   176 ms
+JavaScript.Net				13 ms
+Jurassic				   114 ms
+ClearScript					37 ms
+ClearScript (compiled)		22 ms
+NiL.JS						17 ms
+
+One variable results:
+jint						<1 ms
+IronJS						<1 ms
+JavaScript.Net				 9 ms
+Jurassic					 3 ms
+ClearScript					31 ms
+ClearScript (compiled)		22 ms
+NiL.JS						<1 ms
+
+
+-----------------
+Rhino on IKVM.NET
+-----------------
+Home page: http://www.ikvm.net
+
+Rhino can be run on IKVM.NET, an implementation of Java for .NET and Mono.  However the maintainer 
+of IKVM.NET has abandoned development, as of 21 Apr 2017.  
+
+See http://weblog.ikvm.net/2017/04/21/TheEndOfIKVMNET.aspx
+
+-------------------------------
+MSIE JavaScript Engine for .NET
+-------------------------------
+Home Page: https://github.com/Taritsyn/MsieJavaScriptEngine
+Dependencies: Either Internet Explorer or Edge browser must be installed on target machine.
+
+.NET wrapper around the JavaScript engines in the Internet Explorer (IE) or Edge browsers:  Either 
+the Classic MSIE JavaScript engine, the old IE Chakra JavaScript engine or the new Edge Chakra 
+JavaScript engine.  
+
+---------------------
+Microsoft ClearScript
+---------------------
+Home Page: https://github.com/Microsoft/ClearScript
+NuGet Package: https://www.nuget.org/packages/ClearScript.V8/
+No dependencies.
+
+Scripting library for .NET.  Supports Microsoft JScript, VBScript and Google's V8 JavaScript 
+engine.
+
+See http://odetocode.com/blogs/scott/archive/2013/09/10/hosting-a-javascript-engine-in-net.aspx for 
+a brief tutorial.
+
+-------------------
+ClearScript.Manager
+-------------------
+Home Page: https://github.com/eswann/ClearScript.Manager
+NuGet Package: https://www.nuget.org/packages/ClearScript.Manager/
+Dependencies: ClearScript.Installer (>= 1.0.0)
+
+ClearScript Manager was created to encapsulate the use of the ClearScript V8 engine in multi-use 
+scenarios, like in a hosted server project (Ex: for use in a Web App or Web API).  Creates a 
+configurable pool of V8 Runtimes that are cached and reused.
+
+----------
+ChakraCore
+----------
+Home Page: https://github.com/Microsoft/ChakraCore
+NuGet Package: https://www.nuget.org/packages/Microsoft.ChakraCore/
+Dependencies: .NET Standard 1.0 (eg .NET Framework 4.5 or Mono 4.6)
+
+The open source core of the Chakra Javascript engine used in the Edge browser.  ChakraCore supports 
+the JavaScript Runtime (JSRT) APIs.  
+
+See https://github.com/Microsoft/ChakraCore/wiki/JavaScript-Runtime-%28JSRT%29-Overview for an 
+overview of the JSRT APIs.
+
+-----------
+jsrt-dotnet
+-----------
+Home Page: https://github.com/robpaveza/jsrt-dotnet
+
+A wrapper for the JSRT APIs.  Looks like it hasn't been updated much since early 2016.
+
+------------------------
+JavaScriptEngineSwitcher
+------------------------
+Home Page: https://github.com/Taritsyn/JavaScriptEngineSwitcher
+NuGet Packages: Various adapters for different JavaScript engines.  Search Nuget for 
+"JS Engine Switcher"
+
+A common wrapper around multiple different JavaScript engines.  Supports the following JavaScript 
+engines:
+* MSIE JavaScript Engine for .Net;
+* Microsoft ClearScript.V8;
+* Jurassic;
+* Jint;
+* ChakraCore;
+* VroomJs
+
+Each JavaScript engine appears to have a different NuGet package.  Some JavaScript engines have 
+different NuGet packages for different environments as well (eg Windows x86, Windows x64, 
+Windows ARM).
+
+NOTE: Project README says it supports the "basic features of popular JavaScript engines" so 
+presumably it supports the lowest common denominator functions of the different engines.
+
+------
+JSPool
+------
+Home Page: https://dan.cx/projects/jspool
+NuGet Package: https://www.nuget.org/packages/JSPool/
+Dependencies for .NET 4 and .NET 4.5: JavaScriptEngineSwitcher.Core (>= 2.4.9)
+
+A wrapper around JavaScriptEngineSwitcher which provides a pool of JavaScript engines that can be 
+reused by an application.  Allows the use of JavaScript engines with long initialization times.
+
+---------------
+Javascript.NET
+---------------
+Home Page: https://github.com/JavascriptNet/Javascript.Net
+NuGet Package: https://www.nuget.org/packages/Noesis.Javascript/
+Dependencies: None
+
+Wrapper around Google's V8 JavaScript engine.  JIT compiles JavaScript at runtime.
+
+See http://joymonscode.blogspot.co.nz/2016/05/embed-google-v8-javascript-engine-in.html for a brief 
+tutorial.
+
+----------------------------------------------
+js.net and Jish (JavaScript Interactive SHell)
+----------------------------------------------
+Home Page: https://github.com/gatapia/jish
+
+Wrapper around Google's V8 JavaScript engine.  Appears not to have been updated in 6 years.
+
+------
+V8.NET
+------
+Home Page: https://github.com/rjamesnw/v8dotnet
+
+A non-abstracted wrapper for Google's V8 JavaScript engine.  Perhaps that means low-level?
+
+--------
+Jurassic
+--------
+Home Page: https://github.com/paulbartrum/jurassic
+NuGet Package: https://www.nuget.org/packages/Jurassic/
+No dependencies
+
+A .NET library to parse and execute JavaScript code.  Supports ECMAScript 3 and 5 (currently 
+working on supporting ECMAScript 6).  Compiles JavaScript into .NET bytecode (CIL); not an 
+interpreter.  
+
+----
+Jint
+----
+Home Page: https://github.com/sebastienros/jint
+NuGet Package: https://www.nuget.org/packages/Jint/
+No dependencies
+
+Jint is a Javascript interpreter for .NET which provides full ECMA 5.1 compliance.  Because it 
+doesn't generate any .NET bytecode nor use the DLR it runs relatively small scripts faster.
+
+------
+NiL.JS
+------
+Home Page: https://github.com/nilproject/NiL.JS
+NuGet Package: https://www.nuget.org/packages/NiL.JS
+No dependencies
+
+Open source ECMAScript 6.0 (ES2015) (JavaScript) engine.
+
+-------
+VroomJS
+-------
+Home Page: https://github.com/fogzot/vroomjs
+NuGet Package: https://www.nuget.org/packages/VroomJs/
+Dependencies:  For .NET 4.0: None; For .NET 4.5: System.Dynamic.Runtime (>= 4.0.0)
+
+Mono-friendly embedded V8 engine for .NET CLR and .NET Core, wrapper around Google's V8 JavaScript 
+engine.  Uses PInvoke and a thin C shim to avoid having to recompile V8 using the managed C++ 
+compiler.  Thus it can be used with Mono as well as .NET.
