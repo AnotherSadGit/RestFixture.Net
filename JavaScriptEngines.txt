@@ -4,6 +4,14 @@ Simon Elms, 6 Jul 2017
 
 The original Java implementation of RestFixture uses the JVM Rhino JavaScript engine.
 
+------------
+Parsing JSON
+------------
+WARNING: DO NOT PARSE JSON WITH A JAVASCRIPT ENGINE.  A DEDICATED JSON PARSER WILL BE AN ORDER OF
+MAGNITUDE FASTER.
+
+See http://www.timacheson.com/Blog/2013/jun/v8_javascriptdotnet for a speed comparison.
+
 -------------------------------------------------
 Speed Comparison for Some .NET JavaScript Engines
 -------------------------------------------------
@@ -154,7 +162,11 @@ Dependencies: None
 Wrapper around Google's V8 JavaScript engine.  JIT compiles JavaScript at runtime.
 
 See http://joymonscode.blogspot.co.nz/2016/05/embed-google-v8-javascript-engine-in.html for a brief 
-tutorial.
+tutorial.  
+
+According to a Stackoverflow post, https://stackoverflow.com/a/3182411/216440, the original company 
+that developed Javascript.NET walked away from it and open-sourced it.  As of July 2017 the last 
+code committed was in July 2015 so it looks like the project may have been abandoned.
 
 ----------------------------------------------
 js.net and Jish (JavaScript Interactive SHell)
@@ -179,7 +191,9 @@ No dependencies
 
 A .NET library to parse and execute JavaScript code.  Supports ECMAScript 3 and 5 (currently 
 working on supporting ECMAScript 6).  Compiles JavaScript into .NET bytecode (CIL); not an 
-interpreter.  
+interpreter. 
+
+As at July 2017 it appears to be in active development and has good documentation. 
 
 ----
 Jint

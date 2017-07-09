@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading;
+using dbfit;
 using RestClient.Data;
+using Jurassic;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -65,14 +69,14 @@ namespace RestFixture.Net.Support
 			return evaluateExpression(response, expression, new Dictionary<string, string>());
 		}
 
-		public virtual object evaluateExpression(RestResponse response, string expression, IDictionary<string, string> imports)
+		public virtual object evaluateExpression(RestResponse response, string expression, 
+            IDictionary<string, string> imports)
 		{
 			if (string.ReferenceEquals(expression, null))
 			{
 				return null;
 			}
 			Context context = Context.enter();
-			removeOptimisationForLargeExpressions(response, expression, context);
 			ScriptableObject scope = context.initStandardObjects();
 			injectImports(context, scope, imports);
 			injectFitNesseSymbolMap(scope);
@@ -94,7 +98,7 @@ namespace RestFixture.Net.Support
 
 		public virtual object evaluateExpression(string json, string expression, IDictionary<string, string> imports)
 		{
-			if (string.ReferenceEquals(json, null) || string.ReferenceEquals(expression, null))
+			if (json == null || expression == null)
 			{
 				return null;
 			}
@@ -206,16 +210,16 @@ namespace RestFixture.Net.Support
 			return false;
 		}
 
-		private void removeOptimisationForLargeExpressions(RestResponse response, string expression, Context context)
-		{
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final String body = response == null ? null : response.getBody();
-			string body = response == null ? null : response.Body;
-			if ((!string.ReferenceEquals(body, null) && body.GetBytes().length > _64K) || expression.GetBytes().length > _64K)
-			{
-				context.OptimizationLevel = -1;
-			}
-		}
+//        private void removeOptimisationForLargeExpressions(RestResponse response, string expression, Context context)
+//        {
+////JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
+////ORIGINAL LINE: final String body = response == null ? null : response.getBody();
+//            string body = response == null ? null : response.Body;
+//            if ((!string.ReferenceEquals(body, null) && body.GetBytes().length > _64K) || expression.GetBytes().length > _64K)
+//            {
+//                context.OptimizationLevel = -1;
+//            }
+//        }
 
 		private void injectImports(Context context, ScriptableObject scope, IDictionary<string, string> imports)
 		{
@@ -228,72 +232,51 @@ namespace RestFixture.Net.Support
 
 		private void injectImports(Context context, ScriptableObject scope, string name, string importUrl)
 		{
-			System.IO.Stream @is = null;
+		    string importContents = null;
 			try
 			{
-				@is = parseImport(importUrl);
-				System.IO.StreamReader @in = new System.IO.StreamReader(@is);
+                importContents = parseImport(importUrl);
 				context.evaluateReader(scope, @in, name, 1, null);
 			}
 			catch (Exception e)
 			{
 				throw new JavascriptException("Invalid url: " + importUrl + " for '" + name + "'", e);
 			}
-			finally
-			{
-				if (@is != null)
-				{
-					try
-					{
-						@is.Close();
-					}
-					catch (IOException)
-					{
-						// ignore
-					}
-				}
-			}
-
 		}
 
-		private System.IO.Stream parseImport(string name)
+		private string parseImport(string name)
 		{
 			try
 			{
-				return (new URL(name)).openStream();
+                using (System.Net.WebClient webClient = new System.Net.WebClient())
+                {
+                    string dowloadedData = webClient.DownloadString(name);
+                    return dowloadedData;
+                }
 			}
 			catch (Exception)
 			{
-				File f = new File(name);
-				if (f.exists())
+                if (File.Exists(name))
 				{
-					if (f.File && f.canRead())
-					{
-						try
-						{
-							return new System.IO.FileStream(f, System.IO.FileMode.Open, System.IO.FileAccess.Read);
-						}
-						catch (Exception)
-						{
-							throw new System.ArgumentException("Invalid import file: " + name + ", path: " + f.AbsolutePath);
-						}
-					}
-					else
-					{
-						throw new System.ArgumentException("Import file not accessible: " + name + ", path: " + f.AbsolutePath);
-					}
+                    string fileContents = null;
+                    // Assume UTF-8 encoding.
+				    try
+				    {
+				        using (StreamReader reader = new StreamReader(name, Encoding.UTF8))
+				        {
+				            fileContents = reader.ReadToEnd();
+				            return fileContents;
+				        }
+				    }
+				    catch (Exception ex)
+				    {
+				        string errorMessage = string.Format("Invalid import file: {0}, path: {1}",
+				            name, Path.GetFullPath(name));
+                        throw new System.ArgumentException(errorMessage);
+				    }
 				}
-				else
-				{
-					try
-					{
-						return Thread.CurrentThread.ContextClassLoader.getResource(name).openStream();
-					}
-					catch (Exception)
-					{
-						throw new System.ArgumentException("Import resource not valid: " + name);
-					}
-				}
+
+                throw new System.ArgumentException("Import resource not valid: " + name);
 			}
 		}
 
