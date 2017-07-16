@@ -38,7 +38,7 @@ namespace RestFixture.Net.Support
 	public class SlimVariables : Variables
 	{
 
-		private IDictionary<string, string> _symbols = new Dictionary<string, string>(); 
+		private IDictionary<string, object> _symbols = new Dictionary<string, object>(); 
 
 	    /// <summary>
 	    /// initialises the variables.
@@ -72,13 +72,26 @@ namespace RestFixture.Net.Support
 		/// <returns> the value. </returns>
 		public override string get(string label)
 		{
-			string value = _symbols.GetValueOrNull(label);
+			object value = _symbols.GetValueOrNull(label);
             if (value == null)
 			{
 				return base._nullValue;
 			}
-            return value;
+            return value.ToString();
 		}
+
+        public override IDictionary<string, object> Items
+        {
+            get
+            {
+                if (_symbols == null)
+                {
+                    return null;
+                }
+
+                return _symbols;
+            }
+        }
 
 	}
 

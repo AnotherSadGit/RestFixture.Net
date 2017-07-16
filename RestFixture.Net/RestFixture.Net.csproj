@@ -84,6 +84,7 @@
     <Compile Include="FitFormatter.cs" />
     <Compile Include="FitRestFixture.cs" />
     <Compile Include="FitRow.cs" />
+    <Compile Include="Javascript\JavascriptResponseClasses.cs" />
     <Compile Include="PartsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestFixture.cs" />
@@ -111,8 +112,8 @@
     <Compile Include="Support\Http\PutMethod.cs" />
     <Compile Include="Support\Http\TraceMethod.cs" />
     <Compile Include="Support\Http\URIBuilder.cs" />
-    <Compile Include="Support\JavascriptException.cs" />
-    <Compile Include="Support\JavascriptWrapper.cs" />
+    <Compile Include="Javascript\JavascriptException.cs" />
+    <Compile Include="Javascript\JavascriptWrapper.cs" />
     <Compile Include="TypeAdapters\JSONBodyTypeAdapter.cs" />
     <Compile Include="Handlers\LetBodyConstHandler.cs" />
     <Compile Include="Handlers\LetBodyHandler.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Handlers\LetHeaderHandler.cs" />
     <Compile Include="TypeAdapters\RestDataTypeAdapter.cs" />
     <Compile Include="Support\IRowWrapper.cs" />
+    <Compile Include="Variables\VariablesJavaScriptWrapper.cs" />
     <Compile Include="Variables\SlimVariables.cs" />
     <Compile Include="TypeAdapters\StatusCodeTypeAdapter.cs" />
     <Compile Include="Support\StringHelperClass.cs" />

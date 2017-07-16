@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using NLog;
+using RestClient.Data;
+
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,31 +23,21 @@
  */
 namespace RestFixture.Net.Support
 {
-
-	using Logger = org.slf4j.Logger;
-	using RestResponse = smartrics.rest.client.RestResponse;
-
-
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.slf4j.LoggerFactory.getLogger;
-
 	/// <summary>
 	/// Handles let expressions on XML content, returning XML string rather than the
 	/// string with the content within the tags.
-	/// 
-	/// @author smartrics
 	/// </summary>
 	public class LetBodyJsHandler : ILetHandler
 	{
+        private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-		private static readonly Logger LOG = getLogger(typeof(LetBodyJsHandler));
-
-		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, RestResponse response, object expressionContext, string expression)
+		public virtual string handle(IRunnerVariablesProvider variablesProvider, Config config, 
+            RestResponse response, object expressionContext, string expression)
 		{
 			JavascriptWrapper js = new JavascriptWrapper(variablesProvider);
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final java.util.Map<String, String> urlMap = config.getAsMap("restfixture.javascript.imports.map", new java.util.HashMap<String, String>());
-			IDictionary<string, string> urlMap = config.getAsMap("restfixture.javascript.imports.map", new Dictionary<string, string>());
+			IDictionary<string, string> urlMap = 
+                config.getAsMap("restfixture.javascript.imports.map", 
+                    new Dictionary<string, string>());
 			object result = js.evaluateExpression(response, expression, urlMap);
 			if (result == null)
 			{

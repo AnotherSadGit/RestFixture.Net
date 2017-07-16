@@ -68,6 +68,13 @@ namespace RestFixture.Net.Support
 			}
 		}
 
+        /// <summary>
+        /// All variables.
+        /// </summary>
+        /// <remarks>Exposed so that a wrapper class can enumerate the variables to allow them to 
+        /// be accessed from JavaScript.</remarks>
+        public abstract IDictionary<string, object> Items { get; }
+
 		/// <summary>
 		/// puts a value.
 		/// </summary>

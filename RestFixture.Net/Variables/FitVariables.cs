@@ -17,6 +17,8 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Reflection;
 using fitSharp.Machine.Engine;
 
 namespace RestFixture.Net.Support
@@ -84,6 +86,33 @@ namespace RestFixture.Net.Support
 			_symbols.Clear();
 		}
 
+        public override IDictionary<string, object> Items
+	    {
+	        get
+	        {
+	            if (_symbols == null)
+	            {
+	                return null;
+	            }
+
+                // Use reflection to get private dictionary within Symbols.
+                //  This is a horrible hack and brittle as hell but the Symbols class doesn't 
+                //  expose any proper way of enumerating the variables it contains.
+                FieldInfo privateSymbolsInfo =
+                    typeof(Symbols).GetField("items",
+                                            BindingFlags.NonPublic | BindingFlags.Instance);
+
+	            if (privateSymbolsInfo == null)
+	            {
+	                return null;
+	            }
+
+                IDictionary<string, object> privateSymbolsDictionary =
+                    (IDictionary<string, object>)privateSymbolsInfo.GetValue(_symbols);
+
+                return privateSymbolsDictionary;
+	        }
+	    }
 	}
 
 }
