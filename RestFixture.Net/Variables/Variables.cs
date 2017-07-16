@@ -139,11 +139,7 @@ namespace RestFixture.Net.Support
 		/// <returns> the null representation if the input is null. </returns>
 		public string replaceNull(string s)
 		{
-			if (s == null)
-			{
-				return _nullValue;
-			}
-			return s;
+            return s ?? _nullValue;
 		}
 	}
 

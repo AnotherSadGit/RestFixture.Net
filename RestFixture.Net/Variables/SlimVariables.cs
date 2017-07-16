@@ -25,6 +25,16 @@ namespace RestFixture.Net.Support
 	/// 
 	/// @author smartrics
 	/// </summary>
+    /// <remarks>According to this FitSharp issue, https://github.com/jediwhale/fitsharp/issues/123, 
+    /// the maintainer of FitSharp says "I don't know of a way to access symbols via code with Slim". 
+    /// This applies only to FitSharp, not the original Java implementation of FitNesse.  He also 
+    /// suggests that because Slim is mainly encapsulated in the common FitNesse code, written in 
+    /// Java, that other languages will always be second class citizens in Slim and that Slim is 
+    /// not used much outside of Java for that reason.
+    /// 
+    /// Hence the Java SlimVariables constructor that takes a StatementExecutorInterface 
+    /// parameter, which presumably contains the symbol map, has not been ported to this 
+    /// implementation in .NET.</remarks>
 	public class SlimVariables : Variables
 	{
 

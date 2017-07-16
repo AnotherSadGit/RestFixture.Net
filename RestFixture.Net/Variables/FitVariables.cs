@@ -26,12 +26,11 @@ namespace RestFixture.Net.Support
 
 	/// <summary>
 	/// Facade to FitNesse global symbols map for FIT.
-	/// 
-	/// @author smartrics
 	/// </summary>
 	public class FitVariables : Variables
 	{
-	    private static Symbols _symbols;
+        // Modified to use instance symbols rather than the obsolete static symbols.
+        private Symbols _symbols;
 
 		/// <summary>
 		/// initialises variables with default config. See @link
@@ -47,14 +46,10 @@ namespace RestFixture.Net.Support
 		/// {@code null}s.
 		/// </summary>
 		/// <param name="c"> the config </param>
-		public FitVariables(Config c) : base(c)
+		public FitVariables(Config c, Symbols symbols) : base(c)
 		{
+		    this._symbols = symbols;
 		}
-
-	    static FitVariables()
-	    {
-	        _symbols = new Fixture().Symbols;
-	    }
 
 		/// <summary>
 		/// puts a value.
@@ -81,7 +76,7 @@ namespace RestFixture.Net.Support
 		}
 
 		/// <summary>
-		/// crears all variables
+		/// Clears all variables
 		/// (used for tests only, given the fact that the Fit variables are in fact static)
 		/// </summary>
 		public virtual void clearAll()

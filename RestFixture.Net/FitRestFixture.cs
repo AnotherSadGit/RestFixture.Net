@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NLog;
 using RestFixture.Net.Support;
 using fit;
+using fitSharp.Machine.Engine;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -294,7 +295,7 @@ namespace RestFixture.Net
 		{
 			if (restFixture == null)
 			{
-                restFixture = new CommonRestFixture();
+                restFixture = new CommonRestFixture(this.Symbols);
 				restFixture.Config = Config.getConfig(ConfigNameFromArgs);
 				string url = BaseUrlFromArgs;
 				if (!string.ReferenceEquals(url, null))
@@ -355,7 +356,6 @@ namespace RestFixture.Net
 				return restFixture.Config;
 			}
 		}
-
 	}
 
 }

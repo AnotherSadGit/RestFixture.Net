@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security;
+using fitSharp.Machine.Engine;
 using NLog;
 using RestClient;
 using RestClient.Data;
@@ -55,10 +56,10 @@ namespace RestFixture.Net
                     //return new SlimVariables(config, slimStatementExecutor);
                     return new SlimVariables(config);
                 case CommonRestFixture.Runner.FIT:
-                    return new FitVariables(config);
+                    return new FitVariables(config, _symbols);
                 default:
                     // Use FitVariables for tests
-                    return new FitVariables(config);
+                    return new FitVariables(config, _symbols);
             }
         }
 
@@ -122,6 +123,9 @@ namespace RestFixture.Net
 
         //private StatementExecutorInterface slimStatementExecutor;
 
+        private Symbols _symbols = null;
+
+        #region Constructors ******************************************************************************
 
         static CommonRestFixture()
         {
@@ -131,8 +135,9 @@ namespace RestFixture.Net
         /// <summary>
         /// Constructor for Fit runner.
         /// </summary>
-        public CommonRestFixture() : base()
+        public CommonRestFixture(Symbols symbols) : base()
         {
+            this._symbols = symbols;
             this.partsFactory = new PartsFactory(this, Net.Support.Config.getConfig(Config.DEFAULT_CONFIG_NAME));
             this.displayActualOnRight = true;
             this.minLenForCollapseToggle = -1;
@@ -186,6 +191,8 @@ namespace RestFixture.Net
             this._baseUrl = new Url(stripTag(hostName));
             this.requestHeaders = new Dictionary<string, string>();
         }
+
+        #endregion
 
         /// <returns> the config used for this fixture instance </returns>
         public virtual Config Config
