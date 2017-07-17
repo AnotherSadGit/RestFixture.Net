@@ -120,11 +120,11 @@ namespace RestClient.Data
 			{
 				return false;
 			}
-			if (!string.ReferenceEquals(_contentType, null) ?!_contentType.Equals(that._contentType) :!string.ReferenceEquals(that._contentType, null))
+			if (_contentType != null ? _contentType != that._contentType : that._contentType != null)
 			{
 				return false;
 			}
-			return !string.ReferenceEquals(_charset, null) ? _charset.Equals(that._charset) : string.ReferenceEquals(that._charset, null);
+			return (_charset != null ? _charset == that._charset : that._charset == null);
 
 		}
 
@@ -133,8 +133,8 @@ namespace RestClient.Data
 		public override int GetHashCode()
 		{
 			int result = _value.GetHashCode();
-			result = 31 * result + (!string.ReferenceEquals(_contentType, null) ? _contentType.GetHashCode() : 0);
-			result = 31 * result + (!string.ReferenceEquals(_charset, null) ? _charset.GetHashCode() : 0);
+			result = 31 * result + (_contentType != null ? _contentType.GetHashCode() : 0);
+			result = 31 * result + (_charset != null ? _charset.GetHashCode() : 0);
 			return result;
 		}
 

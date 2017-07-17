@@ -50,7 +50,7 @@ namespace RestFixture.Net.Support
 
 		public override object parse(string s)
 		{
-			if (string.ReferenceEquals(s, null))
+			if (s == null)
 			{
 				return "null";
 			}

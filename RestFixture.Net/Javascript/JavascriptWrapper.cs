@@ -74,7 +74,7 @@ namespace RestFixture.Net.Support
 		public virtual object evaluateExpression(RestResponse response, string expression, 
             IDictionary<string, string> imports)
 		{
-			if (string.ReferenceEquals(expression, null))
+			if (expression == null)
 			{
 				return null;
 			}
@@ -114,7 +114,7 @@ namespace RestFixture.Net.Support
 		/// <returns> whether it's actually a json object. </returns>
 		public virtual bool looksLikeAJsExpression(string json)
 		{
-			return !string.ReferenceEquals(json, null) && json.Contains(JSON_OBJ_NAME + ".");
+			return (json != null) && json.Contains(JSON_OBJ_NAME + ".");
 		}
 
         private void injectFitNesseSymbolMap()

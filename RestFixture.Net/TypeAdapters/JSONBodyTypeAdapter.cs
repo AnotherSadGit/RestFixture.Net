@@ -61,7 +61,7 @@ namespace RestFixture.Net.Support
 
 		public override object parse(string possibleJsContent)
 		{
-			if (string.ReferenceEquals(possibleJsContent, null) || !possibleJsContent.Trim().Contains("/* javascript */"))
+			if (possibleJsContent == null || !possibleJsContent.Trim().Contains("/* javascript */"))
 			{
 				forceJsEvaluation = false;
 				return base.parse(possibleJsContent);

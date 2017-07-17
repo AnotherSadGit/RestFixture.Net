@@ -58,7 +58,7 @@ namespace RestFixture.Net.Support
 		/// <returns> the named config object. </returns>
 		public static Config getConfig(string name)
 		{
-			if (string.ReferenceEquals(name, null))
+			if (name == null)
 			{
 				name = DEFAULT_CONFIG_NAME;
 			}
@@ -143,7 +143,7 @@ namespace RestFixture.Net.Support
 		public string get(string key, string def)
 		{
 			string v = get(key);
-			if (string.ReferenceEquals(v, null))
+			if (v == null)
 			{
 				v = def;
 			}

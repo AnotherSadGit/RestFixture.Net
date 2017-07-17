@@ -44,7 +44,7 @@ namespace RestClient.Data
 
             public Header(string name, string value)
             {
-                if (string.ReferenceEquals(name, null) || string.ReferenceEquals(value, null))
+                if (name == null || value == null)
                 {
                     throw new System.ArgumentException("Name or Value is null");
                 }

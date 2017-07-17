@@ -298,7 +298,7 @@ namespace RestFixture.Net
                 restFixture = new CommonRestFixture(this.Symbols);
 				restFixture.Config = Config.getConfig(ConfigNameFromArgs);
 				string url = BaseUrlFromArgs;
-				if (!string.ReferenceEquals(url, null))
+				if (url != null)
 				{
 					restFixture.BaseUrl = new Url(Tools.fromSimpleTag(url));
 				}

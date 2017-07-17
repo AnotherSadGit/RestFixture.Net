@@ -159,7 +159,7 @@ namespace RestClient.Data
 			{
 				builder.Append(this.Resource);
 			}
-			if (!string.ReferenceEquals(Query, null))
+			if (Query != null)
 			{
 				builder.Append("?").Append(this.Query);
 			}

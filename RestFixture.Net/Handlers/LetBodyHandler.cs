@@ -41,7 +41,7 @@ namespace RestFixture.Net.Support
 			ContentType contentType = ContentType.parse(contentTypeString);
 			BodyTypeAdapter bodyTypeAdapter = (new BodyTypeAdapterFactory(variablesProvider, config)).getBodyTypeAdapter(contentType, charset);
 			string body = bodyTypeAdapter.toXmlString(response.Body);
-			if (string.ReferenceEquals(body, null))
+			if (body == null)
 			{
 				return null;
 			}

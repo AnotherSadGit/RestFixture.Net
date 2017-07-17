@@ -55,7 +55,7 @@ namespace RestFixture.Net.Support
 		/// <param name="val">   the value to store </param>
         public override void put(string label, string val)
 		{
-			if (string.ReferenceEquals(val, null) || val.Equals(base._nullValue))
+			if (val == null || val == base._nullValue)
 			{
 				_symbols[label] = null;
 			}

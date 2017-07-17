@@ -57,7 +57,7 @@ namespace RestFixture.Net.Support.Http
 				}
 			}
 			buffer.Append(path);
-			if (!string.ReferenceEquals(queryString, null))
+			if (queryString != null)
 			{
 				buffer.Append('?');
 				buffer.Append(queryString);

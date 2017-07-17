@@ -150,7 +150,7 @@ namespace RestFixture.Net
 					return stuff;
 				}
 				string s = "";
-				if (!string.ReferenceEquals(otherAttr, null))
+				if (otherAttr != null)
 				{
 					s = otherAttr;
 				}
@@ -302,7 +302,7 @@ namespace RestFixture.Net
 
 		private string inlineSvg(Mode tag, string location)
 		{
-			if (string.ReferenceEquals(location, null))
+			if (location == null)
 			{
 				return error("Invalid file path: null");
 			}
@@ -360,9 +360,11 @@ namespace RestFixture.Net
 			LOG.debug("Reading file " + f.AbsolutePath);
 			try
 			{
-				while (!string.ReferenceEquals((line = r.ReadLine()), null))
+			    line = r.ReadLine();
+				while (line != null)
 				{
 					sb.Append(line);
+                    line = r.ReadLine();
 				}
 			}
 			catch (IOException e)

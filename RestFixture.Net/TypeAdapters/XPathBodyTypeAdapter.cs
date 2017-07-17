@@ -114,7 +114,7 @@ namespace RestFixture.Net.Support
 		{
 			// expected values are parsed as a list of XPath expressions
 			IList<string> expectedXPathAsList = new List<string>();
-			if (string.ReferenceEquals(expectedListOfXpathsAsString, null))
+			if (expectedListOfXpathsAsString == null)
 			{
 				return expectedXPathAsList;
 			}

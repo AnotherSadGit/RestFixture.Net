@@ -976,7 +976,7 @@ namespace RestFixture.Net
         protected internal virtual string emptifyBody(string b)
         {
             string body = b;
-            if (string.ReferenceEquals(body, null))
+            if (body == null)
             {
                 body = "";
             }
@@ -1110,7 +1110,7 @@ namespace RestFixture.Net
         {
             string uri = LastResponse.Resource;
             string query = LastRequest.Query;
-            if (!string.ReferenceEquals(query, null) && !"".Equals(query.Trim()))
+            if (query != null && query.Trim() != "")
             {
                 uri = uri + "?" + query;
             }
@@ -1395,7 +1395,7 @@ namespace RestFixture.Net
         {
             string username = config.get("http.basicauth.username");
             string password = config.get("http.basicauth.password");
-            if (!string.ReferenceEquals(username, null) && !string.ReferenceEquals(password, null))
+            if (username != null && password != null)
             {
                 string newUsername = GLOBALS.substitute(username);
                 string newPassword = GLOBALS.substitute(password);
