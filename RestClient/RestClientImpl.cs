@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using NLog;
 using RestClient.Data;
 using RestClient.Helpers;
 using RestSharp;
+using RestSharp.Authenticators;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -35,17 +37,78 @@ namespace RestClient
 	{
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private string _baseUrlString;
         public string BaseUrlString
         {
-            get { return _baseUrlString; }
+            get
+            {
+                if (this.Client.BaseUrl == null)
+                {
+                    return null;
+                }
+                return this.Client.BaseUrl.OriginalString;
+            }
             set
             {
-                string _baseUri = value;
-                if (!string.IsNullOrWhiteSpace(_baseUri))
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    Client.BaseUrl = new Uri(_baseUri);
+                    this.Client.BaseUrl = null;
+                    return;
                 }
+                this.Client.BaseUrl = new Uri(value);
+            }
+        }
+
+        public int ConnectionTimeout
+        {
+            get { return this.Client.Timeout; }
+            set { this.Client.Timeout = value; }
+        }
+
+        public int ReadWriteTimeout
+        {
+            get { return this.Client.ReadWriteTimeout; }
+            set { this.Client.ReadWriteTimeout = value; }
+        }
+
+        private ProxyInfo _proxy;
+        public ProxyInfo Proxy 
+        {
+            get
+            {
+                return _proxy;
+            }
+            set
+            {
+                _proxy = value;
+                NetworkCredential credentials = null;
+                if (!string.IsNullOrWhiteSpace(_proxy.UserName))
+                {
+                    credentials
+                        = new NetworkCredential(_proxy.UserName, _proxy.Password, _proxy.Domain);
+                }
+                this.Client.Proxy = new WebProxy(_proxy.Address, false, null, credentials);
+            } 
+        }
+
+        private Credentials _credentials;
+        public Credentials Credentials
+        {
+            get
+            {
+                return _credentials;
+            }
+            set
+            {
+                _credentials = value;
+                if (value == null)
+                {
+                    this.Client.Authenticator = null;
+                    return;
+                }
+
+                HttpBasicAuthenticator authenticator 
+                    = new HttpBasicAuthenticator(_credentials.UserName, _credentials.Password);
+                this.Client.Authenticator = authenticator;
             }
         }
 
@@ -56,65 +119,58 @@ namespace RestClient
             {
                 if (_client == null)
                 {
-                    if (!string.IsNullOrWhiteSpace(_baseUrlString))
+                    if (!string.IsNullOrWhiteSpace(this.BaseUrlString))
                     {
-                        _client = new RestSharp.RestClient(_baseUrlString);
+                        _client = new RestSharp.RestClient(this.BaseUrlString);
                     }
                     else
                     {
                         _client = new RestSharp.RestClient();
                     }
+
+                    // Set default timeouts which are a lot less generous than the .NET defaults
+                    //  which are 100,000 for (connection) timeout and 300,000 for read-write 
+                    //  timeout.
+                    _client.Timeout = 15000;
+                    _client.ReadWriteTimeout = 30000;
                 }
 
                 return _client;
             }
+
+            private set { _client = value; }
         }
 
         /// <summary>
-        /// Initializes a new instance of the HttpClient class.
+        /// 
+        /// Initializes a new instance of the Client.
         /// </summary>
         public RestClientImpl()
         {
-
+            this.Client = new RestSharp.RestClient();
         }
 
         /// <summary>
-        /// Initializes a new instance of the HttpClient class with the specified URL.
+        /// Initializes a new instance of the Client with the specified URL.
         /// </summary>
-        public RestClientImpl(string baseUrlString)
+        public RestClientImpl(string baseUrlString) : this()
         {
             this.BaseUrlString = baseUrlString;
         }
 
-        // Unfortunately both RestClient, used by the Java RestFixture which is being ported 
-        //  to .NET, and RestSharp have classes called RestRequest and RestResponse.  So we must 
-        //  always specify which RestRequest or RestResponse class we're using.
+        // Unfortunately both this RestClient library and RestSharp have classes called 
+        //  RestRequest and RestResponse.  So we must always specify which RestRequest or 
+        //  RestResponse class we're using.
 
         public Data.RestResponse Execute(Data.RestRequest requestDetails)
         {
-            return Execute(this.Client, requestDetails);
+            return Execute(this.BaseUrlString, requestDetails);
         }
 
-        public Data.RestResponse Execute(string hostAddress, 
-            Data.RestRequest requestDetails)
+        public Data.RestResponse Execute(string baseAddress, Data.RestRequest requestDetails)
         {
-            Uri hostUri = GetHostUri(hostAddress);
-            RestSharp.IRestClient client = new RestSharp.RestClient(hostUri);
-            return Execute(client, requestDetails);
-        }
-
-        private Data.RestResponse Execute(RestSharp.IRestClient client,
-            Data.RestRequest requestDetails)
-        {
-            if (client == null)
-            {
-                client = this.Client;
-            }
-
-            if (client.BaseUrl == null || string.IsNullOrWhiteSpace(client.BaseUrl.AbsoluteUri))
-            {
-                client.BaseUrl = new Uri(this.BaseUrlString);
-            }
+            this.BaseUrlString = baseAddress;
+            RestSharp.IRestClient client = this.Client;
 
             // We're using RestSharp to execute HTTP requests.  RestSharp copes with trailing "/" 
             //  on BaseUrl and leading "/" on Resource, whether one or both of the "/" are present 

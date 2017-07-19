@@ -31,32 +31,54 @@ namespace RestClient
 	{
 
 		/// <summary>
-		/// Sets the base URL.
-		/// It is the portion of the full Url not part of the
-		/// resource type. For example if a resource type full Url is
-		/// http://host:8888/domain/resourcetype and the resource type is
-		/// /resourcetype, the base Url is http://host:8888/domain.
-		/// It is meant to serve as a default value to be appended to compose the
-		/// full Url when
-		/// <seealso cref="smartrics.rest.client.RestClient#Execute(RestRequest)"/>
-		/// is used.
+		/// Gets or sets the base URL or host address.
 		/// </summary>
+        /// <remarks>This is the portion of the full Url not part of the
+        /// resource type. For example if a resource type full Url is
+        /// http://host:8888/domain/resourcetype and the resource type is
+        /// /resourcetype, the base Url is http://host:8888/domain.
+        /// It is meant to serve as a default value to be appended to compose the
+        /// full Url when IRestClient.Execute(Data.RestRequest) is used.</remarks>
 		string BaseUrlString {set;get;}
 
+        /// <summary>
+        /// Gets or sets the connection timeout value in milliseconds.
+        /// </summary>
+        /// <remarks>This is the time to set up the connection, not the time to set up the 
+        /// connection and retrieve all the data from the server.</remarks>
+        int ConnectionTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the read-write timeout value in milliseconds.
+        /// </summary>
+        /// <remarks>This is the time to retrieve data from the server, or send data to it, after 
+        /// the connection has been established.</remarks>
+        int ReadWriteTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets information about a proxy server that must be used to connect to the 
+        /// internet.
+        /// </summary>
+        ProxyInfo Proxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets credentials needed to connect to a remote resource.
+        /// </summary>
+        Credentials Credentials { get; set; }
 
 		/// <summary>
 		/// Executes a rest request using the underlying Http client implementation.
 		/// </summary>
 		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request </returns>
-        RestResponse Execute(RestRequest requestDetails);
+        RestResponse Execute(Data.RestRequest requestDetails);
 
 		/// <summary>
 		/// Executes the rest request.
 		/// 
 		/// This method offers the possibility to override the base Url set on this client.
 		/// </summary>
-        /// <param name="baseAddress">The base Url </param>
+        /// <param name="baseAddress">The base Url.</param>
 		/// <param name="request">The request to be executed </param>
 		/// <returns> the response of the rest request.
 		/// See <seealso cref="smartrics.rest.client.RestClient.BaseUrlString"/> </returns>
