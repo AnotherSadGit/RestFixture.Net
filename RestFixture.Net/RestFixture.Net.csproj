@@ -104,14 +104,6 @@
     <Compile Include="Support\HashMapHelperClass.cs" />
     <Compile Include="TypeAdapters\HeadersTypeAdapter.cs" />
     <Compile Include="Support\RestClientBuilder.cs" />
-    <Compile Include="Support\Http\DeleteMethod.cs" />
-    <Compile Include="Support\Http\GetMethod.cs" />
-    <Compile Include="Support\Http\HeadMethod.cs" />
-    <Compile Include="Support\Http\OptionsMethod.cs" />
-    <Compile Include="Support\Http\PostMethod.cs" />
-    <Compile Include="Support\Http\PutMethod.cs" />
-    <Compile Include="Support\Http\TraceMethod.cs" />
-    <Compile Include="Support\Http\URIBuilder.cs" />
     <Compile Include="Javascript\JavascriptException.cs" />
     <Compile Include="Javascript\JavascriptWrapper.cs" />
     <Compile Include="TypeAdapters\JSONBodyTypeAdapter.cs" />
