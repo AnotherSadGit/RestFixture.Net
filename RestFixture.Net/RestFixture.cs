@@ -79,6 +79,24 @@ namespace RestFixture.Net
     /// <td><i>http proxy host port (RestClient proxy configuration)</i></td>
     /// </tr>
     /// <tr>
+    /// <td>http.proxy.username</td>
+    /// <td><i>http proxy credentials username (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.password</td>
+    /// <td><i>http proxy credentials password (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.domain</td>
+    /// <td><i>http proxy credentials domain (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
     /// <td>http.basicauth.username</td>
     /// <td><i>username for basic authentication (RestClient proxy configuration)</i>
     /// </td>
@@ -98,7 +116,8 @@ namespace RestFixture.Net
     /// <td>http.client.use.new.http.uri.factory</td>
     /// <td><i>If set to true uses a more relaxed validation rule to validate URIs.
     /// It, for example, allows array parameters in the query string. Defaults to
-    /// false.</i></td>
+    /// false.  NOTE: This parameter is supported only in the Java implementation 
+    /// of RestFixture.  It is not supported in RestFixture.Net.</i></td>
     /// </tr>
     /// <tr>
     /// <td>restfixture.requests.follow.redirects</td>
@@ -110,7 +129,9 @@ namespace RestFixture.Net
     /// <td>restfixture.resource.uris.are.escaped</td>
     /// <td><i>boolean value. if true, RestFixture will assume that the resource uris
     /// are already escaped. If false, resource uri will be escaped. Defaults to
-    /// false.</i></td>
+    /// false.  NOTE: This parameter is supported only in the Java implementation 
+    /// of RestFixture.  It is not supported in RestFixture.Net because uris are 
+    /// escaped automatically, if required, by the .NET framework.</i></td>
     /// </tr>
     /// <tr>
     /// <td>restfixture.display.actual.on.right</td>

@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89
 		Cloning_Notes.txt = Cloning_Notes.txt
 		JavaScriptEngines.txt = JavaScriptEngines.txt
 		Notes\RestFixture_Notes.txt = Notes\RestFixture_Notes.txt
+		RestFixtureURL_Notes.txt = RestFixtureURL_Notes.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastClone", "FastClone\FastClone.csproj", "{19AD251E-12E8-4BA0-882E-A84C194CA217}"

@@ -23,12 +23,6 @@ using RestFixture.Net.Support;
  */
 namespace RestFixture.Net
 {
-
-	using HttpClient = org.apache.commons.httpclient.HttpClient;
-	using HttpURL = org.apache.commons.httpclient.HttpURL;
-	using URI = org.apache.commons.httpclient.URI;
-	using URIException = org.apache.commons.httpclient.URIException;
-    
 	/// <summary>
 	/// Factory of all dependencies the rest fixture needs.
 	/// 
@@ -40,8 +34,6 @@ namespace RestFixture.Net
 
 		private readonly BodyTypeAdapterFactory bodyTypeAdapterFactory;
 
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: public PartsFactory(final RunnerVariablesProvider variablesProvider, smartrics.rest.fitnesse.fixture.support.Config config)
         public PartsFactory(IRunnerVariablesProvider variablesProvider, Support.Config config)
 		{
 			this.bodyTypeAdapterFactory = new BodyTypeAdapterFactory(variablesProvider, config);
@@ -53,47 +45,10 @@ namespace RestFixture.Net
 		/// <param name="config">
 		///            the configuration for the rest client to build </param>
 		/// <returns> the rest client </returns>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: public smartrics.rest.client.RestClient buildRestClient(final smartrics.rest.fitnesse.fixture.support.Config config)
 		public virtual IRestClient buildRestClient(Config config)
 		{
-			HttpClient httpClient = (new HttpClientBuilder()).createHttpClient(config);
-			return new RestClientImplAnonymousInnerClass(this, httpClient, config);
-		}
-
-		private class RestClientImplAnonymousInnerClass : RestClientImpl
-		{
-			private readonly PartsFactory outerInstance;
-
-			private Config config;
-
-			public RestClientImplAnonymousInnerClass(PartsFactory outerInstance, HttpClient httpClient, Config config) : base(httpClient)
-			{
-				this.outerInstance = outerInstance;
-				this.config = config;
-			}
-
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: @Override protected org.apache.commons.httpclient.URI createUri(String uriString, boolean escaped) throws org.apache.commons.httpclient.URIException
-			protected internal override URI createUri(string uriString, bool escaped)
-			{
-				bool useNewHttpUriFactory = config.getAsBoolean("http.client.use.new.http.uri.factory", false);
-				if (useNewHttpUriFactory)
-				{
-					return new HttpURL(uriString);
-				}
-				return base.createUri(uriString, escaped);
-			}
-
-			public override string getMethodClassnameFromMethodName(string mName)
-			{
-				bool useOverriddenHttpMethodImpl = config.getAsBoolean("http.client.use.new.http.uri.factory", false);
-				if (useOverriddenHttpMethodImpl)
-				{
-					return string.Format("smartrics.rest.fitnesse.fixture.support.http.{0}Method", mName);
-				}
-				return base.getMethodClassnameFromMethodName(mName);
-			}
+            IRestClient client = (new RestClientBuilder()).createRestClient(config);
+            return client;
 		}
 
 		/// <summary>
@@ -124,7 +79,9 @@ namespace RestFixture.Net
 			{
 				return new FitFormatter();
 			}
-			throw new System.InvalidOperationException("Runner " + runner.name() + " not supported");
+
+		    string errorMessage = string.Format("Runner {0} not supported", runner);
+            throw new System.InvalidOperationException(errorMessage);
 		}
 
 		/// <summary>

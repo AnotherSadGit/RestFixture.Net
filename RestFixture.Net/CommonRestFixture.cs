@@ -1044,8 +1044,8 @@ namespace RestFixture.Net
             doMethod(method, resUrl, substitute(Headers), rBody);
         }
 
-        protected internal virtual void doMethod(string method, string resUrl, IDictionary<string, string> headers,
-            string rBody)
+        protected internal virtual void doMethod(string method, string resUrl, 
+            IDictionary<string, string> headers, string rBody)
         {
             LastRequest = partsFactory.buildRestRequest();
             RestRequest.Method parsedMethod;
@@ -1093,7 +1093,8 @@ namespace RestFixture.Net
                 }
                 LastRequest.Query = query;
             }
-            if ("Post".Equals(method) || "Put".Equals(method))
+            if ("Post".Equals(method, StringComparison.CurrentCultureIgnoreCase) 
+                || "Put".Equals(method, StringComparison.CurrentCultureIgnoreCase))
             {
                 LastRequest.Body = rBody;
             }
@@ -1106,18 +1107,19 @@ namespace RestFixture.Net
             LastResponse = response;
         }
 
-        protected internal virtual void completeHttpMethodExecution()
+        protected internal virtual void completeHttpMethodExecution(string clientBaseUrl, 
+            string lastResquestUrl, string lastRequestQueryString)
         {
-            string uri = LastResponse.Resource;
-            string query = LastRequest.Query;
-            if (query != null && query.Trim() != "")
+            //string uri = LastResponse.Resource;
+            //string query = LastRequest.Query;
+            if (lastRequestQueryString != null && lastRequestQueryString.Trim() != "")
             {
-                uri = uri + "?" + query;
+                lastResquestUrl = lastResquestUrl + "?" + lastRequestQueryString;
             }
-            string clientBaseUri = restClient.BaseUrlString;
-            string u = clientBaseUri + uri;
+            //string clientBaseUri = restClient.BaseUrlString;
+            string u = clientBaseUrl + lastResquestUrl;
             ICellWrapper uriCell = row.getCell(1);
-            Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, uri);
+            Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, lastResquestUrl);
             ICellWrapper cellStatusCode = row.getCell(2);
             if (cellStatusCode == null)
             {

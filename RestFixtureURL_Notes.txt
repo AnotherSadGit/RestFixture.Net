@@ -1,0 +1,57 @@
+URLs in Java RestFixture
+========================
+Simon ELms, 22 Jul 2017
+
+The original Java version of RestFixture uses the Apache HttpClient library.  The RestClientImpl 
+object used to send HTTP requests and receive the responses wraps an HttpClient object.
+
+----------------------------
+PartsFactory.buildRestClient
+----------------------------
+PartsFactory.buildRestClient builds the RestClientImpl object.  For a start it creates an 
+HttpClient object via HttpClientBuilder.createHttpClient.
+
+	----------------------------------
+	HttpClientBuilder.createHttpClient
+	----------------------------------
+	Creates an HttpClient object and configures it based on a config object.
+
+	The following config values are used:
+
+	* "http.client.connection.timeout": Sets the HttpClient socket timeout;
+	* "http.proxy.host" and "http.proxy.port": Set the address and port of the proxy server;
+	* "http.basicauth.username" and "http.basicauth.password": Set username and password for HTTP 
+		Basic authentication.
+
+	----------------------------------
+
+PartsFactory.buildRestClient passes the configured HttpClient into the constructor of 
+RestClientImpl.  It uses an anonymous class to override the following methods of the RestClientImpl 
+object it constructs and returns:
+
+* createUri: 
+	* If config "http.client.use.new.http.uri.factory" is true, returns an 
+		org.apache.commons.httpclient.HttpURL(uriString) object.  This is a wrapper around 
+		org.apache.commons.httpclient.URI and sets the escaped parameter to false.  So the URL is 
+		seen as not escaped;
+	* If config "http.client.use.new.http.uri.factory" is false, returns 
+		RestClientImpl.createUri(uriString, escaped), which returns new URI(uriString, escaped).
+		* escaped parameter is set in RestFixture.configFixture() to config value 
+			"restfixture.resource.uris.are.escaped".  configFixture() is called in initialize(), 
+			which is called for both Fit and Slim.  
+		* XML docs say that if "restfixture.resource.uris.are.escaped" is true, RestFixture will 
+			assume that the resource uris are already escaped. If false, resource uri will be 
+			escaped. Defaults to false.
+	NOTE: .NET DOESN'T NEED TO BE TOLD EXPLICITLY TO ESCAPE THE URL.  THE Uri CONSTRUCTOR WILL 
+			ESCAPE THE RELATIVE URL STRING AUTOMATICALLY, IF REQUIRED.
+
+* getMethodClassnameFromMethodName: Gets the HttpClient method needed to send the request (eg GET, 
+	POST, etc).  .NET doesn't need a separate method to send different types of requests so we can 
+	ignore this method.
+
+------------------------
+RestClientImpl.createUri
+------------------------
+^setUri
+  ^configureHttpMethod
+    ^execute

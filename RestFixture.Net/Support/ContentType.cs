@@ -195,20 +195,25 @@ namespace RestFixture.Net.Support
 		public static ContentType parse(string contentTypeString)
 		{
 			string c = contentTypeString;
-			if (string.ReferenceEquals(c, null))
+			if (c == null)
 			{
 				return contentTypeToEnum["default"];
 			}
+
 			int pos = contentTypeString.IndexOf(";", StringComparison.Ordinal);
 			if (pos > 0)
 			{
-				c = contentTypeString.Substring(0, pos).Trim();
+				c = contentTypeString.Substring(0, pos);
 			}
-			ContentType ret = contentTypeToEnum[c];
-			if (ret == null)
+
+            c = c.Trim();
+			
+            if (!contentTypeToEnum.ContainsKey(c))
 			{
 				return contentTypeToEnum["default"];
 			}
+
+            ContentType ret = contentTypeToEnum[c];
 			return ret;
 		}
 

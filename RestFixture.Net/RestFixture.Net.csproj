@@ -103,7 +103,7 @@
     <Compile Include="Variables\FitVariables.cs" />
     <Compile Include="Support\HashMapHelperClass.cs" />
     <Compile Include="TypeAdapters\HeadersTypeAdapter.cs" />
-    <Compile Include="Support\HttpClientBuilder.cs" />
+    <Compile Include="Support\RestClientBuilder.cs" />
     <Compile Include="Support\Http\DeleteMethod.cs" />
     <Compile Include="Support\Http\GetMethod.cs" />
     <Compile Include="Support\Http\HeadMethod.cs" />
