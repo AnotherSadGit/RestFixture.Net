@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -24,8 +25,6 @@ namespace RestFixture.Net
 
 	using Fixture = fit.Fixture;
 	using Parse = fit.Parse;
-	using Config = smartrics.rest.fitnesse.fixture.support.Config;
-	using Tools = smartrics.rest.fitnesse.fixture.support.Tools;
 
 	/// <summary>
 	/// A simple fixture to store configuration data for the rest fixture.
@@ -134,10 +133,12 @@ namespace RestFixture.Net
 		/// fixture.
 		/// </summary>
 		/// <param name="args"> the fixture args </param>
-		public RestFixtureConfig(params string[] args)
-		{
-			base.args = args;
-		}
+		
+        // Shouldn't need this.  FitSharp.Fixture reads args from first row of table.
+        //public RestFixtureConfig(params string[] args)
+        //{
+        //    base.args = args;
+        //}
 
 		/// <summary>
 		/// Support for Slim runner.
@@ -171,23 +172,23 @@ namespace RestFixture.Net
 		/// pairs. The fixture optional first argument is the config name. If not
 		/// supplied the value is defaulted. See <seealso cref="Config#DEFAULT_CONFIG_NAME"/>.
 		/// </summary>
-		public override void doRow(Parse p)
+        public override void DoRow(Parse p)
 		{
-			Parse cells = p.parts;
+			Parse cells = p.Parts;
 			try
 			{
-				string key = cells.text();
-				string value = cells.more.text();
+				string key = cells.Text;
+                string value = cells.More.Text;
 				Config c = Config;
 				c.add(key, value);
 				string fValue = Tools.toHtml(value);
-				Parse valueParse = cells.more;
-				valueParse.body = fValue;
-				right(valueParse);
+				Parse valueParse = cells.More;
+				valueParse.SetBody(fValue);
+				Right(valueParse);
 			}
 			catch (Exception e)
 			{
-				exception(p, e);
+				Exception(p, e);
 			}
 		}
 
@@ -199,13 +200,13 @@ namespace RestFixture.Net
 				{
 					return config;
 				}
-				if (base.args != null && base.args.length > 0)
+				if (base.Args != null && base.Args.Length > 0)
 				{
-					config = Config.getConfig(base.args[0]);
+                    config = Config.getConfig(base.Args[0]);
 				}
 				else
 				{
-					config = Config.Config;
+                    config = Config.getConfig();
 				}
 				return config;
 			}
