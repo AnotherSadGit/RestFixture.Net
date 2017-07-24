@@ -28,12 +28,11 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class FitRow : IRowWrapper
+	public class FitRow : IRowWrapper<Parse>
 	{
-
 		private readonly Parse cells;
 
-		private readonly IList<IFitCellWrapper> row;
+		private readonly IList<ICellWrapper<Parse>> row;
 
 		/// <summary>
 		/// a fit row </summary>
@@ -42,7 +41,7 @@ namespace RestFixture.Net
 		{
 			this.cells = parse;
 			Parse next = cells;
-			row = new List<IFitCellWrapper>();
+			row = new List<ICellWrapper<Parse>>();
 			while (next != null)
 			{
 				row.Add(new FitCell(next));
@@ -59,7 +58,7 @@ namespace RestFixture.Net
 			return 0;
 		}
 
-		public virtual ICellWrapper getCell(int c)
+        public virtual ICellWrapper<Parse> getCell(int c)
 		{
 			if (c < row.Count)
 			{
@@ -68,11 +67,11 @@ namespace RestFixture.Net
 			return null;
 		}
 
-		public virtual ICellWrapper removeCell(int c)
+        public virtual ICellWrapper<Parse> removeCell(int c)
 		{
 			if (c < this.row.Count)
             {
-                IFitCellWrapper removedCell = this.row[c];
+                ICellWrapper<Parse> removedCell = this.row[c];
                 this.row.Remove(removedCell);
                 return removedCell;
             }

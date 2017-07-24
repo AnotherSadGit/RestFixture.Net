@@ -36,7 +36,7 @@ namespace RestFixture.Net
 	{
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private CommonRestFixture restFixture;
+        private CommonRestFixture<Parse> restFixture;
 
 		public override string ToString()
 		{
@@ -97,7 +97,7 @@ namespace RestFixture.Net
 		/// <returns> the cell formatter for Fit. </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
 //ORIGINAL LINE: public smartrics.rest.fitnesse.fixture.support.CellFormatter<?> getFormatter()
-		public virtual ICellFormatter Formatter
+		public virtual ICellFormatter<Parse> Formatter
 		{
 			get
 			{
@@ -272,7 +272,7 @@ namespace RestFixture.Net
 		/// </summary>
 		/// <param name="currentRow">
 		///            the row to process. </param>
-		public virtual void processRow(IRowWrapper currentRow)
+		public virtual void processRow(IRowWrapper<Parse> currentRow)
 		{
 			restFixture.processRow(currentRow);
 		}
@@ -295,17 +295,17 @@ namespace RestFixture.Net
 		{
 			if (restFixture == null)
 			{
-                restFixture = new CommonRestFixture(this.Symbols);
+                restFixture = new CommonRestFixture<Parse>(this.Symbols);
 				restFixture.Config = Config.getConfig(ConfigNameFromArgs);
 				string url = BaseUrlFromArgs;
 				if (url != null)
 				{
 					restFixture.BaseUrl = new Url(Tools.fromSimpleTag(url));
 				}
-                restFixture.initialize(CommonRestFixture.Runner.FIT);
+                restFixture.initialize(Runner.FIT);
 				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
 			}
-            IRowWrapper currentRow = new FitRow(parse);
+            IRowWrapper<Parse> currentRow = new FitRow(parse);
 			try
 			{
 				restFixture.processRow(currentRow);
@@ -313,9 +313,9 @@ namespace RestFixture.Net
 			catch (Exception exception)
 			{
                 // TODO: Sort out CellWrapper vs CellWrapper<Parse>.
-                ICellWrapper firstCell = currentRow.getCell(0);
+                ICellWrapper<Parse> firstCell = currentRow.getCell(0);
 				LOG.Error(exception, "Exception when processing row {0}", firstCell.text());
-			    ICellFormatter cellFormatter = restFixture.Formatter;
+			    ICellFormatter<Parse> cellFormatter = restFixture.Formatter;
                 cellFormatter.exception(firstCell, exception);
 			}
 		}

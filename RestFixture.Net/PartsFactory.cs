@@ -69,15 +69,15 @@ namespace RestFixture.Net
 		/// <returns> a formatter instance of CellFormatter </returns>
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
         //ORIGINAL LINE: public CellFormatter<?> buildCellFormatter(CommonRestFixture.Runner runner)
-        public virtual ICellFormatter buildCellFormatter(CommonRestFixture.Runner runner)
+        public virtual ICellFormatter<T> buildCellFormatter<T>(Runner runner)
 		{
-			if (CommonRestFixture.Runner.SLIM.Equals(runner))
+			if (Runner.SLIM.Equals(runner))
 			{
-				return new SlimFormatter();
+                return new SlimFormatter() as ICellFormatter<T>;
 			}
-			if (CommonRestFixture.Runner.FIT.Equals(runner))
+			if (Runner.FIT.Equals(runner))
 			{
-				return new FitFormatter();
+                return new FitFormatter() as ICellFormatter<T>;
 			}
 
 		    string errorMessage = string.Format("Runner {0} not supported", runner);

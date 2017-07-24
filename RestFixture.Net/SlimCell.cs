@@ -27,7 +27,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimCell : ICellWrapper
+	public class SlimCell : ICellWrapper<string>
 	{
 
 		private string cell;

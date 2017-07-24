@@ -32,7 +32,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-    public class FitFormatter : ICellFormatter
+    public class FitFormatter : ICellFormatter<Parse>
 	{
 
 		private ActionFixture fixture;
@@ -74,55 +74,50 @@ namespace RestFixture.Net
 			}
 		}
 
-		public void exception(ICellWrapper cell, string exceptionMessage)
+        public void exception(ICellWrapper<Parse> cell, string exceptionMessage)
 		{
-		    IFitCellWrapper fitCell = cell as IFitCellWrapper;
-            Parse wrapped = fitCell.Wrapped;
-			fixture.exception(wrapped, new FitFailureException(exceptionMessage));
+            Parse wrapped = cell.Wrapped;
+			fixture.Exception(wrapped, new FitFailureException(exceptionMessage));
 		}
 
-	    public void exception(ICellWrapper cell, Exception exception)
+        public void exception(ICellWrapper<Parse> cell, Exception exception)
 		{
-            IFitCellWrapper fitCell = cell as IFitCellWrapper;
-            Parse wrapped = fitCell.Wrapped;
-			fixture.exception(wrapped, exception);
+            Parse wrapped = cell.Wrapped;
+			fixture.Exception(wrapped, exception);
 		}
 
-        public void check(ICellWrapper valueCell, RestDataTypeAdapter adapter)
+        public void check(ICellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
         {
-            IFitCellWrapper fitCell = valueCell as IFitCellWrapper;
-            fitCell.body(Tools.toHtml(fitCell.body()));
-            fixture.check(fitCell.Wrapped, adapter);
+            valueCell.body(Tools.toHtml(valueCell.body()));
+            fixture.Check(valueCell.Wrapped, adapter);
         }
 
 		public string label(string text)
 		{
-			return ActionFixture.label(text);
+			return ActionFixture.Label(text);
 		}
 
-	    public void wrong(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
+        public void wrong(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
-            IFitCellWrapper fitCell = expected as IFitCellWrapper;
-            string expectedContent = fitCell.body();
+            string expectedContent = expected.body();
 			string body = Tools.makeContentForWrongCell(expectedContent, typeAdapter, this, minLenForToggle);
-            fitCell.body(body);
-            fixture.wrong(fitCell.Wrapped);
+            expected.body(body);
+            fixture.Wrong(expected.Wrapped);
 		}
 
-		public void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
+        public void right(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
-            IFitCellWrapper fitCell = expected as IFitCellWrapper;
-            string expectedContent = fitCell.body();
-            fitCell.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
-            fixture.right(fitCell.Wrapped);
+            string expectedContent = expected.body();
+            expected.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
+            fixture.Right(expected.Wrapped);
 		}
 
 		public string gray(string text)
 		{
-			return ActionFixture.gray(Tools.toHtml(text));
+			return ActionFixture.Gray(Tools.toHtml(text));
 		}
 
-        public void asLink(ICellWrapper cell, string resolvedUrl, string link, string text)
+        public void asLink(ICellWrapper<Parse> cell, string resolvedUrl, string link, string text)
 		{
 			string actualText = text;
 			string parsed = null;

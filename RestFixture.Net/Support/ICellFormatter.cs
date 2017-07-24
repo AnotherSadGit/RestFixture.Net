@@ -23,7 +23,7 @@ namespace RestFixture.Net.Support
 	/// <summary>
 	/// Formatter of the content of a cell.
 	/// </summary>
-	public interface ICellFormatter
+	public interface ICellFormatter<T>
 	{
 		/// <summary>
 		/// formats a cell containing an exception.
@@ -32,7 +32,7 @@ namespace RestFixture.Net.Support
 		///            the cell wrapper </param>
 		/// <param name="exception">
 		///            the excteption to render. </param>
-		void exception(ICellWrapper cellWrapper, Exception exception);
+		void exception(ICellWrapper<T> cellWrapper, Exception exception);
 
 		/// <summary>
 		/// formats a cell containing an exception.
@@ -41,7 +41,7 @@ namespace RestFixture.Net.Support
 		///            the cell wrapper </param>
 		/// <param name="exceptionMessage">
 		///            the exception message to render. </param>
-		void exception(ICellWrapper cellWrapper, string exceptionMessage);
+        void exception(ICellWrapper<T> cellWrapper, string exceptionMessage);
 
 		/// <summary>
 		/// formats a check cell.
@@ -50,7 +50,7 @@ namespace RestFixture.Net.Support
 		///            the cell value. </param>
 		/// <param name="adapter">
 		///            the adapter interpreting the value. </param>
-		void check(ICellWrapper valueCell, RestDataTypeAdapter adapter);
+        void check(ICellWrapper<T> valueCell, RestDataTypeAdapter adapter);
 
 		/// <summary>
 		/// formats a cell label
@@ -67,7 +67,7 @@ namespace RestFixture.Net.Support
 		///            the expected value </param>
 		/// <param name="typeAdapter">
 		///            the adapter with the actual value. </param>
-		void wrong(ICellWrapper expected, RestDataTypeAdapter typeAdapter);
+        void wrong(ICellWrapper<T> expected, RestDataTypeAdapter typeAdapter);
 
 		/// <summary>
 		/// formats a cell representing a right expectation.
@@ -76,7 +76,7 @@ namespace RestFixture.Net.Support
 		///            the expected value </param>
 		/// <param name="typeAdapter">
 		///            the adapter with the actual value. </param>
-		void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter);
+        void right(ICellWrapper<T> expected, RestDataTypeAdapter typeAdapter);
 
 		/// <summary>
 		/// formats a cell with a gray background. used to ignore the content or for
@@ -98,7 +98,7 @@ namespace RestFixture.Net.Support
 		///            the uri in the href. </param>
 		/// <param name="text">
 		///            the text. </param>
-		void asLink(ICellWrapper cell, string resolvedUrl, string link, string text);
+        void asLink(ICellWrapper<T> cell, string resolvedUrl, string link, string text);
 
 		/// <summary>
 		/// sets whether the cell should display the actual value after evaluation.

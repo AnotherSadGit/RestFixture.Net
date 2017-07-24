@@ -202,7 +202,7 @@ namespace RestFixture.Net
     {
         private static Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private CommonRestFixture _restFixture;
+        private CommonRestFixture<string> _restFixture;
 
         #region Constructors ******************************************************************************
 
@@ -213,7 +213,7 @@ namespace RestFixture.Net
         ///            the cells following up the first cell in the first row. </param>
         public RestFixture(string hostName)
         {
-            _restFixture = new CommonRestFixture(hostName);
+            _restFixture = new CommonRestFixture<string>(hostName);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace RestFixture.Net
         ///            the value of cell number 3 in first row of the fixture table. </param>
         public RestFixture(string hostName, string configName)
         {
-            _restFixture = new CommonRestFixture(hostName, configName);
+            _restFixture = new CommonRestFixture<string>(hostName, configName);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace RestFixture.Net
         /// <param name="configName"> </param>
         internal RestFixture(PartsFactory partsFactory, string hostName, string configName)
         {
-            _restFixture = new CommonRestFixture(partsFactory, hostName, configName);
+            _restFixture = new CommonRestFixture<string>(partsFactory, hostName, configName);
         }
 
         #endregion
@@ -248,7 +248,7 @@ namespace RestFixture.Net
         /// <returns> the rendered content. </returns>
         public virtual IList<IList<string>> doTable(IList<IList<string>> rows)
         {
-            _restFixture.initialize(CommonRestFixture.Runner.SLIM);
+            _restFixture.initialize(Runner.SLIM);
             IList<IList<string>> res = new List<IList<string>>();
             _restFixture.Formatter.DisplayActual = _restFixture.displayActualOnRight;
             _restFixture.Formatter.DisplayAbsoluteURLInFull = _restFixture.displayAbsoluteURLInFull;
@@ -647,7 +647,7 @@ namespace RestFixture.Net
         /// interfaces.
         /// </summary>
         /// <param name="currentRow"> the current row </param>
-        public virtual void processRow(IRowWrapper currentRow)
+        public virtual void processRow(IRowWrapper<string> currentRow)
         {
             _restFixture.processRow(currentRow);
         }
@@ -670,7 +670,7 @@ namespace RestFixture.Net
 
         private void processSlimRow(IList<IList<string>> resultTable, IList<string> row)
         {
-            IRowWrapper currentRow = new SlimRow(row);
+            IRowWrapper<string> currentRow = new SlimRow(row);
             try
             {
                 processRow(currentRow);
@@ -687,7 +687,7 @@ namespace RestFixture.Net
             }
         }
 
-        private IList<string> mapSlimRow(IList<string> resultRow, IRowWrapper currentRow)
+        private IList<string> mapSlimRow(IList<string> resultRow, IRowWrapper<string> currentRow)
         {
             IList<string> rowAsList = ((SlimRow) currentRow).asList();
             for (int c = 0; c < rowAsList.Count; c++)

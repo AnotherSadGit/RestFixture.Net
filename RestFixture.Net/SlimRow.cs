@@ -27,22 +27,22 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-    public class SlimRow : IRowWrapper
+    public class SlimRow : IRowWrapper<string>
 	{
 
-		private readonly IList<ICellWrapper> row;
+        private readonly IList<ICellWrapper<string>> row;
 
 		/// <param name="rawRow"> a list of string representing the row cells as passed by Slim. </param>
 		public SlimRow(IList<string> rawRow)
 		{
-			this.row = new List<ICellWrapper>();
+            this.row = new List<ICellWrapper<string>>();
 			foreach (string r in rawRow)
 			{
 				this.row.Add(new SlimCell(r));
 			}
 		}
 
-		public virtual ICellWrapper getCell(int c)
+        public virtual ICellWrapper<string> getCell(int c)
 		{
 			if (c < this.row.Count)
 			{
@@ -64,18 +64,18 @@ namespace RestFixture.Net
 		public virtual IList<string> asList()
 		{
 			IList<string> ret = new List<string>();
-			foreach (ICellWrapper w in row)
+            foreach (ICellWrapper<string> w in row)
 			{
 				ret.Add(w.body());
 			}
 			return ret;
 		}
 
-		public virtual ICellWrapper removeCell(int c)
+        public virtual ICellWrapper<string> removeCell(int c)
 		{
 			if (c < this.row.Count)
 			{
-			    ICellWrapper removedCell = this.row[c];
+                ICellWrapper<string> removedCell = this.row[c];
 			    this.row.Remove(removedCell);
 			    return removedCell;
 			}

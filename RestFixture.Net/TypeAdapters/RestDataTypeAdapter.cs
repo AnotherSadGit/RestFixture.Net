@@ -39,7 +39,7 @@ namespace RestFixture.Net.Support
 
 		public override string ToString()
 		{
-			return ToString(this.Target);
+			return ToString(this.Actual);
 		}
 
         //public override void set(object a)
@@ -52,7 +52,7 @@ namespace RestFixture.Net.Support
         //    return actual;
         //}
 
-	    public override object Target { get; set; }
+	    public override object Actual { get; set; }
 
 	    protected internal virtual void addError(string e)
 		{

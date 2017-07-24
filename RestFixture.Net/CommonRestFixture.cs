@@ -16,7 +16,7 @@ namespace RestFixture.Net
     /// </summary>
     /// <remarks>Not named BaseRestFixture as FitRestFixture must inherit ActionFixture, one of the 
     /// standard Fit fixture classes, rather than this class.</remarks>
-    public class CommonRestFixture : IRunnerVariablesProvider
+    public class CommonRestFixture<T> : IRunnerVariablesProvider
     {
          //TODO: Fix this.  Should be reading the FitNesse version, not the FitSharp one.  
         //  See original Java code.
@@ -24,38 +24,14 @@ namespace RestFixture.Net
 
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// What runner this table is running on.
-        /// 
-        /// Note, the OTHER runner is primarily for testing purposes.
-        /// 
-        /// </summary>
-        public enum Runner
-        {
-            /// <summary>
-            /// the slim runner
-            /// </summary>
-            SLIM,
-
-            /// <summary>
-            /// the fit runner
-            /// </summary>
-            FIT,
-
-            /// <summary>
-            /// any other runner
-            /// </summary>
-            OTHER
-        }
-
         public Variables CreateRunnerVariables()
         {
             switch (runner)
             {
-                case CommonRestFixture.Runner.SLIM:
+                case Runner.SLIM:
                     //return new SlimVariables(config, slimStatementExecutor);
                     return new SlimVariables(config);
-                case CommonRestFixture.Runner.FIT:
+                case Runner.FIT:
                     return new FitVariables(config, _symbols);
                 default:
                     // Use FitVariables for tests
@@ -92,7 +68,7 @@ namespace RestFixture.Net
 
         private Config config;
 
-        private CommonRestFixture.Runner runner;
+        private Runner runner;
 
         public bool displayActualOnRight;
 
@@ -109,9 +85,9 @@ namespace RestFixture.Net
 
         private Url _baseUrl;
 
-        protected internal IRowWrapper row;
+        protected internal IRowWrapper<T> row;
 
-        private ICellFormatter formatter;
+        private ICellFormatter<T> formatter;
 
         private PartsFactory partsFactory;
 
@@ -242,7 +218,7 @@ namespace RestFixture.Net
         /// The formatter for this instance of the CommonRestFixture.
         /// </summary>
         /// <returns> the formatter for the cells </returns>
-        public virtual ICellFormatter Formatter
+        public virtual ICellFormatter<T> Formatter
         {
             get { return formatter; }
         }
@@ -305,7 +281,7 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void SetMultipartFileName()
         {
-            ICellWrapper cell = row.getCell(1);
+            ICellWrapper<T> cell = row.getCell(1);
             if (cell == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -328,10 +304,10 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void AddMultipartFile()
         {
-            ICellWrapper cellFileName = row.getCell(1);
-            ICellWrapper cellParamName = row.getCell(2);
-            ICellWrapper cellContentType = row.getCell(3);
-            ICellWrapper cellCharset = row.getCell(4);
+            ICellWrapper<T> cellFileName = row.getCell(1);
+            ICellWrapper<T> cellParamName = row.getCell(2);
+            ICellWrapper<T> cellContentType = row.getCell(3);
+            ICellWrapper<T> cellCharset = row.getCell(4);
             if (cellFileName == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a multipart file name to set");
@@ -354,10 +330,10 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void AddMultipartString()
         {
-            ICellWrapper cellFileName = row.getCell(1);
-            ICellWrapper cellParamName = row.getCell(2);
-            ICellWrapper cellContentType = row.getCell(3);
-            ICellWrapper cellCharset = row.getCell(4);
+            ICellWrapper<T> cellFileName = row.getCell(1);
+            ICellWrapper<T> cellParamName = row.getCell(2);
+            ICellWrapper<T> cellContentType = row.getCell(3);
+            ICellWrapper<T> cellCharset = row.getCell(4);
             if (cellFileName == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a multipart string content to set");
@@ -370,8 +346,8 @@ namespace RestFixture.Net
         }
 
 
-        private RestMultipart RegisterMultipartRow(RestMultipart.RestMultipartType type, ICellWrapper cellFileName,
-            ICellWrapper cellParamName, ICellWrapper cellContentType, ICellWrapper cellCharset)
+        private RestMultipart RegisterMultipartRow(RestMultipart.RestMultipartType type, ICellWrapper<T> cellFileName,
+            ICellWrapper<T> cellParamName, ICellWrapper<T> cellContentType, ICellWrapper<T> cellCharset)
         {
             // Param Name
             string multipartParamName = FILE;
@@ -430,7 +406,7 @@ namespace RestFixture.Net
             get { return fileName; }
             set
             {
-                ICellWrapper cell = row.getCell(1);
+                ICellWrapper<T> cell = row.getCell(1);
                 if (cell == null)
                 {
                     Formatter.exception(row.getCell(0), "You must pass a file name to set");
@@ -455,7 +431,7 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void setMultipartFileParameterName()
         {
-            ICellWrapper cell = row.getCell(1);
+            ICellWrapper<T> cell = row.getCell(1);
             if (cell == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a parameter name to set");
@@ -484,7 +460,7 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void setBody()
         {
-            ICellWrapper cell = row.getCell(1);
+            ICellWrapper<T> cell = row.getCell(1);
             if (cell == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a body to set");
@@ -526,7 +502,7 @@ namespace RestFixture.Net
 
         public virtual void addHeader()
         {
-            ICellWrapper cell = row.getCell(1);
+            ICellWrapper<T> cell = row.getCell(1);
             if (cell == null)
             {
                 Formatter.exception(row.getCell(0), "You must pass a header map to set");
@@ -813,12 +789,12 @@ namespace RestFixture.Net
             }
             string label = row.getCell(1).text().Trim();
             string loc = row.getCell(2).text();
-            ICellWrapper exprCell = row.getCell(3);
+            ICellWrapper<T> exprCell = row.getCell(3);
             try
             {
                 exprCell.body(GLOBALS.substitute(exprCell.body()));
                 string expr = exprCell.text();
-                ICellWrapper valueCell = row.getCell(4);
+                ICellWrapper<T> valueCell = row.getCell(4);
                 string valueCellText = valueCell.body();
                 string valueCellTextReplaced = GLOBALS.substitute(valueCellText);
                 valueCell.body(valueCellTextReplaced);
@@ -838,7 +814,7 @@ namespace RestFixture.Net
                         LOG.Error(e, "Exception occurred when processing cell={0}", exprCell);
                     }
                     GLOBALS.put(label, sValue);
-                    adapter.set(sValue);
+                    adapter.Actual = sValue;
                     Formatter.check(valueCell, adapter);
                 }
                 else
@@ -863,7 +839,7 @@ namespace RestFixture.Net
         public virtual void comment()
         {
             debugMethodCallStart();
-            ICellWrapper messageCell = row.getCell(1);
+            ICellWrapper<T> messageCell = row.getCell(1);
             try
             {
                 string message = messageCell.text().Trim();
@@ -887,7 +863,7 @@ namespace RestFixture.Net
         /// </summary>
         public virtual void evalJs()
         {
-            ICellWrapper jsCell = row.getCell(1);
+            ICellWrapper<T> jsCell = row.getCell(1);
             if (jsCell == null)
             {
                 Formatter.exception(row.getCell(0), "Missing string to evaluate)");
@@ -910,7 +886,7 @@ namespace RestFixture.Net
                 lastEvaluation = result.ToString();
             }
             StringTypeAdapter adapter = new StringTypeAdapter();
-            adapter.set(lastEvaluation);
+            adapter.Actual = lastEvaluation;
             Formatter.right(row.getCell(1), adapter);
         }
 
@@ -919,10 +895,10 @@ namespace RestFixture.Net
         /// interfaces.
         /// </summary>
         /// <param name="currentRow"> the current row </param>
-        public virtual void processRow(IRowWrapper currentRow)
+        public virtual void processRow(IRowWrapper<T> currentRow)
         {
             row = currentRow;
-            ICellWrapper cell0 = row.getCell(0);
+            ICellWrapper<T> cell0 = row.getCell(0);
             if (cell0 == null)
             {
                 throw new Exception("Current RestFixture row is not parseable (maybe empty or not existent)");
@@ -963,7 +939,7 @@ namespace RestFixture.Net
             }
         }
 
-        protected internal virtual void initialize(CommonRestFixture.Runner runner)
+        protected internal virtual void initialize(Runner runner)
         {
             this.runner = runner;
             bool state = ValidateState();
@@ -1021,7 +997,7 @@ namespace RestFixture.Net
 
         protected internal virtual void doMethod(string body, string method)
         {
-            ICellWrapper urlCell = row.getCell(1);
+            ICellWrapper<T> urlCell = row.getCell(1);
             string url = deHtmlify(stripTag(urlCell.text()));
             string resUrl = GLOBALS.substitute(url);
             string rBody = GLOBALS.substitute(body);
@@ -1030,7 +1006,10 @@ namespace RestFixture.Net
             try
             {
                 doMethod(method, resUrl, rHeaders, rBody);
-                completeHttpMethodExecution();
+                string clientBaseUrl = restClient.BaseUrlString;
+                string lastRequestUrl = LastResponse.Resource;
+                string lastRequestQueryString = LastRequest.Query;
+                completeHttpMethodExecution(clientBaseUrl, lastRequestUrl, lastRequestQueryString);
             }
             catch (Exception e)
             {
@@ -1108,19 +1087,19 @@ namespace RestFixture.Net
         }
 
         protected internal virtual void completeHttpMethodExecution(string clientBaseUrl, 
-            string lastResquestUrl, string lastRequestQueryString)
+            string lastRequestUrl, string lastRequestQueryString)
         {
             //string uri = LastResponse.Resource;
             //string query = LastRequest.Query;
             if (lastRequestQueryString != null && lastRequestQueryString.Trim() != "")
             {
-                lastResquestUrl = lastResquestUrl + "?" + lastRequestQueryString;
+                lastRequestUrl = lastRequestUrl + "?" + lastRequestQueryString;
             }
             //string clientBaseUri = restClient.BaseUrlString;
-            string u = clientBaseUrl + lastResquestUrl;
-            ICellWrapper uriCell = row.getCell(1);
-            Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, lastResquestUrl);
-            ICellWrapper cellStatusCode = row.getCell(2);
+            string u = clientBaseUrl + lastRequestUrl;
+            ICellWrapper<T> uriCell = row.getCell(1);
+            Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, lastRequestUrl);
+            ICellWrapper<T> cellStatusCode = row.getCell(2);
             if (cellStatusCode == null)
             {
                 throw new System.InvalidOperationException("You must specify a status code cell");
@@ -1129,7 +1108,7 @@ namespace RestFixture.Net
             process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
             IList<RestData.Header> lastHeaders = LastResponse.Headers;
             process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
-            ICellWrapper bodyCell = row.getCell(4);
+            ICellWrapper<T> bodyCell = row.getCell(4);
             if (bodyCell == null)
             {
                 throw new System.InvalidOperationException("You must specify a body cell");
@@ -1156,13 +1135,13 @@ namespace RestFixture.Net
             return bodyTypeAdapter;
         }
 
-        private void process(ICellWrapper expected, object actual, RestDataTypeAdapter ta)
+        private void process(ICellWrapper<T> expected, object actual, RestDataTypeAdapter ta)
         {
             if (expected == null)
             {
                 throw new System.InvalidOperationException("You must specify a headers cell");
             }
-            ta.set(actual);
+            ta.Actual = actual;
             bool ignore = "".Equals(expected.text().Trim());
             if (ignore)
             {
@@ -1298,7 +1277,7 @@ namespace RestFixture.Net
 
         private void configFormatter()
         {
-            formatter = partsFactory.buildCellFormatter(runner);
+            formatter = partsFactory.buildCellFormatter<T>(runner);
         }
 
         /// <summary>
@@ -1341,10 +1320,10 @@ namespace RestFixture.Net
             restClient = partsFactory.buildRestClient(Config);
         }
 
-        private void renderReplacement(ICellWrapper cell, string actual)
+        private void renderReplacement(ICellWrapper<T> cell, string actual)
         {
             StringTypeAdapter adapter = new StringTypeAdapter();
-            adapter.set(actual);
+            adapter.Actual = actual;
             if (!adapter.Equals(actual, cell.body()))
             {
                 // eg - a substitution has occurred

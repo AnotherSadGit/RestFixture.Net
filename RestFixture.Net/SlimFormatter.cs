@@ -27,7 +27,7 @@ namespace RestFixture.Net
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimFormatter : ICellFormatter
+	public class SlimFormatter : ICellFormatter<String>
 	{
 
 		private int minLenForToggle = -1;
@@ -68,38 +68,35 @@ namespace RestFixture.Net
 		}
 
 
-		public void exception(ICellWrapper cell, string exceptionMessage)
+        public void exception(ICellWrapper<String> cell, string exceptionMessage)
 		{
 			cell.body("error:" + Tools.wrapInDiv(exceptionMessage));
 		}
 
-		public void exception(ICellWrapper cell, Exception exception)
+        public void exception(ICellWrapper<String> cell, Exception exception)
 		{
-			System.IO.MemoryStream @out = new System.IO.MemoryStream();
-			PrintStream ps = new PrintStream(@out);
-			exception.printStackTrace(ps);
 			//String m = Tools.toHtml(cell.getWrapped() + "\n-----\n") + Tools.toCode(Tools.toHtml(out.toString()));
-			string m = Tools.toHtml(cell.Wrapped + "\n-----\n") + Tools.toCode(Tools.toHtml(@out.ToString()));
+			string m = Tools.toHtml(cell.Wrapped + "\n-----\n") + Tools.toCode(Tools.toHtml(exception.ToString()));
 			cell.body("error:" + Tools.wrapInDiv(m));
 			//cell.body("error:" + m);
 		}
 
-		public void check(ICellWrapper expected, RestDataTypeAdapter actual)
+        public void check(ICellWrapper<String> expected, RestDataTypeAdapter actual)
 		{
 			if (null == expected.body() || "".Equals(expected.body()))
 			{
-				if (actual.get() == null)
+				if (actual.Actual == null)
 				{
 					return;
 				}
 				else
 				{
-					expected.body(gray(actual.get().ToString()));
+					expected.body(gray(actual.Actual.ToString()));
 					return;
 				}
 			}
 
-			if (actual.get() != null && actual.Equals(expected.body(), actual.get().ToString()))
+			if (actual.Actual != null && actual.Equals(expected.body(), actual.Actual.ToString()))
 			{
 				right(expected, actual);
 			}
@@ -114,14 +111,14 @@ namespace RestFixture.Net
 			return Tools.toHtmlLabel(@string);
 		}
 
-	    public void wrong(ICellWrapper expected, RestDataTypeAdapter ta)
+        public void wrong(ICellWrapper<String> expected, RestDataTypeAdapter ta)
 		{
 			string expectedContent = expected.body();
 			expected.body(Tools.makeContentForWrongCell(expectedContent, ta, this, minLenForToggle));
 			expected.body("fail:" + Tools.wrapInDiv(expected.body()));
 		}
 
-		public void right(ICellWrapper expected, RestDataTypeAdapter typeAdapter)
+        public void right(ICellWrapper<String> expected, RestDataTypeAdapter typeAdapter)
 		{
 			expected.body("pass:" + Tools.wrapInDiv(Tools.makeContentForRightCell(expected.body(), typeAdapter, this, minLenForToggle)));
 		}
@@ -131,7 +128,7 @@ namespace RestFixture.Net
 			return "report:" + Tools.wrapInDiv(Tools.toHtml(@string));
 		}
 
-		public void asLink(ICellWrapper cell, string resolvedUrl, string link, string text)
+        public void asLink(ICellWrapper<String> cell, string resolvedUrl, string link, string text)
 		{
 			string actualText = text;
 			string parsed = null;

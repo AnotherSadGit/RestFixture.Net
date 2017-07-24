@@ -177,7 +177,7 @@ namespace RestFixture.Net.Support
         //    field.set(target, value);
         //}
 
-        public virtual object Target
+        public virtual object Actual
         {
             get
             {
@@ -290,9 +290,9 @@ namespace RestFixture.Net.Support
 
         internal class ByteAdapter : ClassByteAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (sbyte?)value); }
             }
         }
@@ -307,9 +307,9 @@ namespace RestFixture.Net.Support
 
         internal class ShortAdapter : ClassShortAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (short?)value); }
             }
         }
@@ -324,9 +324,9 @@ namespace RestFixture.Net.Support
 
         internal class IntAdapter : ClassIntegerAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (int?)value); }
             }
         }
@@ -341,9 +341,9 @@ namespace RestFixture.Net.Support
 
         internal class LongAdapter : ClassLongAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (long?)value); }
             }
         }
@@ -358,9 +358,9 @@ namespace RestFixture.Net.Support
 
         internal class FloatAdapter : ClassFloatAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (float?)value); }
             }
 
@@ -380,9 +380,9 @@ namespace RestFixture.Net.Support
 
         internal class DoubleAdapter : ClassDoubleAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (double?)value); }
             }
 
@@ -402,9 +402,9 @@ namespace RestFixture.Net.Support
 
         internal class CharAdapter : ClassCharacterAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (char?)value); }
             }
         }
@@ -419,9 +419,9 @@ namespace RestFixture.Net.Support
 
         internal class BooleanAdapter : ClassBooleanAdapter
         {
-            public override object Target
+            public override object Actual
             {
-                get { return base.Target; }
+                get { return base.Actual; }
                 set { field.SetValue(target, (bool?)value); }
             }
         }
@@ -542,7 +542,7 @@ namespace RestFixture.Net.Support
                 //  it was in the original Java implementation.
                 // if (!Modifier.isStatic(modifiers) || !Modifier.isPublic(modifiers) || parseMethod.ReturnType == typeof(Void))
                 if (!parseMethod.IsStatic || !parseMethod.IsPublic
-                    || parseMethod.ReturnType == typeof(Void))
+                    || parseMethod.ReturnType == typeof(void))
                 {
                     // Original Java implementation threw a NoSuchMethodException but .NET has no 
                     //  similar exception.

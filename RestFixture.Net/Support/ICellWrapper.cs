@@ -16,6 +16,10 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using System;
+using fit;
+
 namespace RestFixture.Net.Support
 {
     /// <summary>
@@ -23,8 +27,11 @@ namespace RestFixture.Net.Support
 	/// 
 	/// @author smartrics
 	/// </summary>
-	public interface ICellWrapper
+	public interface ICellWrapper<T>
 	{
+        /// <returns> the underlying cell object. </returns>
+        T Wrapped { get; }
+
 		/// <returns> the text in the cell. </returns>
 		string text();
 
@@ -42,5 +49,4 @@ namespace RestFixture.Net.Support
 		///            the string to append. </param>
 		void addToBody(string text);
 	}
-
 }
