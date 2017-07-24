@@ -1,0 +1,313 @@
+Wrapper and Formatter Classes in Java Implementation
+====================================================
+Simon Elms, 23 Jul 2017
+
+RowWrapper
+==========
+
+RowWrapper Interface
+--------------------
+public interface RowWrapper<E> {
+
+	/**
+	 * @param c the cell index
+	 * @return the {@link CellWrapper} at a given position
+	 */
+	CellWrapper<E> getCell(int c);
+
+	/**
+	 * @return the row size.
+	 */
+	int size();
+
+	/**
+	 * removes a cell at a given position.
+	 *
+	 * @param c the cell index
+	 * @return the removed cell.
+	 */
+	CellWrapper<E> removeCell(int c);
+}
+
+FitRow
+------
+public class FitRow implements RowWrapper<Parse> {
+
+private final List<CellWrapper<Parse>> row;
+
+public FitRow(Parse parse) {
+		this.cells = parse;
+		Parse next = cells;
+		row = new ArrayList<CellWrapper<Parse>>();
+		while (next != null) {
+			row.add(new FitCell(next));
+			next = next.more;
+		}
+	}
+
+SlimRow
+-------
+public class SlimRow implements RowWrapper<String>
+
+CellWrapper
+===========
+
+public interface CellWrapper<E> {
+
+	/**
+	 * 
+	 * @return the underlying cell object.
+	 */
+	E getWrapped();
+
+	/**
+	 * @return the text in the cell.
+	 */
+	String text();
+
+	/**
+	 * @param string
+	 *            the body of the cell to set.
+	 */
+	void body(String string);
+
+	/**
+	 * @return the current body of the cell.
+	 */
+	String body();
+
+	/**
+	 * appends to the current cell body.
+	 * 
+	 * @param string
+	 *            the string to append.
+	 */
+	void addToBody(String string);
+}
+
+FitCell
+-------
+public class FitCell implements CellWrapper<Parse> {
+
+SlimCell
+--------
+public class SlimCell implements CellWrapper<String> {
+
+CellFormatter
+=============
+
+public interface CellFormatter<E> {
+
+	/**
+	 * formats a cell containing an exception.
+	 * 
+	 * @param cellWrapper
+	 *            the cell wrapper
+	 * @param exception
+	 *            the excteption to render.
+	 */
+	void exception(CellWrapper<E> cellWrapper, Throwable exception);
+
+	/**
+	 * formats a cell containing an exception.
+	 * 
+	 * @param cellWrapper
+	 *            the cell wrapper
+	 * @param exceptionMessage
+	 *            the exception message to render.
+	 */
+	void exception(CellWrapper<E> cellWrapper, String exceptionMessage);
+
+	/**
+	 * formats a check cell.
+	 * 
+	 * @param valueCell
+	 *            the cell value.
+	 * @param adapter
+	 *            the adapter interpreting the value.
+	 */
+	void check(CellWrapper<E> valueCell, RestDataTypeAdapter adapter);
+
+	/**
+	 * formats a cell label
+	 * 
+	 * @param string
+	 *            the label
+	 * @return the cell content as a label.
+	 */
+	String label(String string);
+
+	/**
+	 * formats a cell representing a wrong expectation.
+	 * 
+	 * @param expected
+	 *            the expected value
+	 * @param typeAdapter
+	 *            the adapter with the actual value.
+	 */
+	void wrong(CellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+
+	/**
+	 * formats a cell representing a right expectation.
+	 * 
+	 * @param expected
+	 *            the expected value
+	 * @param typeAdapter
+	 *            the adapter with the actual value.
+	 */
+	void right(CellWrapper<E> expected, RestDataTypeAdapter typeAdapter);
+
+	/**
+	 * formats a cell with a gray background. used to ignore the content or for
+	 * comments.
+	 * 
+	 * @param string
+	 *            the content
+	 * @return the content grayed out.
+	 */
+	String gray(String string);
+
+	/**
+	 * formats the content as a hyperlink.
+	 * 
+	 * @param cell
+	 *            the cell.
+	 * @param resolvedUrl
+	 * 	          the cell content after symbols' substitution.
+	 * @param link
+	 *            the uri in the href.
+	 * @param text
+	 *            the text.
+	 */
+	void asLink(CellWrapper<E> cell, String resolvedUrl, String link, String text);
+
+	/**
+	 * sets whether the cell should display the actual value after evaluation.
+	 * 
+	 * @param displayActual
+	 *            true if actual value has to be rendered.
+	 */
+	void setDisplayActual(boolean displayActual);
+
+	/**
+	 * sets whether absolute urls are displayed in full
+	 *
+	 * @param displayAbsoluteURLInFull the value to set
+	 */
+	void setDisplayAbsoluteURLInFull(boolean displayAbsoluteURLInFull);
+
+	/**
+	 * renders the cell as a toggle area if the content of the cell is over the
+	 * min value set here.
+	 * 
+	 * @param minLen
+	 *            the min value of the content of a cell.
+	 */
+	void setMinLengthForToggleCollapse(int minLen);
+
+	/**
+	 * @return true if actual values are rendered.
+	 */
+	boolean isDisplayActual();
+
+	/**
+	 * in SLIM cell content is HTML escaped - we abstract this method to
+	 * delegate to formatter the cleaning of the content.
+	 * 
+	 * @param text the text
+	 * @return the cleaned text
+	 */
+	String fromRaw(String text);
+
+}
+
+FitFormatter
+------------
+public class FitFormatter implements CellFormatter<Parse> {
+
+SlimFormatter
+-------------
+public class SlimFormatter implements CellFormatter<String> {
+
+In RestFixture
+==============
+protected RowWrapper row;
+
+private CellFormatter<?> formatter;
+
+public void setMultipartFileName():
+	CellWrapper cell = row.getCell(1);
+
+public void addMultipartFile():
+	CellWrapper cellFileName = row.getCell(1);
+	CellWrapper cellParamName = row.getCell(2);
+	CellWrapper cellContentType = row.getCell(3);
+	CellWrapper cellCharset = row.getCell(4);
+
+public void addMultipartString() {
+	CellWrapper cellFileName = row.getCell(1);
+	CellWrapper cellParamName = row.getCell(2);
+	CellWrapper cellContentType = row.getCell(3);
+	CellWrapper cellCharset = row.getCell(4);
+
+public void setFileName() {
+	CellWrapper cell = row.getCell(1);
+
+public void setMultipartFileParameterName() {
+	CellWrapper cell = row.getCell(1);
+
+public void setBody() {
+	CellWrapper cell = row.getCell(1);
+
+public void addHeader() {
+	CellWrapper cell = row.getCell(1);
+
+public void let() {
+	debugMethodCallStart();
+	if(row.size() != 5) {
+		getFormatter().exception(row.getCell(row.size() - 1), "Not all cells found: | let | label | type | expr | result |");
+		debugMethodCallEnd();
+		return;
+	}
+	String label = row.getCell(1).text().trim();
+	String loc = row.getCell(2).text();
+	CellWrapper exprCell = row.getCell(3);
+	try {
+		exprCell.body(GLOBALS.substitute(exprCell.body()));
+		String expr = exprCell.text();
+		CellWrapper valueCell = row.getCell(4);
+
+public void comment() {
+	debugMethodCallStart();
+	@SuppressWarnings("rawtypes")
+	CellWrapper messageCell = row.getCell(1);
+
+public void evalJs() {
+	CellWrapper jsCell = row.getCell(1);
+
+protected void doMethod(String body, String method) {
+	CellWrapper urlCell = row.getCell(1);
+
+public void processRow(RowWrapper<?> currentRow):
+	row = currentRow;
+	CellWrapper cell0 = row.getCell(0);
+	String methodName = cell0.text();
+
+private void processSlimRow(List<List<String>> resultTable, List<String> row) {
+	RowWrapper currentRow = new SlimRow(row);
+	try {
+		processRow(currentRow);
+
+private List<String> mapSlimRow(List<String> resultRow,
+		RowWrapper currentRow) {
+	List<String> rowAsList = ((SlimRow) currentRow).asList();
+	for (int c = 0; c < rowAsList.size(); c++) {
+		// HACK: it seems that even if the content is unchanged,
+		// Slim renders red cell
+		String v = rowAsList.get(c);
+		if (v.equals(resultRow.get(c))) {
+			rowAsList.set(c, "");
+		}
+	}
+	return rowAsList;
+}
