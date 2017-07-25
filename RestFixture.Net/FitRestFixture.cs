@@ -38,6 +38,12 @@ namespace RestFixture.Net
 
         private CommonRestFixture<Parse> restFixture;
 
+	    public FitRestFixture()
+	    {
+            //Required to tell base ActionFixture what class is handling the parsed table.
+            actor = this;
+	    }
+
 		public override string ToString()
 		{
 			return restFixture.ToString();
