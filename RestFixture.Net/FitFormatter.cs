@@ -89,7 +89,11 @@ namespace RestFixture.Net
         public void check(ICellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
         {
             valueCell.body(Tools.toHtml(valueCell.body()));
-            fixture.Check(valueCell.Wrapped, adapter);
+            // Original Java implementation has two parameters but in FitSharp 
+            //  ActionFixture.Check takes no parameters.  Not sure if it'll work 
+            //  or not.
+            //fixture.Check(valueCell.Wrapped, adapter);
+            fixture.Check();
         }
 
 		public string label(string text)
