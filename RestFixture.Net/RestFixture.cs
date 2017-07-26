@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Threading;
 using NLog;
-using RestFixture.Net.Support;
+using restFixture.Net.Support;
 using RestClient;
 using RestClient.Data;
 
@@ -29,7 +29,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net
+namespace restFixture.Net
 {
     /// <summary>
     /// A fixture that allows to simply test REST APIs with minimal efforts. The core

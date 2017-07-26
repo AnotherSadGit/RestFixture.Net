@@ -26,7 +26,7 @@ using Newtonsoft.Json.Linq;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
     /// <summary>
     /// Specifies the type of object returned when evaluating an XPath expression that has been 

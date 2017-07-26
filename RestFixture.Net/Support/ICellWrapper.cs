@@ -20,7 +20,7 @@
 using System;
 using fit;
 
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
     /// <summary>
 	/// Wrapper of a Slim/Fit cell.

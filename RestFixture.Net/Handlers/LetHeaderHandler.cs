@@ -21,7 +21,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
 	/// <summary>
 	/// Handles header (a list of Header objects) LET manipulations.

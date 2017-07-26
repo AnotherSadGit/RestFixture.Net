@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
-using RestFixture.Net.Support;
 using fit;
 using fitSharp.Machine.Engine;
+using restFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -23,7 +23,7 @@ using fitSharp.Machine.Engine;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net
+namespace restFixture.Net
 {
 	/// <summary>
 	/// A <seealso cref="RestFixture"/> implementation for Fit runner. The class is simply an

@@ -3,7 +3,7 @@ using System.Reflection;
 using Jurassic;
 using Jurassic.Library;
 
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
     /// <summary>
     /// A wrapper around Variables to allow them to be accessed from JavaScript.

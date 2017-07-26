@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using fitSharp.Machine.Engine;
 
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
 
 	using Fixture = fit.Fixture;

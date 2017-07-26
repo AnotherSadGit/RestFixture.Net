@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
 
 	/// <summary>
@@ -28,7 +28,7 @@ namespace RestFixture.Net.Support
 	{
 
 		/// <param name="c"> the cell index </param>
-		/// <returns> the <seealso cref="ICellWrapper"/> at a given position </returns>
+		/// <returns> the <seealso cref="ICellWrapper{T}"/> at a given position </returns>
 		ICellWrapper<T> getCell(int c);
 
 		/// <returns> the row size. </returns>

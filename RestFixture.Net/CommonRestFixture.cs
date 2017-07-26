@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Security;
 using fitSharp.Machine.Engine;
 using NLog;
+using restFixture.Net.Support;
 using RestClient;
 using RestClient.Data;
-using RestFixture.Net.Support;
 
-namespace RestFixture.Net
+namespace restFixture.Net
 {
     /// <summary>
     /// Common functionality shared between Slim and Fit implementations of the Rest Fixture.
@@ -244,7 +244,7 @@ namespace RestFixture.Net
 
         /// <summary>
         /// Overrideable method to validate the state of the instance in execution. A
-        /// <seealso cref="CommonRestFixture"/> is valid if the baseUrl is not null.
+        /// <seealso cref="CommonRestFixture{T}"/> is valid if the baseUrl is not null.
         /// </summary>
         /// <returns> true if the state is valid, false otherwise </returns>
         protected internal virtual bool ValidateState()
@@ -259,7 +259,7 @@ namespace RestFixture.Net
         /// FitNesse page.
         /// </summary>
         /// <param name="state">
-        ///            as returned by <seealso cref="CommonRestFixture#ValidateState()"/> </param>
+        ///            as returned by <seealso cref="CommonRestFixture{T}#ValidateState()"/> </param>
         protected internal virtual void NotifyInvalidState(bool state)
         {
             if (!state)
@@ -1312,7 +1312,7 @@ namespace RestFixture.Net
 
         /// <summary>
         /// Allows to config the rest client implementation. the method shoudl
-        /// configure the instance attribute <seealso cref="CommonRestFixture#restClient"/> created
+        /// configure the instance attribute <seealso cref="CommonRestFixture{T}#restClient"/> created
         /// by the <seealso cref="PartsFactory#buildRestClient(smartrics.rest.fitnesse.fixture.support.Config)"/>.
         /// </summary>
         private void configRestClient()

@@ -24,7 +24,7 @@ using System.Xml.XPath;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
     /// <summary>
     /// Misc tool methods for string manipulation.

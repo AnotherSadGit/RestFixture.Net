@@ -19,7 +19,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
 
 

@@ -11,7 +11,7 @@ using RestClient.Data;
 // Modified or written by Object Mentor, Inc. for inclusion with FitNesse.
 // Copyright (c) 2002 Cunningham & Cunningham, Inc.
 // Released under the terms of the GNU General Public License version 2 or later.
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
     // Copyright (c) 2002 Cunningham & Cunningham, Inc.
     // Released under the terms of the GNU General Public License version 2 or later.

@@ -19,7 +19,7 @@ using System.Text;
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace RestFixture.Net.Support
+namespace restFixture.Net.Support
 {
 
 

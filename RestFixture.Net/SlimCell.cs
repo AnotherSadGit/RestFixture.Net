@@ -17,9 +17,9 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using RestFixture.Net.Support;
+using restFixture.Net.Support;
 
-namespace RestFixture.Net
+namespace restFixture.Net
 {
 	/// <summary>
 	/// Wrapper for a cell in the table when running on Slim.

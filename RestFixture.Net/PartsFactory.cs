@@ -1,7 +1,6 @@
-﻿using RestFixture.Net.Support;
+﻿using restFixture.Net.Support;
 using RestClient;
 using RestClient.Data;
-using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,7 +20,7 @@ using RestFixture.Net.Support;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace RestFixture.Net
+namespace restFixture.Net
 {
 	/// <summary>
 	/// Factory of all dependencies the rest fixture needs.
