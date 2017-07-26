@@ -62,8 +62,8 @@ namespace restFixture.Net.Support
 			{
 				name = DEFAULT_CONFIG_NAME;
 			}
-			Config namedConfig = CONFIGURATIONS[name];
-			if (namedConfig == null)
+			Config namedConfig = null;
+            if (!CONFIGURATIONS.TryGetValue(name, out namedConfig))
 			{
 				namedConfig = new Config(name);
 				CONFIGURATIONS[name] = namedConfig;

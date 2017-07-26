@@ -83,7 +83,7 @@ namespace restFixture.Net
 
         private IDictionary<string, string> namespaceContext = new Dictionary<string, string>();
 
-        private Url _baseUrl;
+        protected Url _baseUrl;
 
         protected internal IRowWrapper<T> row;
 
@@ -904,14 +904,15 @@ namespace restFixture.Net
                 throw new Exception("Current RestFixture row is not parseable (maybe empty or not existent)");
             }
             string methodName = cell0.text();
-            if ("".Equals(methodName))
+            if (string.IsNullOrWhiteSpace(methodName))
             {
                 throw new Exception("RestFixture method not specified");
             }
             MethodInfo method1;
             try
             {
-                method1 = this.GetType().GetMethod(methodName);
+                // The method cannot take any parameters.
+                method1 = this.GetType().GetMethod(methodName, new Type[0]);
                 method1.Invoke(this, new object[0]);
             }
             catch (SecurityException e)
