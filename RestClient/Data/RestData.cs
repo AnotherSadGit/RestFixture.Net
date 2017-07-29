@@ -90,7 +90,7 @@ namespace RestClient.Data
         }
 
         private readonly IList<Header> headers = new List<Header>();
-        private sbyte[] raw;
+        private byte[] raw;
         private string resource;
         private long? transactionId;
 
@@ -105,13 +105,20 @@ namespace RestClient.Data
                 }
                 try
                 {
-                    return StringHelper.NewString(raw, Charset);
+                    return Encoding.GetEncoding(Charset).GetString(raw);
                 }
                 catch (ArgumentException)  
                     // Thrown if Charset is not a valid code page or is unsupported by the 
                     //  underlying platform. 
                 {
-                    throw new System.InvalidOperationException("Unsupported encoding: " + Charset);
+                    try
+                    {
+                        return Encoding.GetEncoding("ASCII").GetString(raw);
+                    }
+                    catch (ArgumentException)
+                    {
+                        throw new System.InvalidOperationException("Unsupported encoding: " + Charset);
+                    }
                 }
             }
 
@@ -123,12 +130,12 @@ namespace RestClient.Data
                 }
                 else
                 {
-                    RawBody = value.GetBytes();
+                    RawBody = Encoding.GetEncoding(Charset).GetBytes(value);
                 }
             }
         }
 
-        public virtual sbyte[] RawBody
+        public virtual byte[] RawBody
         {
             get
             {

@@ -238,7 +238,7 @@ namespace RestClient
                 //  the sbyte data type.  The strange conversion from byte[] to sbyte[] was from 
                 //  the answer to Stackoverflow question http://stackoverflow.com/questions/25759878/convert-byte-to-sbyte
                 // TODO: Check RestFixture code to see whether Data.RestResponse.RawBody can be converted to byte[].
-                responseDetails.RawBody = (sbyte[])(Array)(response.RawBytes);
+                responseDetails.RawBody = response.RawBytes;
 
                 // Debug
                 if (LOG.IsDebugEnabled)

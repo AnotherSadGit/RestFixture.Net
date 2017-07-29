@@ -126,7 +126,7 @@ namespace restFixture.Net.Support
 		public static void config(Config config)
 		{
 			RestData.DEFAULT_ENCODING = config.get("restfixture.content.default.charset", 
-                Encoding.Default.EncodingName);
+                Encoding.UTF8.EncodingName);
 			string htmlConfig = config.get("restfixture.content.handlers.map", "");
 			string configStr = Tools.fromHtml(htmlConfig);
 			IDictionary<string, string> map = Tools.convertStringToMap(configStr, "=", "\n", true);
