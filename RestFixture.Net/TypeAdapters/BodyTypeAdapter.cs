@@ -72,9 +72,7 @@ namespace restFixture.Net.Support
 			}
 			if (value is ICollection)
 			{
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
-//ORIGINAL LINE: return ((java.util.Collection<?>) value).size() == 0;
-				return ((ICollection<object>) value).Count == 0;
+				return ((ICollection)value).Count == 0;
 			}
 			string s = value.ToString();
 			if (value is Parse)

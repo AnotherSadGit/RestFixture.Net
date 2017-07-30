@@ -113,7 +113,18 @@ namespace restFixture.Net.Support
             using (StringReader sr = new StringReader(content))
             using (XmlReader xr = XmlReader.Create(sr))
             {
-                XPathDocument document = new XPathDocument(xr);
+                XPathDocument document = null;
+
+                try
+                {
+                    document = new XPathDocument(xr);
+                }
+                catch (Exception)
+                {
+                    // Assume the results are not XML.
+                    return GetReturnTypeDefault(returnType);
+                }
+
                 XPathNavigator navigator = document.CreateNavigator();
 
                 // There are a couple of overloads of XPathNavigator.Evaluate(xpath):
@@ -204,6 +215,36 @@ namespace restFixture.Net.Support
                             + "supplied return type {1}.", actualType.FullName, expectedReturnType);
                 throw new XPathException(errorMessage);
             }
+        }
+
+        private static object GetReturnTypeDefault(XPathEvaluationReturnType expectedReturnType)
+        {
+            // According to https://docs.microsoft.com/en-us/dotnet/api/system.xml.xpath.xpathnavigator.evaluate?view=netframework-4.5
+            //  XPathNavigator.Evaluate can only return one of the following data types: 
+            //  bool, double, string or XPathNodeIterator.  These correspond to the values of the 
+            //  XPathEvaluationReturnType enum, where XPathNodeIterator can represent a Nodeset or 
+            //  a Node.
+
+            IDictionary<XPathEvaluationReturnType, Type> returnTypeMappings = ReturnTypeMappings;
+
+            string errorMessage = null;
+
+            Type expectedType = returnTypeMappings.GetValueOrNull(expectedReturnType);
+            if (expectedType == null)
+            {
+                errorMessage = string.Format("Invalid return type.  "
+                                            + "Result of XPath evaluation cannot return type {0}.",
+                    expectedReturnType);
+                throw new ArgumentException(errorMessage);
+            }
+
+            if (expectedType.IsValueType)
+            {
+                return Activator.CreateInstance(expectedType);
+            }
+
+            // Can return null for all reference types.
+            return null;
         }
 
         /// <summary>
