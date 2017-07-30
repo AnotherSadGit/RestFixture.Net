@@ -17,7 +17,6 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Net;
 using RestClient;
 
 namespace restFixture.Net.Support

@@ -1,6 +1,4 @@
-﻿using restFixture.Net.Support;
-
-/*  Copyright 2017 Simon Elms
+﻿/*  Copyright 2017 Simon Elms
  *
   *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -31,7 +29,7 @@ namespace restFixture.Net
 		/// Get a variable store linked to the current runner environment.
 		/// </summary>
 		/// <returns> the variables </returns>
-		Variables CreateRunnerVariables();
+		Variables.Variables CreateRunnerVariables();
 	}
 
 }

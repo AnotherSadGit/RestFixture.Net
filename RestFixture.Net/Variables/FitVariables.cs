@@ -20,13 +20,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using fitSharp.Machine.Engine;
+using restFixture.Net.Support;
 
-namespace restFixture.Net.Support
+namespace restFixture.Net.Variables
 {
-
-	using Fixture = fit.Fixture;
-
-	/// <summary>
+    /// <summary>
 	/// Facade to FitNesse global symbols map for FIT.
 	/// </summary>
 	public class FitVariables : Variables

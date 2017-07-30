@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Security;
-using System.Threading;
 using NLog;
 using restFixture.Net.Support;
-using RestClient;
-using RestClient.Data;
+using restFixture.Net.TableElements;
+using restFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -29,7 +23,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net
+namespace restFixture.Net.Fixtures
 {
     /// <summary>
     /// A fixture that allows to simply test REST APIs with minimal efforts. The core

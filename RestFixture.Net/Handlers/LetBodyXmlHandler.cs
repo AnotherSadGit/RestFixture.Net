@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.XPath;
+using restFixture.Net.Support;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
@@ -21,7 +22,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace restFixture.Net.Handlers
 {
 	/// <summary>
 	/// Handles let expressions on XML content, returning XML string rather than the

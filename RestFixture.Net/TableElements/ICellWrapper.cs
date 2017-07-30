@@ -17,10 +17,7 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using fit;
-
-namespace restFixture.Net.Support
+namespace restFixture.Net.TableElements
 {
     /// <summary>
 	/// Wrapper of a Slim/Fit cell.

@@ -1,6 +1,8 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using System;
+
+/*  Copyright 2017 Simon Elms
  *
-  *  This file is part of RestFixture.Net, a .NET port of the original Java 
+ *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
  *
  *  RestFixture.Net is free software:
@@ -16,58 +18,63 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-using restFixture.Net.Support;
-
-namespace restFixture.Net
+namespace restFixture.Net.TableElements
 {
+	using Parse = fit.Parse;
+
 	/// <summary>
-	/// Wrapper for a cell in the table when running on Slim.
+	/// Wrapper class to a table cell for the Fit runner.
 	/// 
 	/// @author smartrics
 	/// 
 	/// </summary>
-	public class SlimCell : ICellWrapper<string>
+    public class FitCell : ICellWrapper<Parse>
 	{
 
-		private string cell;
+		private readonly Parse cell;
 
 		/// <summary>
-		/// a slim cell. </summary>
-		/// <param name="c"> the content. </param>
-		public SlimCell(string c)
+		/// a fit cell </summary>
+		/// <param name="c"> the parse object representing the cell. </param>
+		public FitCell(Parse c)
 		{
 			this.cell = c;
 		}
 
 		public string text()
 		{
-			return cell;
+			try
+			{
+				return cell.Text;
+			}
+			catch (Exception)
+			{
+				return "";
+			}
 		}
 
 		public void body(string @string)
 		{
-			cell = @string;
+            cell.SetBody(@string);
 		}
 
 		public string body()
 		{
-			return cell;
+			return cell.Body;
 		}
 
 		public void addToBody(string @string)
 		{
-			cell = cell + @string;
+			cell.AddToBody(@string);
 		}
 
-		public string Wrapped
+		public Parse Wrapped
 		{
 			get
 			{
 				return cell;
 			}
 		}
-
 	}
 
 }

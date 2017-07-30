@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using fit;
 using FastClone;
-using RestClient.Data;
+using restFixture.Net.Support;
 
 // Modified or written by Object Mentor, Inc. for inclusion with FitNesse.
 // Copyright (c) 2002 Cunningham & Cunningham, Inc.
 // Released under the terms of the GNU General Public License version 2 or later.
-namespace restFixture.Net.Support
+namespace restFixture.Net.TypeAdapters
 {
     // Copyright (c) 2002 Cunningham & Cunningham, Inc.
     // Released under the terms of the GNU General Public License version 2 or later.

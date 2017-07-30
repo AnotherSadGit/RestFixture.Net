@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
-using dbfit;
+using restFixture.Net.Support;
+using restFixture.Net.Variables;
 using RestClient.Data;
-using Jurassic;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -25,7 +24,7 @@ using Jurassic;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace restFixture.Net.Javascript
 {
     /// <summary>
 	/// Wrapper class to all that related to JavaScript.
@@ -119,7 +118,7 @@ namespace restFixture.Net.Support
 
         private void injectFitNesseSymbolMap()
 		{
-			Variables variables = variablesProvider.CreateRunnerVariables();
+			Variables.Variables variables = variablesProvider.CreateRunnerVariables();
             VariablesJavaScriptWrapper wrappedVariables =
                 new VariablesJavaScriptWrapper(_engine, variables);
             _engine.SetGlobalValue(SYMBOLS_OBJ_NAME, wrappedVariables);

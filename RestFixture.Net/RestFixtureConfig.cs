@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using restFixture.Net.Fixtures;
 using restFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms

@@ -2,7 +2,7 @@
 using Jurassic;
 using Jurassic.Library;
 
-namespace restFixture.Net.Support
+namespace restFixture.Net.Javascript
 {
     /// <summary>
     /// Constructor for Javascript response object.

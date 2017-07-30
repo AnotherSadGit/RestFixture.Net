@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using restFixture.Net.Support;
+
 /*  Copyright 2017 Simon Elms
  *
  *  This file is part of RestFixture.Net, a .NET port of the original Java 
@@ -19,7 +21,7 @@ using System.Text;
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace restFixture.Net.Support
+namespace restFixture.Net.TypeAdapters
 {
 
 

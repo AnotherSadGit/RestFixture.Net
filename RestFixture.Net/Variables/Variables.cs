@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-using fit;
+using restFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -20,13 +19,9 @@ using fit;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace restFixture.Net.Variables
 {
-
-
-	using Fixture = fit.Fixture;
-
-	/// <summary>
+    /// <summary>
 	/// Facade to FitNesse global symbols map.
 	/// 
 	/// @author smartrics

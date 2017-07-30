@@ -1,4 +1,6 @@
 ﻿using restFixture.Net.Support;
+using restFixture.Net.TableElements;
+using restFixture.Net.TypeAdapters;
 using RestClient;
 using RestClient.Data;
 

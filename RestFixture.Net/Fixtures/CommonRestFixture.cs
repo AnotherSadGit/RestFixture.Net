@@ -5,11 +5,16 @@ using System.Reflection;
 using System.Security;
 using fitSharp.Machine.Engine;
 using NLog;
+using restFixture.Net.Handlers;
+using restFixture.Net.Javascript;
 using restFixture.Net.Support;
+using restFixture.Net.TableElements;
+using restFixture.Net.TypeAdapters;
+using restFixture.Net.Variables;
 using RestClient;
 using RestClient.Data;
 
-namespace restFixture.Net
+namespace restFixture.Net.Fixtures
 {
     /// <summary>
     /// Common functionality shared between Slim and Fit implementations of the Rest Fixture.
@@ -24,7 +29,7 @@ namespace restFixture.Net
 
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        public Variables CreateRunnerVariables()
+        public Variables.Variables CreateRunnerVariables()
         {
             switch (runner)
             {
@@ -43,7 +48,7 @@ namespace restFixture.Net
 
         private const string FILE = "file";
 
-        protected internal Variables GLOBALS;
+        protected internal Variables.Variables GLOBALS;
 
         private RestResponse lastResponse;
 

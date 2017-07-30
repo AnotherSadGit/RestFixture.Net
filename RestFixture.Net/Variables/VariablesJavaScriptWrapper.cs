@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using Jurassic;
+﻿using Jurassic;
 using Jurassic.Library;
 
-namespace restFixture.Net.Support
+namespace restFixture.Net.Variables
 {
     /// <summary>
     /// A wrapper around Variables to allow them to be accessed from JavaScript.

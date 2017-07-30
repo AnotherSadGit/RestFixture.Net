@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.XPath;
+using restFixture.Net.TableElements;
+using restFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
  *

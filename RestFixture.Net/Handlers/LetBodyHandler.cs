@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.XPath;
+using restFixture.Net.Support;
+using restFixture.Net.TypeAdapters;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
@@ -20,7 +22,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace restFixture.Net.Handlers
 {
 	/// <summary>
 	/// Handles body of the last response on behalf of LET in RestFixture.

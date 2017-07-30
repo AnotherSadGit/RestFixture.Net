@@ -7,7 +7,7 @@
     <ProjectGuid>{19D1017E-BA1E-40B3-937A-F6BDAF43E096}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RestFixture.Net</RootNamespace>
+    <RootNamespace>restFixture.Net</RootNamespace>
     <AssemblyName>RestFixture.Net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -83,26 +83,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonRestFixture.cs" />
-    <Compile Include="FitCell.cs" />
-    <Compile Include="FitFormatter.cs" />
-    <Compile Include="FitRestFixture.cs" />
-    <Compile Include="FitRow.cs" />
+    <Compile Include="Fixtures\CommonRestFixture.cs" />
+    <Compile Include="TableElements\FitCell.cs" />
+    <Compile Include="TableElements\FitFormatter.cs" />
+    <Compile Include="Fixtures\FitRestFixture.cs" />
+    <Compile Include="TableElements\FitRow.cs" />
     <Compile Include="Javascript\JavascriptResponseClasses.cs" />
     <Compile Include="PartsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RestFixture.cs" />
+    <Compile Include="Fixtures\RestFixture.cs" />
     <Compile Include="RestFixtureConfig.cs" />
     <Compile Include="IRunnerVariablesProvider.cs" />
-    <Compile Include="SlimCell.cs" />
-    <Compile Include="SlimFormatter.cs" />
-    <Compile Include="SlimRow.cs" />
+    <Compile Include="TableElements\SlimCell.cs" />
+    <Compile Include="TableElements\SlimFormatter.cs" />
+    <Compile Include="TableElements\SlimRow.cs" />
     <Compile Include="Support\Runner.cs" />
     <Compile Include="Support\XmlTools.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapter.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapterFactory.cs" />
-    <Compile Include="Support\ICellFormatter.cs" />
-    <Compile Include="Support\ICellWrapper.cs" />
+    <Compile Include="TableElements\ICellFormatter.cs" />
+    <Compile Include="TableElements\ICellWrapper.cs" />
     <Compile Include="Support\Config.cs" />
     <Compile Include="Support\ContentType.cs" />
     <Compile Include="Variables\FitVariables.cs" />
@@ -120,7 +120,7 @@
     <Compile Include="Handlers\LetHandlerFactory.cs" />
     <Compile Include="Handlers\LetHeaderHandler.cs" />
     <Compile Include="TypeAdapters\RestDataTypeAdapter.cs" />
-    <Compile Include="Support\IRowWrapper.cs" />
+    <Compile Include="TableElements\IRowWrapper.cs" />
     <Compile Include="Variables\VariablesJavaScriptWrapper.cs" />
     <Compile Include="Variables\SlimVariables.cs" />
     <Compile Include="TypeAdapters\StatusCodeTypeAdapter.cs" />
