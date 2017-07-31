@@ -55,8 +55,6 @@ namespace restFixture.Net.TypeAdapters
             return a;
         }
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public static TypeAdapter adapterFor(Class type) throws UnsupportedOperationException
         public static TypeAdapter adapterFor(Type type)
         {
             if (type.IsPrimitive)
@@ -154,8 +152,6 @@ namespace restFixture.Net.TypeAdapters
             this.type = type;
         }
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public Object get() throws IllegalAccessException, InvocationTargetException
         //public virtual object get()
         //{
         //    if (field != null)
@@ -169,8 +165,6 @@ namespace restFixture.Net.TypeAdapters
         //    return null;
         //}
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public void set(Object value) throws Exception
         //public virtual void set(object value)
         //{
         //    field.set(target, value);
@@ -259,7 +253,6 @@ namespace restFixture.Net.TypeAdapters
             }
             catch (Exception)
             {
-                //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new Exception("Parse delegate class " + parseDelegate.FullName + " does not have a suitable static parse() method.");
             }
         }
@@ -275,7 +268,6 @@ namespace restFixture.Net.TypeAdapters
             }
             catch (Exception)
             {
-                //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new Exception("Parse delegate object of class " + parseDelegate.GetType().FullName + " does not have a suitable parse() method.");
             }
         }

@@ -83,8 +83,6 @@ namespace restFixture.Net.Support
 		/// </summary>
 		/// <param name="name">
 		///            the name of this config </param>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: private Config(final String name)
 		private Config(string name)
 		{
 			this.name = name;

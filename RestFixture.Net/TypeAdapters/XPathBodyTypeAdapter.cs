@@ -135,8 +135,6 @@ namespace restFixture.Net.TypeAdapters
 		/// </para>
 		/// </summary>
 		/// <param name="expectedListOfXpathsAsString"> expected list of xpaths as string </param>
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: @Override public Object parse(String expectedListOfXpathsAsString) throws Exception
 		public override object parse(string expectedListOfXpathsAsString)
 		{
 			// expected values are parsed as a list of XPath expressions

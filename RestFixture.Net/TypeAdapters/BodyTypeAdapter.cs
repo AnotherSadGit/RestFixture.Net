@@ -61,8 +61,6 @@ namespace restFixture.Net.TypeAdapters
 		/// <param name="value">
 		///            the cell </param>
 		/// <returns> true if no-body </returns>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: protected boolean checkNoBody(final Object value)
 		protected internal virtual bool checkNoBody(object value)
 		{
 			if (value == null)
@@ -81,8 +79,6 @@ namespace restFixture.Net.TypeAdapters
 			return checkNoBodyForString(s);
 		}
 
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: private boolean checkNoBodyForString(final String value)
 		private bool checkNoBodyForString(string value)
 		{
 			return "".Equals(value.Trim()) || "no-body".Equals(value.Trim());
@@ -101,8 +97,6 @@ namespace restFixture.Net.TypeAdapters
 		///            the {@code List<String>} actual body, or an empty/null body
 		///            rendered as HTML </param>
 		/// <returns> the string representation </returns>
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: @Override public String toString(final Object obj)
 		public string ToString(object obj)
 		{
 			if (obj == null || obj.ToString().Trim().Equals(""))

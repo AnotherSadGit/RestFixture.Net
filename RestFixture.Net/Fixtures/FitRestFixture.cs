@@ -296,8 +296,6 @@ namespace restFixture.Net.Fixtures
 			}
 		}
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Override @SuppressWarnings({ "rawtypes", "unchecked" }) public void doCells(fit.Parse parse)
         public override void DoCells(Parse parse)
 		{
 			if (restFixture == null)

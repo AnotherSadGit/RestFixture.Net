@@ -349,8 +349,6 @@
 //            return content;
 //        }
 
-////JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-////ORIGINAL LINE: private String readFile(java.io.File f) throws java.io.FileNotFoundException
 //        private string readFile(File f)
 //        {
 //            System.IO.StreamReader reader = new System.IO.StreamReader(f);
