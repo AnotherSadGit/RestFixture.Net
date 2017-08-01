@@ -26,11 +26,7 @@ using restFixture.Net.TableElements;
 namespace restFixture.Net.Fixtures
 {
 	/// <summary>
-	/// A <seealso cref="RestFixture"/> implementation for Fit runner. The class is simply an
-	/// <seealso cref="ActionFixture"/> implementation that delegates to an instance of
-	/// <seealso cref="RestFixture"/>.
-	/// 
-	/// @author smartrics
+	/// A Fit implementation of the Rest Fixture for testing RESTful APIs.
 	/// </summary>
 	public class FitRestFixture : ActionFixture
 	{

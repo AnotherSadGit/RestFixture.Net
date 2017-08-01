@@ -20,7 +20,168 @@ namespace restFixture.Net.Fixtures
     /// Common functionality shared between Slim and Fit implementations of the Rest Fixture.
     /// </summary>
     /// <remarks>Not named BaseRestFixture as FitRestFixture must inherit ActionFixture, one of the 
-    /// standard Fit fixture classes, rather than this class.</remarks>
+    /// standard Fit fixture classes, rather than this class.
+    /// 
+    /// The core principles underpinning the Rest Fixture are:
+    /// <ul>
+    /// <li>The documentation of a REST API by showing what the API looks like and illustrating 
+    /// how it performs.
+    /// For REST this means:
+    /// <ul>
+    /// <li>show what the resource URI looks like. For example
+    /// <code>/resource-a/123/resource-b/234</code>
+    /// <li>show what HTTP operation is being executed on that resource. Specifically
+    /// which one fo the main HTTP verbs was under test (GET, POST, PUT, DELETE, HEAD, OPTIONS).
+    /// <li>have the ability to set headers and body of the request
+    /// <li>check expectations on the status code of the response in order to document
+    /// the behaviour of the API
+    /// <li>check expectations on the HTTP headers and body in the response. Again, to
+    /// document the behaviour
+    /// </ul>
+    /// <li>It should work without the need to write/maintain Java or C# code: tests are
+    /// written in wiki syntax.
+    /// <li>Tests should be easy to write and above all read.
+    /// </ul>
+    /// <para>
+    /// <b>Configuring RestFixture.Net</b><br>
+    /// RestFixture.Net can be configured by using the <seealso cref="RestFixtureConfig"/>. A
+    /// RestFixtureConfig can define named maps with configuration key/value
+    /// pairs. The name of the map is passed as second parameter to the
+    /// Rest Fixture. Using a named configuration is optional: if no name is
+    /// passed, the default configuration map is used. See <seealso cref="RestFixtureConfig"/>
+    /// for more details.
+    /// </para>
+    /// <para>
+    /// The following list of configuration parameters are supported:
+    /// <table border="1">
+    /// <caption>supported configuration parameters</caption>
+    /// <tr>
+    /// <td>smartrics.rest.fitnesse.fixture.RestFixtureConfig</td>
+    /// <td><i>optional named config</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.host</td>
+    /// <td><i>HTTP proxy host name (RestClient proxy configuration)</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.port</td>
+    /// <td><i>HTTP proxy host port (RestClient proxy configuration)</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.username</td>
+    /// <td><i>HTTP proxy credentials username (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.password</td>
+    /// <td><i>HTTP proxy credentials password (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.proxy.domain</td>
+    /// <td><i>HTTP proxy credentials domain (RestClient proxy configuration).  
+    /// NOTE: This parameter was introduced in RestFixture.Net, it does not exist in the original 
+    /// Java RestFixture.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.basicauth.username</td>
+    /// <td><i>Username for basic authentication (RestClient proxy configuration)</i>
+    /// </td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.basicauth.password</td>
+    /// <td><i>Password for basic authentication (RestClient proxy configuration)</i>
+    /// </td>
+    /// </tr>
+    /// <tr>
+    /// <td>http.client.connection.timeout</td>
+    /// <td><i>Client timeout for HTTP connection (default 3s). (RestClient proxy
+    /// configuration)</i></td>
+    /// </tr>
+    /// <tr>
+    /// <tr>
+    /// <td>http.client.use.new.http.uri.factory</td>
+    /// <td><i>If set to true uses a more relaxed validation rule to validate URIs.
+    /// It, for example, allows array parameters in the query string. Defaults to
+    /// false.  NOTE: This parameter is supported only in the Java implementation 
+    /// of RestFixture.  It is not supported in RestFixture.Net.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.requests.follow.redirects</td>
+    /// <td><i>If set to true the underlying client is instructed to follow redirects
+    /// for the requests in the current fixture. This setting is not applied to POST
+    /// and PUT (for which redirection is set to false) Defaults to true.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.resource.uris.are.escaped</td>
+    /// <td><i>boolean value. if true, RestFixture will assume that the resource URIs
+    /// are already escaped. If false, supplied resource URIs will be escaped. Defaults to
+    /// false.  NOTE: This parameter is supported only in the Java implementation 
+    /// of RestFixture.  It is not supported in RestFixture.Net because URIs are 
+    /// escaped automatically, if required, by the .NET framework.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.display.actual.on.right</td>
+    /// <td><i>boolean value (default=true). if true, the actual value of the header or body in an
+    /// expectation cell is displayed even when the expectation is met.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <tr>
+    /// <td>restfixture.display.absolute.url.in.full</td>
+    /// <td><i>boolean value (default=true). if true, absolute URIs in the fixture second column
+    /// are rendered in their absolute format rather than relative.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.default.headers</td>
+    /// <td><i>Comma-separated list of key-value pairs representing the default list
+    /// of headers to be passed for each request. key and values are separated by a
+    /// colon. Entries are sepatated by \n. <seealso cref="RestFixture.setHeader()"/> will
+    /// override this value. </i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.xml.namespaces.context</td>
+    /// <td><i>Comma-separated list of key-value pairs representing namespace
+    /// declarations. The key is the namespace alias, the value is the namespace URI.
+    /// Alias and URI are separated by a = sign. Entries are sepatated by
+    /// System.getProperty("line.separator"). These entries will be used to
+    /// define the namespace context to be used in XPaths that are evaluated in the
+    /// results.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.content.default.charset</td>
+    /// <td>The default charset name (e.g. UTF-8) to use when parsing the response
+    /// body, when a response doesn't contain a valid value in the Content-Type
+    /// header. If a default is not specified with this property, the fixture will
+    /// default the charset to UTF-8.</td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.content.handlers.map</td>
+    /// <td><i>A map of content type to type adapters, entries separated by \n, and
+    /// kye-value separated by '='. Available type adapters are JS, TEXT, JSON, XML
+    /// (see <seealso cref="BodyTypeAdapterFactory"/>).</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.null.value.representation</td>
+    /// <td><i>This specifies the string that is substituted when a null value is 
+    /// set for a symbol. This overrides the FitNesse default null value substitute  
+    /// string, which is "null". An empty string is a valid value.</i></td>
+    /// </tr>
+    /// <tr>
+    /// <td>restfixture.javascript.imports.map</td>
+    /// <td><i>A map of key-value pairs representing paths or URIs to JavaScript 
+    /// files. Each JavaScript file specified is imported into the JS context and 
+    /// is available for evaluation. Local files are checked for existence and 
+    /// access. If not available or not accessible an exception is thrown. Files 
+    /// specified by URIs are downloaded. A failure in accessing the file content 
+    /// causes an exception.  The map key is the name of the JavaScript library or 
+    /// file - it is a freeform string that appears in logs for debugging purposes.
+    /// </i></td>
+    /// </tr>
+    /// </table>
+    /// </para>
+    /// </remarks>
     public class CommonRestFixture<T> : IRunnerVariablesProvider
     {
          //TODO: Fix this.  Should be reading the FitNesse version, not the FitSharp one.  
