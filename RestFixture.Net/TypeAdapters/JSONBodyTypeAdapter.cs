@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using restFixture.Net.Javascript;
 using restFixture.Net.Support;
 
@@ -84,7 +85,7 @@ namespace restFixture.Net.TypeAdapters
 			}
 //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
 //ORIGINAL LINE: if (expected instanceof java.util.List<?>)
-			if (expected is IList<object>)
+			if (expected is IEnumerable)
 			{
 				return base.Equals(expected, actual);
 			}

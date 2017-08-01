@@ -95,8 +95,22 @@ namespace restFixture.Net.TypeAdapters
 
 	    private bool BodyIsHtml(string body)
 	    {
-	        bool isHtml = false;
-	        try
+	        if (string.IsNullOrWhiteSpace(body))
+	        {
+	            return false;
+	        }
+
+            // Turns out that if JSON is supplied LoadHtml will load it happily, without error.
+            // So do a simple check to see if the text supplied is JSON: JSON will start with 
+            //  either "{" or "[", HTML and XML will start with "<".
+            body = body.Trim();
+            if (body.StartsWith("{") || body.StartsWith("["))
+            {
+                return false;
+            }
+
+            bool isHtml = false;
+            try
 	        {
 	            var doc = new HtmlDocument();
 	            doc.LoadHtml(body);
