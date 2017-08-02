@@ -46,6 +46,11 @@ namespace restFixture.Net.TypeAdapters
         //TODO: Rework Java Charset to use .NET Encoding instead.
         public BodyTypeAdapter getBodyTypeAdapter(ContentType content, String charset)
         {
+            if (content == null)
+            {
+                throw new ArgumentNullException("Content-Type not specified.  Unable to find a BodyTypeAdapter to instantiate.");
+            }
+
             BodyTypeAdapter adapter = null;
             switch (content.InnerEnumValue())
             {

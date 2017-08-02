@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastClone", "FastClone\FastClone.csproj", "{19AD251E-12E8-4BA0-882E-A84C194CA217}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
