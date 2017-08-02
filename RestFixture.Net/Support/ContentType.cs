@@ -101,7 +101,7 @@ namespace restFixture.Net.Support
 		/// <returns> the registered content type matching the input string. </returns>
 		public static ContentType typeFor(string t)
 		{
-			ContentType r = contentTypeToEnum[t];
+			ContentType r = contentTypeToEnum.GetValueOrNull(t);
 			if (r == null)
 			{
 				r = contentTypeToEnum["default"];
