@@ -197,23 +197,101 @@ namespace UnitTests.ConfigTests
                 "Did not return default for non-existent config value.");
         }
 
-        //[TestMethod]
-        //public void AsMap_Should_Return_Correct_Dictionary_For_Specified_Key()
-        //{
-        //    // Arrange.
-        //    Config config = _config;
-        //    string key = "map";
-        //    string value = "a=1\nb=2\n";
-        //    Dictionary<string, string> defaultValue = new Dictionary<string, string>();
-        //    defaultValue.Add("c", "3");
+        [TestMethod]
+        public void AsMap_Should_Return_Dictionary_For_Specified_Key()
+        {
+            // Arrange.
+            string keyToRetrieve = "map";
 
-        //    // Act.
-        //    IDictionary<string, string> retrievedValue = config.getAsMap(key, defaultValue);
+            // Act.
+            IDictionary<string, string> retrievedValue = GetMapFromConfig(keyToRetrieve);
 
-        //    // Assert.
-        //    Assert.IsNotNull(retrievedValue, "Retrieved dictionary is null.");
-        //    Assert.AreEqual(defaultValue, retrievedValue,
-        //        "Did not return default for non-existent config value.");
-        //}
+            // Assert.
+            Assert.IsNotNull(retrievedValue, "Retrieved dictionary is null.");
+            Assert.AreEqual(5, retrievedValue.Keys.Count, 
+                "Retrieved dictionary has the wrong number of elements.");
+        }
+
+        [TestMethod]
+        public void AsMap_Should_Include_Elements_Converted_From_String()
+        {
+            // Arrange.
+            string keyToRetrieve = "map";
+
+            // Act.
+            IDictionary<string, string> retrievedValue = GetMapFromConfig(keyToRetrieve);
+
+            // Assert.
+            Assert.IsTrue(retrievedValue.ContainsKey("a"),
+                "Retrieved dictionary is missing key 'a'.");
+            Assert.IsTrue(retrievedValue.ContainsKey("b"),
+                "Retrieved dictionary is missing key 'b'.");
+            Assert.AreEqual("1", retrievedValue["a"],
+                "The value of element 'a' of the retrieved dictionary is incorrect.");
+            Assert.AreEqual("2", retrievedValue["b"],
+                "The value of element 'b' of the retrieved dictionary is incorrect.");
+        }
+
+        [TestMethod]
+        public void AsMap_Should_Include_Elements_From_Default_Dictionary()
+        {
+            // Arrange.
+            string keyToRetrieve = "map";
+
+            // Act.
+            IDictionary<string, string> retrievedValue = GetMapFromConfig(keyToRetrieve);
+
+            // Assert.
+            DefaultMapAssertions(retrievedValue);
+        }
+
+        [TestMethod]
+        public void AsMap_Should_Return_Default_Dictionary_For_NonExistent_Key()
+        {
+            // Arrange.
+            string keyToRetrieve = "non.existent.map";
+
+            // Act.
+            IDictionary<string, string> retrievedValue = GetMapFromConfig(keyToRetrieve);
+
+            // Assert.
+            Assert.IsNotNull(retrievedValue, "Retrieved dictionary is null.");
+            Assert.AreEqual(3, retrievedValue.Keys.Count,
+                "Retrieved dictionary has the wrong number of elements.");
+            DefaultMapAssertions(retrievedValue);
+        }
+
+        private IDictionary<string, string> GetMapFromConfig(string keyToRetrieve)
+        {
+            // Arrange.
+            Config config = _config;
+            string key = "map";
+            string value = "a=1\nb=2\n";
+            config.add(key, value);
+            Dictionary<string, string> defaultValue = new Dictionary<string, string>();
+            defaultValue.Add("x", "10");
+            defaultValue.Add("y", "11");
+            defaultValue.Add("z", "12");
+
+            // Act.
+            IDictionary<string, string> retrievedValue = config.getAsMap(keyToRetrieve, defaultValue);
+            return retrievedValue;
+        }
+
+        private void DefaultMapAssertions(IDictionary<string, string> retrievedValue)
+        {
+            Assert.IsTrue(retrievedValue.ContainsKey("x"),
+                "Retrieved dictionary is missing key 'x'.");
+            Assert.IsTrue(retrievedValue.ContainsKey("y"),
+                "Retrieved dictionary is missing key 'y'.");
+            Assert.IsTrue(retrievedValue.ContainsKey("z"),
+                "Retrieved dictionary is missing key 'z'.");
+            Assert.AreEqual("10", retrievedValue["x"],
+                "The value of element 'x' of the retrieved dictionary is incorrect.");
+            Assert.AreEqual("11", retrievedValue["y"],
+                "The value of element 'y' of the retrieved dictionary is incorrect.");
+            Assert.AreEqual("12", retrievedValue["z"],
+                "The value of element 'z' of the retrieved dictionary is incorrect.");
+        }
     }
 }
