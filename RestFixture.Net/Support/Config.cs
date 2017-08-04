@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using NLog.LayoutRenderers.Wrappers;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -157,17 +159,9 @@ namespace restFixture.Net.Support
 		///            the default value for value not existent or not parseable </param>
 		/// <returns> a Long representing the value, def if the value cannot be parsed
 		///         as Long </returns>
-		public long? getAsLong(string key, long? def)
+		public long getAsLong(string key, long def)
 		{
-			string val = get(key);
-			try
-			{
-				return long.Parse(val);
-			}
-			catch (System.FormatException)
-			{
-				return def;
-			}
+            return GetAsValueType<long>(key, def);
 		}
 
 		/// <summary>
@@ -181,14 +175,7 @@ namespace restFixture.Net.Support
 		///         parsed as Boolean </returns>
 		public bool getAsBoolean(string key, bool def)
 		{
-			string val = get(key);
-			if (val == null)
-			{
-				return def;
-			}
-		    bool returnValue;
-		    bool.TryParse(val, out returnValue);
-            return returnValue;
+            return GetAsValueType<bool>(key, def);
 		}
 
 		/// <summary>
@@ -202,15 +189,36 @@ namespace restFixture.Net.Support
 		///         parsed as Integer </returns>
 		public int getAsInteger(string key, int def)
 		{
-			string val = get(key);
-		    int returnValue;
-            if(!int.TryParse(val, out returnValue))
-			{
-				return def;
-			}
-
-            return returnValue;
+		    return GetAsValueType<int>(key, def);
 		}
+
+	    private T GetAsValueType<T>(string key, T def) where T : struct
+	    {
+	        T? parsedValue = GetAsNullable<T>(key, def);
+	        if (parsedValue == null)
+	        {
+	            return default(T);
+	        }
+
+	        return parsedValue.Value;
+	    }
+
+        private T? GetAsNullable<T>(string key, T? def) where T : struct 
+	    {
+            string val = get(key);
+            if (string.IsNullOrWhiteSpace(val))
+            {
+                return def;
+            }
+
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+            if (converter == null || !converter.IsValid(val))
+            {
+                return def;
+            }
+
+            return (T)converter.ConvertFromString(val);
+	    }
 
 		/// <summary>
 		/// returns a key/value from a named config, parsed as a <code>Map&lt;String, String&gt;</code>.

@@ -59,6 +59,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BodyTypeAdapterFactory_GetBodyTypeAdapter.cs" />
+    <Compile Include="ConfigTests\Config_Add.cs" />
+    <Compile Include="ConfigTests\Config_Clear.cs" />
+    <Compile Include="ConfigTests\Config_Get.cs" />
+    <Compile Include="ConfigTests\Config_GetConfig.cs" />
+    <Compile Include="ConfigTests\Config_ToString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +79,7 @@
       <Name>RestFixture.Net</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
