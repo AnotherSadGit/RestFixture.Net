@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RestClient.Data;
 
-/*  Copyright 2017 SImon Elms
+/*  Copyright 2017 Simon Elms
  *
  *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -126,13 +126,13 @@ namespace restFixture.Net.Support
 		public static void config(Config config)
 		{
 			RestData.DEFAULT_ENCODING = config.get("restfixture.content.default.charset", 
-                Encoding.UTF8.EncodingName);
+                Encoding.UTF8.HeaderName);
 			string htmlConfig = config.get("restfixture.content.handlers.map", "");
 			string configStr = Tools.fromHtml(htmlConfig);
 			IDictionary<string, string> map = Tools.convertStringToMap(configStr, "=", "\n", true);
-			foreach (KeyValuePair<string, string> e in map.SetOfKeyValuePairs())
+			foreach (string key in map.Keys)
 			{
-				string value = e.Value;
+				string value = map[key];
 				string enumName = value.ToUpper();
 				ContentType ct = ContentType.valueOf(enumName);
 				if (null == ct)
@@ -142,13 +142,13 @@ namespace restFixture.Net.Support
 					sb.Append("[");
 					foreach (ContentType cType in values)
 					{
-						sb.Append("'").Append(cType.ToString()).Append("' ");
+						sb.Append("'").Append(cType).Append("' ");
 					}
 					sb.Append("]");
                     throw new System.ArgumentException(
-                        "I don't know how to handle " + value + ". Use one of " + sb.ToString());
+                        "I don't know how to handle " + value + ". Use one of " + sb);
 				}
-				contentTypeToEnum[e.Key] = ct;
+				contentTypeToEnum[key] = ct;
 			}
 		}
 
@@ -181,12 +181,30 @@ namespace restFixture.Net.Support
 		public static void resetDefaultMapping()
 		{
 			contentTypeToEnum.Clear();
-			contentTypeToEnum["default"] = ContentType.XML;
-			contentTypeToEnum["application/xml"] = ContentType.XML;
-			contentTypeToEnum["application/json"] = ContentType.JSON;
-			contentTypeToEnum["text/plain"] = ContentType.TEXT;
-			contentTypeToEnum["application/x-javascript"] = ContentType.JS;
+		    IDictionary<string, ContentType> defaultMappings = DefaultMappings;
+		    foreach (string contentType in defaultMappings.Keys)
+		    {
+		        contentTypeToEnum[contentType] = defaultMappings[contentType];
+		    }
 		}
+
+	    /// <summary>
+        /// The default content type mappings, from HTTP content-types to ContentType enums.
+        /// </summary>
+	    public static IDictionary<string, ContentType> DefaultMappings
+	    {
+            get
+            {
+                IDictionary<string, ContentType> defaultMappings = 
+                    new Dictionary<string, ContentType>();
+                defaultMappings.Add("default", ContentType.XML);
+                defaultMappings.Add("application/xml", ContentType.XML);
+                defaultMappings.Add("application/json", ContentType.JSON);
+                defaultMappings.Add("text/plain", ContentType.TEXT);
+                defaultMappings.Add("application/x-javascript", ContentType.JS);
+                return defaultMappings;
+            }
+	    }
 
 		/// <summary>
 		/// parses a string to a content type. </summary>

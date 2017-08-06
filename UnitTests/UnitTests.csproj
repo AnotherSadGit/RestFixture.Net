@@ -64,6 +64,9 @@
     <Compile Include="ConfigTests\Config_Get.cs" />
     <Compile Include="ConfigTests\Config_GetConfig.cs" />
     <Compile Include="ConfigTests\Config_ToString.cs" />
+    <Compile Include="ContentTypeTests\ContentTypeTestBase.cs" />
+    <Compile Include="ContentTypeTests\ContentType_Config.cs" />
+    <Compile Include="ContentTypeTests\ContentType_Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
