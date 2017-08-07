@@ -73,11 +73,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RestClient\RestClient.csproj">
+    <ProjectReference Include="..\..\Source\RestClient\RestClient.csproj">
       <Project>{8f093637-0e71-4de2-800b-a83984569112}</Project>
       <Name>RestClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RestFixture.Net\RestFixture.Net.csproj">
+    <ProjectReference Include="..\..\Source\RestFixture.Net\RestFixture.Net.csproj">
       <Project>{19d1017e-ba1e-40b3-937a-f6bdaf43e096}</Project>
       <Name>RestFixture.Net</Name>
     </ProjectReference>
