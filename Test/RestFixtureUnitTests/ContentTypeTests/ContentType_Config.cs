@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using restFixture.Net.Support;
-using restFixture.Net.TypeAdapters;
 using RestClient.Data;
 
-namespace UnitTests.ContentTypeTests
+namespace RestFixtureUnitTests.ContentTypeTests
 {
     [TestClass]
     public class ContentType_Config : ContentTypeTestBase

@@ -1,7 +1,7 @@
 ﻿using restFixture.Net.Support;
 using RestClient.Data;
 
-namespace UnitTests.ContentTypeTests
+namespace RestFixtureUnitTests.ContentTypeTests
 {
     public class ContentTypeTestBase
     {

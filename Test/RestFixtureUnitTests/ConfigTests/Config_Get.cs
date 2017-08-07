@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using restFixture.Net.Support;
 
-namespace UnitTests.ConfigTests
+namespace RestFixtureUnitTests.ConfigTests
 {
     [TestClass]
     public class Config_Get 

@@ -5,7 +5,7 @@ using restFixture.Net;
 using restFixture.Net.Support;
 using restFixture.Net.TypeAdapters;
 
-namespace UnitTests
+namespace RestFixtureUnitTests
 {
     [TestClass]
     public class BodyTypeAdapterFactory_GetBodyTypeAdapter
