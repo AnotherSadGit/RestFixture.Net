@@ -58,11 +58,8 @@
     <Compile Include="Test\FitNesse\Fixture\Resource.cs" />
     <Compile Include="Test\FitNesse\Fixture\Resources.cs" />
     <Compile Include="Test\FitNesse\Fixture\ResourcesServlet.cs" />
-    <Compile Include="Test\FitNesse\Fixture\ServletUtils.cs" />
     <Compile Include="StringHelperClass.cs" />
-    <Compile Include="Test\FitNesse\Fixture\StubsServlet.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
