@@ -25,14 +25,12 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 
 
 	/// <summary>
-	/// The database of resources to support RestFixture CATs.
-	/// 
-	/// @author fabrizio
-	/// 
+    /// The database of resources to support RestFixture FitNesse acceptance tests.
 	/// </summary>
 	public class Resources
 	{
-		private readonly IDictionary<string, IDictionary<string, Resource>> resourceDb = Collections.synchronizedMap(new Dictionary<string, IDictionary<string, Resource>>());
+		private readonly IDictionary<string, IDictionary<string, Resource>> resourceDb = 
+            new Dictionary<string, IDictionary<string, Resource>>();
 		private static Resources instance = new Resources();
 		private int counter = 0;
 
@@ -106,9 +104,9 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 			return getMapForContext(context).Count;
 		}
 
-		public virtual Resource remove(string context, string index)
+		public virtual void remove(string context, string index)
 		{
-			return getMapForContext(context).Remove(index);
+			getMapForContext(context).Remove(index);
 		}
 
 		public virtual void remove(string context, Resource o)
@@ -162,7 +160,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 		public override string ToString()
 		{
 			StringBuilder b = new StringBuilder();
-			string nl = System.getProperty("line.separator");
+			string nl = Environment.NewLine;
 			b.Append("Resources:[").Append(nl);
 			foreach (string c in resourceDb.Keys)
 			{
