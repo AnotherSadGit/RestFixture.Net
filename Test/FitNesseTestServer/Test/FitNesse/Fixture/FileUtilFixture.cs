@@ -16,6 +16,9 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using System.IO;
+
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
 
@@ -35,8 +38,6 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 
 		private string fileName;
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public FileUtilFixture() throws Exception
 		public FileUtilFixture() : base()
 		{
 		}
@@ -51,29 +52,33 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 			this.fileName = fileName;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public boolean create() throws Exception
 		public virtual bool create()
 		{
-			File f = new File(fileName);
-			int pos = f.Path.IndexOf(f.Name);
-			System.IO.Directory.CreateDirectory(f.Path.substring(0, pos));
-			System.IO.StreamWriter fw = new System.IO.StreamWriter(f);
-			fw.Write(fileContents);
-			fw.Close();
+		    string directoryName = Path.GetDirectoryName(fileName);
+            // Won't throw an error if the directory already exists.
+		    Directory.CreateDirectory(directoryName);
+
+            // Will overwrite an existing file, without error.
+            using (StreamWriter sw = File.CreateText(fileName))
+            {
+                sw.Write(fileContents);
+            }	
 			return true;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public boolean delete() throws Exception
 		public virtual bool delete()
 		{
-			if (System.IO.Directory.Exists(fileName)) System.IO.Directory.Delete(fileName, true); else System.IO.File.Delete(fileName);
+			if (System.IO.Directory.Exists(fileName))
+			{
+			    Directory.Delete(fileName, true); 
+			}
+            else
+			{
+			    File.Delete(fileName);
+			}
 			return true;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public boolean exists() throws Exception
 		public virtual bool exists()
 		{
 			return System.IO.Directory.Exists(fileName) || System.IO.File.Exists(fileName);

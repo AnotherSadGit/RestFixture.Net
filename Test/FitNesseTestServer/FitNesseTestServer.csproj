@@ -30,9 +30,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.4.3\lib\net45\NLog.dll</HintPath>
+    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Source\RestFixture.Net\bin\Debug\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,21 +70,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\FitNesse\FitnesseResultSanitiser.cs" />
-    <Compile Include="Support\FitNesse\FitnesseResultVerifier.cs" />
-    <Compile Include="Support\FitNesse\InProcessRunner.cs" />
-    <Compile Include="Test\FitNesse\Drivers\ClientDriver.cs" />
-    <Compile Include="Test\FitNesse\Drivers\RunFromJUnitTest.cs" />
-    <Compile Include="Test\FitNesse\Drivers\ServerDriver.cs" />
     <Compile Include="Test\FitNesse\Fixture\FileUtilFixture.cs" />
     <Compile Include="HashMapHelperClass.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpDeleteHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpGetHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpMethod.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpMethodHandlerBase.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpPostHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpPutHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpRequestHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\IHttpMethodHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\RequestProcessorParameter.cs" />
     <Compile Include="Test\FitNesse\Fixture\HttpServer.cs" />
     <Compile Include="Test\FitNesse\Fixture\HttpServerFixture.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\IHttpRequestHandler.cs" />
     <Compile Include="Test\FitNesse\Fixture\LetTestActionFixture.cs" />
     <Compile Include="Test\FitNesse\Fixture\Resource.cs" />
     <Compile Include="Test\FitNesse\Fixture\Resources.cs" />
-    <Compile Include="Test\FitNesse\Fixture\ResourcesServlet.cs" />
     <Compile Include="StringHelperClass.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,197 +1,279 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers;
+using NLog;
 
-/*  Copyright 2017 Simon Elms
- *
- *  This file is part of RestFixture.Net, a .NET port of the original Java 
- *  RestFixture written by Fabrizio Cannizzo and others.
- *
- *  RestFixture.Net is free software:
- *  You can redistribute it and/or modify it under the terms of the
- *  GNU Lesser General Public License as published by the Free Software Foundation,
- *  either version 3 of the License, or (at your option) any later version.
- *
- *  RestFixture.Net is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
- */
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
+    public class HttpServer
+    {
+        private static Logger LOG = LogManager.GetCurrentClassLogger();
 
-	using Log = org.apache.commons.logging.Log;
-	using Connector = org.mortbay.jetty.Connector;
-	using Server = org.mortbay.jetty.Server;
-	using SocketConnector = org.mortbay.jetty.bio.SocketConnector;
-	using Context = org.mortbay.jetty.servlet.Context;
-	using ServletHolder = org.mortbay.jetty.servlet.ServletHolder;
+        private HttpListener _listener = null;
+        private int _port;
+        // Prefix must end in a forward slash.  See MSDN HttpListener class documentation:
+        //  https://msdn.microsoft.com/en-us/library/system.net.httplistener(v=vs.110).aspx.
+        private readonly string _prefixTemplate = "http://localhost:{0}/";
 
-	/// <summary>
-	/// Wrapper to jetty providing the sample application used by RestFixture CATs.
-	/// 
-	/// @author fabrizio
-	/// 
-	/// </summary>
-	public class HttpServer
-	{
+        #region Constructors **********************************************************************
 
-		private static readonly Log LOG = LogFactory.getLog(typeof(HttpServer));
-		private Server server = null;
-		private int port;
+        public HttpServer(int port)
+            : this(port, GetRequestHandler())
+        {
+        }
 
-		public HttpServer(int port)
-		{
-			BasicConfigurator.configure();
-			server = new Server();
-			server.StopAtShutdown = true;
-			Port = port;
-		}
+        public HttpServer(int port, IHttpRequestHandler requestHandler)
+        {
+            _listener = new HttpListener();
+            this.Port = port;
+            this.RequestHandler = requestHandler;
+        }
 
-		protected internal virtual Server Server
-		{
-			get
-			{
-				return server;
-			}
-		}
+        #endregion
 
-		public virtual string stop()
-		{
-			string ret = null;
-			LOG.debug("Stopping jetty in port " + Port);
-			try
-			{
-				Server.stop();
-				// Wait for 3 seconds to stop
-				int watchdog = 30;
-				while (!Server.Stopped && watchdog > 0)
-				{
-					Thread.Sleep(100);
-					watchdog--;
-				}
-				ret = "OK";
-			}
-			catch (Exception e)
-			{
-				ret = "Failed stopping http server: " + e.Message;
-			}
-			if (!Server.Stopped)
-			{
-				ret = "Failed stopping http server after 30 seconds wait";
-			}
-			return ret;
-		}
+        #region Properties ************************************************************************
 
-		private int Port
-		{
-			set
-			{
-				LOG.debug("Adding socket connector to Jetty on port " + value);
-				Connector connector = createHttpConnector(value);
-				addConnector(value, connector);
-				this.port = value;
-			}
-			get
-			{
-				return port;
-			}
-		}
+        // Java version: Property name was Server.
+        protected internal virtual HttpListener Listener
+        {
+            get
+            {
+                return _listener;
+            }
+        }
 
-		private void addConnector(int port, Connector connector)
-		{
-			bool found = false;
-			Connector[] cArray = Server.Connectors;
-			if (cArray != null)
-			{
-				foreach (Connector c in cArray)
-				{
-					if (c.Port == port)
-					{
-						found = true;
-						break;
-					}
-				}
-			}
-			if (!found)
-			{
-				// Configure port.
-				Server.addConnector(connector);
-			}
-		}
+        private IHttpRequestHandler RequestHandler { get; set; }
 
-		private Connector createHttpConnector(int port)
-		{
-			Connector connector = new SocketConnector();
-			connector.Port = port;
-			return connector;
-		}
+        private int Port
+        {
+            set
+            {
+                SetPrefix(value);
 
+                this._port = value;
+            }
+            get
+            {
+                return _port;
+            }
+        }
 
-		public virtual string start()
-		{
-			string ret = null;
-			LOG.debug("Starting jetty in port " + Port);
-			try
-			{
-				Server.start();
-				// Wait for 3 seconds to start
-				int watchdog = 30;
-				while (!Server.Running && !Server.Started && watchdog > 0)
-				{
-					Thread.Sleep(100);
-					watchdog--;
-				}
-				ret = "OK";
-			}
-			catch (Exception e)
-			{
-				ret = "Failed starting http server: " + e.Message;
-				LOG.error(ret, e);
-			}
-			if (!Server.Running)
-			{
-				ret = "Failed to start http server after waiting 30 seconds";
-			}
-			return ret;
-		}
+        public virtual bool Started
+        {
+            get
+            {
+                return CheckIsListening();
+            }
+        }
 
-		public virtual bool Started
-		{
-			get
-			{
-				return server.Started;
-			}
-		}
+        public virtual bool Stopped
+        {
+            get
+            {
+                return !CheckIsListening();
+            }
+        }
 
-		public virtual bool Stopped
-		{
-			get
-			{
-				return server.Stopped;
-			}
-		}
+        #endregion
 
-		public virtual void join()
-		{
-			try
-			{
-				Server.join();
-			}
-			catch (InterruptedException e)
-			{
-				throw new System.InvalidOperationException("Interruption occurred!", e);
-			}
-		}
+        #region Methods ***************************************************************************
 
-		public virtual void addServlet(HttpServlet servlet, string ctxRoot)
-		{
-			Context ctx = new Context(server, ctxRoot, Context.SESSIONS);
-			ctx.addServlet(new ServletHolder(servlet), "/*");
-		}
+        public virtual string Start()
+        {
+            string ret = null;
+            LOG.Debug("Starting HTTP server listening on port {0}...", Port);
+            try
+            {
+                Listener.Start();
 
-	}
+                int timeoutSeconds = 3;
+                bool isListening = CheckIsListening(timeoutSeconds);
 
+                if (!isListening)
+                {
+                    LOG.Error("Failed to start HTTP server listening on port {0}.", Port);
+                    return "Failed to start HTTP server";
+                }
+
+                LOG.Debug("Calling Listener.BeginGetContext from main thread...");
+                RequestProcessorParameter arguments =
+                    new RequestProcessorParameter(this.Listener, this.RequestHandler);
+                Listener.BeginGetContext(ProcessHttpRequest, arguments);
+                LOG.Debug("Continuing main thread after Listener.BeginGetContext...");
+
+                LOG.Debug("HTTP server listening on port {0} has started.", Port);
+
+                return "OK";
+            }
+            catch (Exception e)
+            {
+                LOG.Error(e, "Failed to start HTTP server listening on port {0}.", Port);
+                return "Failed to start HTTP server: " + e.Message;
+            }
+        }
+
+        public virtual string Stop()
+        {
+            string ret = null;
+            LOG.Debug("Stopping HTTP server listening on port {0}...", Port);
+            try
+            {
+                Listener.Stop();
+
+                int timeoutSeconds = 3;
+                bool isListening = CheckIsListening(timeoutSeconds);
+
+                if (isListening)
+                {
+                    LOG.Error("Failed to stop HTTP server listening on port {0}.", Port);
+                    return "Failed to stop HTTP server";
+                }
+
+                LOG.Debug("Closing listener...");
+                Listener.Close();
+                LOG.Debug("Listener closed.");
+
+                LOG.Debug("HTTP server listening on port {0} has stopped.", Port);
+                return "OK";
+            }
+            catch (Exception e)
+            {
+                LOG.Error(e, "Failed to stop HTTP server listening on port {0}.", Port);
+                return "Failed to stop HTTP server: " + e.Message;
+            }
+        }
+
+        private void SetPrefix(int port)
+        {
+            if (Listener == null)
+            {
+                LOG.Error("Unable to set listener's port to {0}: Listener does not exist.", port);
+                return;
+            }
+
+            string newPrefix = string.Format(_prefixTemplate, port);
+
+            // Check the new prefix doesn't already exist as HttpListener doesn't like that.
+            if (Listener.Prefixes != null && Listener.Prefixes.Count > 0
+                && Listener.Prefixes.Contains(newPrefix))
+            {
+                LOG.Warn("Listener is already listening on port {0}.", port);
+                return;
+            }
+
+            LOG.Debug("Setting listener's port to {0}...", port);
+
+            // Only want to listen on a single port.  If previously listening on a different port, 
+            //  clear that previous config so that will now only listen on the new port.
+            Listener.Prefixes.Clear();
+            Listener.Prefixes.Add(newPrefix);
+
+            LOG.Debug("Listener's port set to {0}.", port);
+        }
+
+        private static IHttpRequestHandler GetRequestHandler()
+        {
+            IDictionary<string, IHttpMethodHandler> methodHandlers =
+                new Dictionary<string, IHttpMethodHandler>();
+            methodHandlers.Add(HttpMethod.Get, new HttpGetHandler());
+            methodHandlers.Add(HttpMethod.Post, new HttpPostHandler());
+            methodHandlers.Add(HttpMethod.Put, new HttpPutHandler());
+            methodHandlers.Add(HttpMethod.Delete, new HttpDeleteHandler());
+
+            IHttpRequestHandler requestHandler = new HttpRequestHandler(methodHandlers);
+
+            return requestHandler;
+        }
+
+        private bool CheckIsListening()
+        {
+            if (Listener == null)
+            {
+                return false;
+            }
+            return Listener.IsListening;
+        }
+
+        private bool CheckIsListening(int timeoutSeconds)
+        {
+            if (Listener == null)
+            {
+                return false;
+            }
+
+            DateTime timeoutTime = DateTime.Now.AddSeconds(timeoutSeconds);
+            while (!Listener.IsListening && DateTime.Now < timeoutTime)
+            {
+                Task.Delay(100).Wait();
+            }
+
+            return Listener.IsListening;
+        }
+        void ProcessHttpRequest(IAsyncResult result)
+        {
+            RequestProcessorParameter arguments = (RequestProcessorParameter)result.AsyncState;
+            HttpListener listener = arguments.Listener;
+            IHttpRequestHandler requestHandler = arguments.RequestHandler;
+
+            LOG.Debug("Handling HTTP request...");
+
+            if (listener == null)
+            {
+                LOG.Error("Unable to handle HTTP request: No listener supplied.");
+                return;
+            }
+
+            if (requestHandler == null)
+            {
+                LOG.Error("Unable to handle HTTP request: No request handler supplied.");
+                // No point in calling listener.BeginGetContext since there is no request handler 
+                //  to pass in as argument.
+                return;
+            }
+
+            if (requestHandler.MethodHandlers == null || requestHandler.MethodHandlers.Count == 0)
+            {
+                LOG.Error("Unable to handle HTTP request: No HTTP method handlers supplied.");
+                // No point in calling listener.BeginGetContext since there is no method handler 
+                //  to pass in as argument.
+                return;
+            }
+
+            HttpListenerContext context = null;
+
+            try
+            {
+                context = listener.EndGetContext(result);
+                LOG.Debug("Listener.EndGetContext complete.");
+            }
+            catch (Exception ex)
+            {
+                LOG.Debug("{0}: {1}", ex.GetType().Name, ex.Message);
+
+                // If the main thread has closed the listener then Listener.EndGetContext throws 
+                //  an ObjectDisposedException or an HttpListenerException.  There is no neat way 
+                //  around this, such as checking IsDisposed or IsDisposing, since HttpListener 
+                //  doesn't have any properties like that.  So the only way to deal with it is to 
+                //  catch the exception and do nothing with it, allowing execution to continue.
+                if (ex is ObjectDisposedException || ex is HttpListenerException)
+                {
+                    LOG.Debug("Exiting ProcessHttpRequest method.");
+                    return;
+                }
+            }
+
+            LOG.Debug("Calling HttpRequestHandler to process request...");
+            requestHandler.ProcessHttpRequest(context);
+
+            LOG.Debug("Completed handling HTTP of request.");
+
+            LOG.Debug("Calling listener.BeginGetContext from within request handler...");
+            listener.BeginGetContext(ProcessHttpRequest, arguments);
+            LOG.Debug("Request handler finished.");
+        }
+
+        #endregion
+    }
 }

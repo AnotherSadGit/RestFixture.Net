@@ -1,4 +1,6 @@
-﻿/*  Copyright 2017 Simon Elms
+﻿using fit;
+
+/*  Copyright 2017 Simon Elms
  *
  *  This file is part of RestFixture.Net, a .NET port of the original Java 
  *  RestFixture written by Fabrizio Cannizzo and others.
@@ -16,36 +18,28 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
-
-	using ActionFixture = fit.ActionFixture;
-
     /// <summary>
 	/// Supports Let CATs by providing a simple interface to FitNesse symbols map.
-	/// 
-	/// @author fabrizio
-	/// 
 	/// </summary>
 	public class LetTestActionFixture : ActionFixture
 	{
-//JAVA TO C# CONVERTER NOTE: Fields cannot have the same name as methods:
-		private string symbolName_Renamed;
+		public string SymbolName { get; set; }
 
-		public virtual void symbolName(string name)
-		{
-			this.symbolName_Renamed = name;
-		}
+        public string SymbolValue
+        {
+            get
+            {
+                return (string)Symbols.GetValue(this.SymbolName);
+            }
 
-		public virtual string symbolValue()
-		{
-			return (string) Fixture.getSymbol(symbolName_Renamed);
-		}
-
-		public virtual void symbolValue(string val)
-		{
-			Fixture.setSymbol(symbolName_Renamed, val);
-		}
+            set
+            {
+                this.Symbols.SaveValue(this.SymbolName, value);
+            }
+        }
 	}
 
 }

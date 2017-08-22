@@ -85,7 +85,8 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 
 		private IDictionary<string, Resource> getMapForContext(string context)
 		{
-			IDictionary<string, Resource> m = resourceDb[context];
+		    IDictionary<string, Resource> m = null;
+		    resourceDb.TryGetValue(context, out m);
 			if (m == null)
 			{
 				m = new Dictionary<string, Resource>();
@@ -96,7 +97,13 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 
 		public virtual Resource get(string context, string i)
 		{
-			return getMapForContext(context)[i];
+		    IDictionary<string, Resource> m = getMapForContext(context);
+		    if (m.ContainsKey(i))
+		    {
+		        return m[i];
+		    }
+
+            return null;
 		}
 
 		public virtual int size(string context)

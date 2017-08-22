@@ -16,12 +16,12 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+using fit;
+using NLog;
+
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
-
-	using Log = org.apache.commons.logging.Log;
-	using ActionFixture = fit.ActionFixture;
-
 	/// <summary>
 	/// Fixture to manage the HTTP server required to support RestFixture CATs.
 	/// 
@@ -30,13 +30,11 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 	/// </summary>
 	public class HttpServerFixture : ActionFixture
 	{
+        private static Logger LOG = LogManager.GetCurrentClassLogger();
 
-		private static readonly Log LOG = LogFactory.getLog(typeof(HttpServerFixture));
-		private int port;
-		private static HttpServer server;
+		private int _port;
+		private static HttpServer _server;
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public HttpServerFixture() throws Exception
 		public HttpServerFixture() : base()
 		{
 		}
@@ -48,17 +46,16 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 
 		private void startServer(int port)
 		{
-			if (server == null)
+			if (_server == null)
 			{
-				this.port = port;
-				LOG.info("Starting server on port " + port);
-				server = new HttpServer(port);
-				server.addServlet(new ResourcesServlet(), "/");
-				server.start();
+				this._port = port;
+				LOG.Info("Starting server on port ", port);
+			    _server = new HttpServer(port);
+				_server.Start();
 			}
 			else
 			{
-				LOG.info("Server already started on port " + port);
+				LOG.Info("Server already started on port ", port);
 			}
 		}
 
@@ -66,7 +63,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 		{
 			get
 			{
-				return server != null && server.Started;
+				return _server != null && _server.Started;
 			}
 		}
 
@@ -74,33 +71,28 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 		{
 			get
 			{
-				return server != null && server.Stopped;
+				return _server != null && _server.Stopped;
 			}
 		}
 
 		public virtual void stopServer()
 		{
-			if (server != null)
+			if (_server != null)
 			{
-				LOG.info("Stopping server on port " + port);
-				server.stop();
+				LOG.Info("Stopping server on port " + _port);
+				_server.Stop();
 			}
 			else
 			{
-				if (port == 0)
+				if (_port == 0)
 				{
-					LOG.info("Server never started");
+					LOG.Info("Server never started");
 				}
 				else
 				{
-					LOG.info("Server already stopped on port " + port);
+					LOG.Info("Server already stopped on port " + _port);
 				}
 			}
-		}
-
-		public virtual void join()
-		{
-			server.join();
 		}
 
 		public virtual bool resetResourcesDatabase()
@@ -109,13 +101,10 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 			return true;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public static void main(String[] args) throws Exception
 		public static void Main(string[] args)
 		{
 			HttpServerFixture f = new HttpServerFixture();
 			f.startServer(8765);
-			f.join();
 		}
 
 	}
