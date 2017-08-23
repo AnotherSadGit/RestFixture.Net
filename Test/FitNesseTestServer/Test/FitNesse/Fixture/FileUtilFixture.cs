@@ -18,29 +18,22 @@
  */
 
 using System.IO;
+using fit;
 
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
-
-
-	using ActionFixture = fit.ActionFixture;
-
 	/// <summary>
 	/// Action fixture to support file upload CATs in RestFixture.
 	/// 
 	/// @author fabrizio
 	/// 
 	/// </summary>
-	public class FileUtilFixture : ActionFixture
+    public class FileUtilFixture : fit.Fixture
 	{
 
 		private string fileContents;
 
 		private string fileName;
-
-		public FileUtilFixture() : base()
-		{
-		}
 
 		public virtual void content(string fileContents)
 		{

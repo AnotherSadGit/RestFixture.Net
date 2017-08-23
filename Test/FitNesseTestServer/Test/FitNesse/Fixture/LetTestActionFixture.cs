@@ -24,7 +24,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
     /// <summary>
 	/// Supports Let CATs by providing a simple interface to FitNesse symbols map.
 	/// </summary>
-	public class LetTestActionFixture : ActionFixture
+    public class LetTestActionFixture : fit.Fixture
 	{
 		public string SymbolName { get; set; }
 

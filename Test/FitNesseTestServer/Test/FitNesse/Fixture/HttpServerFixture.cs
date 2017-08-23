@@ -28,16 +28,12 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 	/// @author fabrizio
 	/// 
 	/// </summary>
-	public class HttpServerFixture : ActionFixture
+	public class HttpServerFixture : fit.Fixture
 	{
         private static Logger LOG = LogManager.GetCurrentClassLogger();
 
 		private int _port;
 		private static HttpServer _server;
-
-		public HttpServerFixture() : base()
-		{
-		}
 
 		public virtual void startServer(string port)
 		{
