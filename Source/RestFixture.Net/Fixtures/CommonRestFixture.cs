@@ -56,7 +56,7 @@ namespace restFixture.Net.Fixtures
     /// <table border="1">
     /// <caption>supported configuration parameters</caption>
     /// <tr>
-    /// <td>smartrics.rest.fitnesse.fixture.RestFixtureConfig</td>
+    /// <td>restFixture.Net.RestFixtureConfig</td>
     /// <td><i>optional named config</i></td>
     /// </tr>
     /// <tr>
