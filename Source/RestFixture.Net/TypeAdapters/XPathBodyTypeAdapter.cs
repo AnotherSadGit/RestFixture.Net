@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.XPath;
-using HtmlAgilityPack;
 using restFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
@@ -65,14 +64,6 @@ namespace restFixture.Net.TypeAdapters
 			// r2 is the actual. it needs to be parsed as XML and the XPaths in r1
 			// must be verified
 		    string actualText = actual.ToString();
-		    if (BodyIsHtml(actualText))
-		    {
-                addError("returned body is HTML, not XML or JSON: " 
-                    + Environment.NewLine + Environment.NewLine 
-                    + actualText);
-		        return false;
-		    }
-
 			IList<string> expressions = (IList<string>) expected;
 			foreach (string expr in expressions)
 			{
@@ -92,35 +83,6 @@ namespace restFixture.Net.TypeAdapters
 
 			return Errors.Count == 0;
 		}
-
-	    private bool BodyIsHtml(string body)
-	    {
-	        if (string.IsNullOrWhiteSpace(body))
-	        {
-	            return false;
-	        }
-
-            // Turns out that if JSON is supplied LoadHtml will load it happily, without error.
-            // So do a simple check to see if the text supplied is JSON: JSON will start with 
-            //  either "{" or "[", HTML and XML will start with "<".
-            body = body.Trim();
-            if (body.StartsWith("{") || body.StartsWith("["))
-            {
-                return false;
-            }
-
-            bool isHtml = false;
-            try
-	        {
-	            var doc = new HtmlDocument();
-	            doc.LoadHtml(body);
-	            isHtml = true;
-	        }
-	        catch (Exception)
-	        {
-	        }
-            return isHtml;
-	    }
 
 		protected internal virtual bool eval(string expr, string content)
 		{
