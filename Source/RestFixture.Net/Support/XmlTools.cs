@@ -208,10 +208,14 @@ namespace restFixture.Net.Support
             }
 
             Type actualType = returnValue.GetType();
-            if (actualType != expectedType)
+            // Actual type could be derived from the expected type, for example the actual type 
+            //  could be XPathSelectionIterator which is derived from the expected type 
+            //  XPathNodeIterator.  So use IsAssignableFrom instead of equality comparison.
+            if (!expectedType.IsAssignableFrom(actualType))
             {
-                errorMessage = string.Format("XPath expression return type {0} does not match the "
-                            + "supplied return type {1}.", actualType.FullName, expectedReturnType);
+                errorMessage = string.Format("XPath expression return type {0} is not compatible "
+                            + "with the specified return type {1}.", 
+                            actualType.FullName, expectedReturnType);
                 throw new XPathException(errorMessage);
             }
         }
