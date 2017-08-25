@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Security;
 using fitSharp.Machine.Engine;
@@ -242,6 +243,8 @@ namespace restFixture.Net.Fixtures
 
         private bool _debugMethodCall = false;
 
+        private MethodInfo[] _methods = null; 
+
         /// <summary>
         /// the headers passed to each request by default.
         /// </summary>
@@ -387,6 +390,21 @@ namespace restFixture.Net.Fixtures
         public virtual ICellFormatter<T> Formatter
         {
             get { return formatter; }
+        }
+
+        /// <summary>
+        /// Returns an array of all the public instance methods in this class.
+        /// </summary>
+        private MethodInfo[] Methods
+        {
+            get
+            {
+                if (_methods == null)
+                {
+                    _methods = this.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public);
+                }
+                return _methods;
+            }
         }
 
         /// <summary>
@@ -1078,7 +1096,13 @@ namespace restFixture.Net.Fixtures
             try
             {
                 // The method cannot take any parameters.
-                method1 = this.GetType().GetMethod(methodName, new Type[0]);
+                method1 = this.Methods.FirstOrDefault(mthd => string.Compare(mthd.Name, methodName,
+                    StringComparison.CurrentCultureIgnoreCase) == 0);
+                if (method1 == null)
+                {
+                    throw new Exception(
+                        "Class " + this.GetType().FullName + " doesn't have a callable method named " + methodName);
+                }
                 method1.Invoke(this, new object[0]);
             }
             catch (SecurityException e)
