@@ -84,7 +84,7 @@ namespace restFixture.Net.TableElements
 
         public void check(ICellWrapper<String> expected, RestDataTypeAdapter actual)
 		{
-			if (null == expected.body() || "".Equals(expected.body()))
+			if (string.IsNullOrWhiteSpace(expected.body()))
 			{
 				if (actual.Actual == null)
 				{

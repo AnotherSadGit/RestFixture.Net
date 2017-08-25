@@ -87,14 +87,29 @@ namespace restFixture.Net.TableElements
 			fixture.Exception(wrapped, exception);
 		}
 
-        public void check(ICellWrapper<Parse> valueCell, RestDataTypeAdapter adapter)
+        public void check(ICellWrapper<Parse> expected, RestDataTypeAdapter actual)
         {
-            valueCell.body(Tools.toHtml(valueCell.body()));
-            // Original Java implementation has two parameters but in FitSharp 
-            //  ActionFixture.Check takes no parameters.  Not sure if it'll work 
-            //  or not.
-            //fixture.Check(valueCell.Wrapped, adapter);
-            fixture.Check();
+            if (string.IsNullOrWhiteSpace(expected.body()))
+            {
+                if (actual.Actual == null)
+                {
+                    return;
+                }
+                else
+                {
+                    expected.body(gray(actual.Actual.ToString()));
+                    return;
+                }
+            }
+
+            if (actual.Actual != null && actual.Equals(expected.body(), actual.Actual.ToString()))
+            {
+                right(expected, actual);
+            }
+            else
+            {
+                wrong(expected, actual);
+            }
         }
 
 		public string label(string text)
