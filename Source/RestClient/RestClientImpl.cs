@@ -321,8 +321,19 @@ namespace RestClient
                     }
                     else if (!string.IsNullOrWhiteSpace(requestDetails.Body))
                     {
-                        string contentType = null;
-                        if (requestDetails.ContentType.ToLower().Contains("json"))
+                        string contentType = requestDetails.ContentType;
+                        if (contentType != null)
+                        {
+                            if (contentType.Trim().Length == 0)
+                            {
+                                contentType = null;
+                            }
+                            else
+                            {
+                                contentType = contentType.ToLower();   
+                            }
+                        }
+                        if (contentType != null && contentType.Contains("json"))
                         {
                             request.RequestFormat = DataFormat.Json;
                             contentType = requestDetails.ContentType;
@@ -330,7 +341,7 @@ namespace RestClient
                         else
                         {
                             request.RequestFormat = DataFormat.Xml;
-                            if (requestDetails.ContentType.ToLower().Contains("xml"))
+                            if (contentType != null && contentType.Contains("xml"))
                             {
                                 contentType = requestDetails.ContentType;
                             }
