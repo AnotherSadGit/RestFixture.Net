@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 /*  Copyright 2017 Simon Elms
@@ -22,49 +23,47 @@ using System.Text;
  */
 namespace FitNesseTestServer.Test.FitNesse.Fixture
 {
-
-
-	/// <summary>
+    /// <summary>
     /// The database of resources to support RestFixture FitNesse acceptance tests.
-	/// </summary>
-	public class Resources
-	{
-		private readonly IDictionary<string, IDictionary<string, Resource>> resourceDb = 
+    /// </summary>
+    public class Resources
+    {
+        private readonly IDictionary<string, IDictionary<string, Resource>> resourceDb =
             new Dictionary<string, IDictionary<string, Resource>>();
-		private static Resources instance = new Resources();
-		private int counter = 0;
+        private static Resources instance = new Resources();
+        private int counter = 0;
 
-		public static Resources Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+        public static Resources Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-		public virtual void clear()
-		{
-			foreach (string c in resourceDb.Keys)
-			{
-				resourceDb[c].Clear();
-			}
-			resourceDb.Clear();
-		}
+        public virtual void clear()
+        {
+            foreach (string c in resourceDb.Keys)
+            {
+                resourceDb[c].Clear();
+            }
+            resourceDb.Clear();
+        }
 
-		public virtual ICollection<Resource> asCollection(string context)
-		{
-			ICollection<Resource> c = new List<Resource>();
-			IDictionary<string, Resource> m = resourceDb[context];
-			if (m != null)
-			{
-				foreach (KeyValuePair<string, Resource> e in m.SetOfKeyValuePairs())
-				{
-					string s = e.Key;
-					c.Add(m[s]);
-				}
-			}
-			return c;
-		}
+        public virtual ICollection<Resource> asCollection(string context)
+        {
+            ICollection<Resource> c = new List<Resource>();
+            IDictionary<string, Resource> m = resourceDb[context];
+            if (m != null)
+            {
+                foreach (KeyValuePair<string, Resource> e in m.SetOfKeyValuePairs())
+                {
+                    string s = e.Key;
+                    c.Add(m[s]);
+                }
+            }
+            return c;
+        }
 
         public virtual IList<string> Contexts
         {
@@ -76,58 +75,58 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
             }
         }
 
-		public virtual void add(string context, Resource r)
-		{
-			if (string.ReferenceEquals(r.Id, null))
-			{
-				r.Id = Convert.ToString(newCounter());
-			}
-			IDictionary<string, Resource> m = getMapForContext(context);
-			m[r.Id] = r;
-		}
+        public virtual void add(string context, Resource r)
+        {
+            if (string.IsNullOrWhiteSpace(r.Id))
+            {
+                r.Id = GetNewId(context);
 
-		private IDictionary<string, Resource> getMapForContext(string context)
-		{
-		    IDictionary<string, Resource> m = null;
-		    resourceDb.TryGetValue(context, out m);
-			if (m == null)
-			{
-				m = new Dictionary<string, Resource>();
-				resourceDb[context] = m;
-			}
-			return m;
-		}
+            }
+            IDictionary<string, Resource> m = getMapForContext(context);
+            m[r.Id] = r;
+        }
 
-		public virtual Resource get(string context, string i)
-		{
-		    IDictionary<string, Resource> m = getMapForContext(context);
-		    if (m.ContainsKey(i))
-		    {
-		        return m[i];
-		    }
+        private IDictionary<string, Resource> getMapForContext(string context)
+        {
+            IDictionary<string, Resource> m = null;
+            resourceDb.TryGetValue(context, out m);
+            if (m == null)
+            {
+                m = new Dictionary<string, Resource>();
+                resourceDb[context] = m;
+            }
+            return m;
+        }
+
+        public virtual Resource get(string context, string i)
+        {
+            IDictionary<string, Resource> m = getMapForContext(context);
+            if (m.ContainsKey(i))
+            {
+                return m[i];
+            }
 
             return null;
-		}
+        }
 
-		public virtual int size(string context)
-		{
-			return getMapForContext(context).Count;
-		}
+        public virtual int size(string context)
+        {
+            return getMapForContext(context).Count;
+        }
 
-		public virtual void remove(string context, string index)
-		{
-			getMapForContext(context).Remove(index);
-		}
+        public virtual void remove(string context, string index)
+        {
+            getMapForContext(context).Remove(index);
+        }
 
-		public virtual void remove(string context, Resource o)
-		{
-			remove(context, o.Id);
-		}
+        public virtual void remove(string context, Resource o)
+        {
+            remove(context, o.Id);
+        }
 
         public virtual void reset()
         {
             clear();
-            counter = 0;
             add("/resources", new Resource("0", "<resource>\n    <name>a funky name</name>\n    <data>an important message</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>3</ns1:number>\n    </nstag>" + "\n</resource>"));
             add("/resources", new Resource("1", "{ \"resource\" : { \"name\" : \"a funky name\", " + "\"data\" : \"an important message\" } }"));
 
@@ -168,32 +167,40 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
             add("/jsonresources", new Resource("1", "{ \"resource\" : { \"name\" : \"second JSON resource\", " + "\"data\" : \"second JSON resource data\" } }"));
         }
 
-		private int newCounter()
-		{
-			lock (this)
-			{
-				return counter++;
-			}
-		}
+        private string GetNewId(string context)
+        {
+            lock (this)
+            {
+                IDictionary<string, Resource> contextMap = this.getMapForContext(context);
 
-		public override string ToString()
-		{
-			StringBuilder b = new StringBuilder();
-			string nl = Environment.NewLine;
-			b.Append("Resources:[").Append(nl);
-			foreach (string c in resourceDb.Keys)
-			{
-				b.Append(" Context(").Append(c).Append("):[").Append(nl);
-				foreach (Resource r in asCollection(c))
-				{
-					b.Append(r).Append(nl);
-				}
-				b.Append(" ]").Append(nl);
-			}
-			b.Append("]").Append(nl);
-			return b.ToString();
-		}
+                if (contextMap == null || contextMap.Keys.Count == 0)
+                {
+                    return "0";
+                }
 
-	}
+                int maxId = contextMap.Keys.Select(k => int.Parse(k)).Max();
+                int newId = ++maxId;
+                return newId.ToString();
+            }
+        }
 
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder();
+            string nl = Environment.NewLine;
+            b.Append("Resources:[").Append(nl);
+            foreach (string c in resourceDb.Keys)
+            {
+                b.Append(" Context(").Append(c).Append("):[").Append(nl);
+                foreach (Resource r in asCollection(c))
+                {
+                    b.Append(r).Append(nl);
+                }
+                b.Append(" ]").Append(nl);
+            }
+            b.Append("]").Append(nl);
+            return b.ToString();
+        }
+
+    }
 }
