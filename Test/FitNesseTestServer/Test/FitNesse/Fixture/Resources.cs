@@ -66,12 +66,15 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 			return c;
 		}
 
-		public virtual IList<string> contexts()
-		{
-			IList<string> ctxKeys = new List<string>();
-			((List<string>)ctxKeys).AddRange(resourceDb.Keys);
-			return ctxKeys;
-		}
+        public virtual IList<string> Contexts
+        {
+            get
+            {
+                IList<string> keys = new List<string>();
+                ((List<string>)keys).AddRange(resourceDb.Keys);
+                return keys;
+            }
+        }
 
 		public virtual void add(string context, Resource r)
 		{
@@ -121,40 +124,49 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
 			remove(context, o.Id);
 		}
 
-		public virtual void reset()
-		{
-			clear();
-			counter = 0;
-			add("/resources", new Resource("<resource>\n    <name>a funky name</name>\n    <data>an important message</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>3</ns1:number>\n    </nstag>" + "\n</resource>"));
-			add("/resources", new Resource("{ \"resource\" : { \"name\" : \"a funky name\", " + "\"data\" : \"an important message\" } }"));
-			StringBuilder sb = new StringBuilder();
-			sb.Append("<resource>\n");
-			sb.Append("   <name>giant bob</name>\n");
-			sb.Append("   <type>large content</type>\n");
-			sb.Append("   <address>\n");
-			sb.Append("       <street>\n");
-			sb.Append("            Regent Street\n");
-			sb.Append("       </street>\n");
-			sb.Append("       <number>\n");
-			sb.Append("            12345\n");
-			sb.Append("       </number>\n");
-			sb.Append("   </address>\n");
-			sb.Append("   <data>\n");
-			sb.Append("       <part id='0'>\n");
-			sb.Append("           <source href='http://en.wikipedia.org/wiki/Inferno_(Dante)' />\n");
-			sb.Append("           <content>\n");
-			sb.Append("Inferno (Italian for 'Hell') is the first part of Dante Alighieri's 14th-century epic poem Divine Comedy. \n");
-			sb.Append("It is followed by Purgatorio and Paradiso. It is an allegory telling of the journey of Dante through what is \n");
-			sb.Append("largely the medieval concept of Hell, guided by the Roman poet Virgil. In the poem, Hell is depicted as nine \n");
-			sb.Append("circles of suffering located within the Earth. Allegorically, the Divine Comedy represents the journey of the soul");
-			sb.Append("towards God, with the Inferno describing the recognition and rejection of sin.\n");
-			sb.Append("           </content>\n");
-			sb.Append("       </part>\n");
-			sb.Append("   </data>\n");
-			sb.Append("</resource>\n");
+        public virtual void reset()
+        {
+            clear();
+            counter = 0;
+            add("/resources", new Resource("0", "<resource>\n    <name>a funky name</name>\n    <data>an important message</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>3</ns1:number>\n    </nstag>" + "\n</resource>"));
+            add("/resources", new Resource("1", "{ \"resource\" : { \"name\" : \"a funky name\", " + "\"data\" : \"an important message\" } }"));
 
-			add("/resources", new Resource("100", sb.ToString()));
-		}
+            add("/resources", new Resource("10", "<resource xmlns=\"http://schemas.datacontract.org/2004/07/resources\">\n    <name>resource name</name>\n    <data>some data</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>10</ns1:number>\n    </nstag>" + "\n</resource>"));
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<resource>\n");
+            sb.Append("   <name>giant bob</name>\n");
+            sb.Append("   <type>large content</type>\n");
+            sb.Append("   <address>\n");
+            sb.Append("       <street>\n");
+            sb.Append("            Regent Street\n");
+            sb.Append("       </street>\n");
+            sb.Append("       <number>\n");
+            sb.Append("            12345\n");
+            sb.Append("       </number>\n");
+            sb.Append("   </address>\n");
+            sb.Append("   <data>\n");
+            sb.Append("       <part id='0'>\n");
+            sb.Append("           <source href='http://en.wikipedia.org/wiki/Inferno_(Dante)' />\n");
+            sb.Append("           <content>\n");
+            sb.Append("Inferno (Italian for 'Hell') is the first part of Dante Alighieri's 14th-century epic poem Divine Comedy. \n");
+            sb.Append("It is followed by Purgatorio and Paradiso. It is an allegory telling of the journey of Dante through what is \n");
+            sb.Append("largely the medieval concept of Hell, guided by the Roman poet Virgil. In the poem, Hell is depicted as nine \n");
+            sb.Append("circles of suffering located within the Earth. Allegorically, the Divine Comedy represents the journey of the soul");
+            sb.Append("towards God, with the Inferno describing the recognition and rejection of sin.\n");
+            sb.Append("           </content>\n");
+            sb.Append("       </part>\n");
+            sb.Append("   </data>\n");
+            sb.Append("</resource>\n");
+
+            add("/resources", new Resource("100", sb.ToString()));
+
+            add("/xmlresources", new Resource("0", "<resource>\n    <name>first xml resource</name>\n    <data>first xml resource data</data>" + "\n</resource>"));
+            add("/xmlresources", new Resource("1", "<resource>\n    <name>second xml resource</name>\n    <data>second xml resource data</data>" + "\n</resource>"));
+
+            add("/jsonresources", new Resource("0", "{ \"resource\" : { \"name\" : \"first JSON resource\", " + "\"data\" : \"first JSON resource data\" } }"));
+            add("/jsonresources", new Resource("1", "{ \"resource\" : { \"name\" : \"second JSON resource\", " + "\"data\" : \"second JSON resource data\" } }"));
+        }
 
 		private int newCounter()
 		{

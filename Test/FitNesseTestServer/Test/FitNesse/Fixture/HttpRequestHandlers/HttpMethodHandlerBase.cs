@@ -67,6 +67,11 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
                 {
                     sId = sId.Substring(0, pos2);
                 }
+
+                if (string.IsNullOrWhiteSpace(sId))
+                {
+                    return null;
+                }
             }
             LOG.Debug("ID retrieved from local URL: {0}", LogHelper.GetDisplayText(sId));
             return sId;
@@ -145,6 +150,15 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
             }
         }
 
+        /// <summary>
+        /// Writes the body text to the response output stream.
+        /// </summary>
+        /// <param name="response">Object representing the response that will be sent.</param>
+        /// <param name="body">Text that will be written to the body of the response.</param>
+        /// <param name="charset">Character set for encoding the body text.</param>
+        /// <remarks>WARNING: The response will be sent immediately the write to the output 
+        /// stream is complete.  Therefore all headers, etc, must be set before calling this 
+        /// method to write the response body.</remarks>
         protected void WriteResponseBody(HttpListenerResponse response, string body,
             string charset)
         {

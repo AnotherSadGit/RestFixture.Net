@@ -5,7 +5,7 @@ using NLog;
 
 namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
 {
-    class HttpGetHandler : HttpMethodHandlerBase
+    public class HttpGetHandler : HttpMethodHandlerBase
     {
         private static Logger LOG = LogManager.GetCurrentClassLogger();
 
@@ -33,7 +33,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
                 {
                     LOG.Debug("Redirecting...");
 
-                    response.StatusCode = (int) HttpStatusCode.MovedPermanently;    // 301
+                    response.StatusCode = (int)HttpStatusCode.MovedPermanently;    // 301
                     response.AddHeader("Location", redirectedLocation);
                     response.ContentLength64 = 0;
 
@@ -50,8 +50,12 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
                 {
                     if (id == null)
                     {
-                        List(response, type, extension);
+                        // Must set any headers, etc, before calling any method, like List, 
+                        //  which writes to the response output stream (in this case via 
+                        //  WriteResponseBody).  Once the output stream has been written to 
+                        //  the response is sent so after that it's too late to set the headers.
                         SetResponseContentType(response, extension, DEF_CHARSET);
+                        List(response, type, extension);
                     }
                     else
                     {
@@ -63,8 +67,8 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
                         }
                         else
                         {
-                            Found(response, resource);
                             SetResponseContentType(response, extension, DEF_CHARSET);
+                            Found(response, resource);
                         }
                     }
                 }
@@ -102,7 +106,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
             }
         }
 
-        private void SetResponseContentType(HttpListenerResponse response, 
+        private void SetResponseContentType(HttpListenerResponse response,
             string extension, string optCharset)
         {
             response.StatusCode = (int)HttpStatusCode.OK;
@@ -111,75 +115,96 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
             {
                 s = ";charset=" + optCharset;
             }
-            response.AddHeader("Content-Type", "application/" + extension + s);
+            response.ContentType = "application/" + extension + s;
         }
 
         private void List(HttpListenerResponse response, string type, string extension)
         {
-            if (type.Contains("root-context"))
-            {
-                List(response, extension);
-            }
-            else
-            {
-                StringBuilder sb = new StringBuilder();
-                string slashremoved = type.Substring(1);
-                if ("json".Equals(extension))
-                {
-                    sb.Append("{ \"" + slashremoved + "\" : ");
-                }
-                else
-                {
-                    sb.Append("<" + slashremoved + ">");
-                }
+            bool serveJson = extension.ToLower() == "json";
 
-                foreach (Resource r in this.Resources.asCollection(type))
-                {
-                    sb.Append(r.Payload);
-                }
-                if ("json".Equals(extension))
-                {
-                    sb.Append("}");
-                }
-                else
-                {
-                    sb.Append("</" + slashremoved + ">");
-                }
+            string listBody = BuildList(type, serveJson);
 
-                WriteResponseBody(response, sb.ToString(), DEF_CHARSET);
-            }
+            WriteResponseBody(response, listBody, DEF_CHARSET);
         }
 
-        private void List(HttpListenerResponse response, string extension)
+        private string BuildList(string type, bool serveJson)
         {
             StringBuilder sb = new StringBuilder();
-            if (extension.ToLower() =="json")
+            if (type.ToLower().Contains("root-context"))
             {
-                sb.Append("{ \"root-context\" : ");
+                BuildRootContextList(sb, serveJson);
             }
             else
             {
-                sb.Append("<root-context>");
+                BuildContextList(sb, serveJson, type);
             }
-            
-            WriteResponseBody(response, sb.ToString(), DEF_CHARSET);
+            return sb.ToString();
+        }
 
-            foreach (string s in this.Resources.contexts())
+        private void BuildRootContextList(StringBuilder sb, bool serveJson)
+        {
+            string tagName = "root-context";
+            string openTag = GetOpenTag(tagName, serveJson);
+            string closeTag = GetCloseTag(tagName, serveJson);
+
+            sb.Append(openTag);
+
+            bool isFirstPass = true;
+            // By default there is only one context: "/resources".
+            foreach (string context in this.Resources.Contexts)
             {
-                List(response, s, extension);
+                if (serveJson && !isFirstPass)
+                {
+                    sb.Append(", ");
+                }
+                BuildContextList(sb, serveJson, context);
+                isFirstPass = false;
             }
 
-            sb = new StringBuilder();
-            if ("json".Equals(extension))
+            sb.Append(closeTag);
+        }
+
+        private void BuildContextList(StringBuilder sb, bool serveJson, string context)
+        {
+            string slashRemoved = context.Substring(1);
+
+            string openTag = GetOpenTag(slashRemoved, serveJson);
+            string closeTag = GetCloseTag(slashRemoved, serveJson);
+
+            sb.Append(openTag);
+
+            bool isFirstPass = true;
+            foreach (Resource r in this.Resources.asCollection(context))
             {
-                sb.Append("}");
-            }
-            else
-            {
-                sb.Append("</root-context>");
+                if (serveJson && !isFirstPass)
+                {
+                    sb.Append(", ");
+                }
+                sb.Append(r.Payload);
+                isFirstPass = false;
             }
 
-            WriteResponseBody(response, sb.ToString(), DEF_CHARSET);
+            sb.Append(closeTag);
+        }
+
+        private string GetOpenTag(string tagName, bool serveJson)
+        {
+            if (serveJson)
+            {
+                return "{ \"" + tagName + "\" : [ "; ;
+            }
+
+            return "<" + tagName + ">";
+        }
+
+        private string GetCloseTag(string tagName, bool serveJson)
+        {
+            if (serveJson)
+            {
+                return " ] }";
+            }
+
+            return "</" + tagName + ">";
         }
     }
 }
