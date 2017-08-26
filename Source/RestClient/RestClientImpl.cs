@@ -33,8 +33,8 @@ namespace RestClient
     /// A client for making HTTP requests.
     /// </summary>
     /// <remarks>Very loosely based on the original Java version of RestClient.RestClientImpl.</remarks>
-	public class RestClientImpl: IRestClient
-	{
+    public class RestClientImpl : IRestClient
+    {
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
         public string BaseUrlString
@@ -71,7 +71,7 @@ namespace RestClient
         }
 
         private ProxyInfo _proxy;
-        public ProxyInfo Proxy 
+        public ProxyInfo Proxy
         {
             get
             {
@@ -87,7 +87,7 @@ namespace RestClient
                         = new NetworkCredential(_proxy.UserName, _proxy.Password, _proxy.Domain);
                 }
                 this.Client.Proxy = new WebProxy(_proxy.Address, false, null, credentials);
-            } 
+            }
         }
 
         private Credentials _credentials;
@@ -106,7 +106,7 @@ namespace RestClient
                     return;
                 }
 
-                HttpBasicAuthenticator authenticator 
+                HttpBasicAuthenticator authenticator
                     = new HttpBasicAuthenticator(_credentials.UserName, _credentials.Password);
                 this.Client.Authenticator = authenticator;
             }
@@ -153,7 +153,8 @@ namespace RestClient
         /// <summary>
         /// Initializes a new instance of the Client with the specified URL.
         /// </summary>
-        public RestClientImpl(string baseUrlString) : this()
+        public RestClientImpl(string baseUrlString)
+            : this()
         {
             this.BaseUrlString = baseUrlString;
         }
@@ -182,7 +183,7 @@ namespace RestClient
             {
                 requestDetails.TransactionId = Convert.ToInt64(DateTimeHelper.CurrentUnixTimeMillis());
             }
-            
+
             client.FollowRedirects = requestDetails.FollowRedirect;
 
             RestSharp.RestRequest request = BuildRequest(requestDetails);
@@ -225,13 +226,13 @@ namespace RestClient
             try
             {
                 IRestResponse response = client.Execute(request);
-                
+
                 foreach (RestSharp.Parameter responseHeader in response.Headers)
                 {
                     responseDetails.addHeader(responseHeader.Name, responseHeader.Value.ToString());
                 }
 
-                responseDetails.StatusCode = (int) response.StatusCode;
+                responseDetails.StatusCode = (int)response.StatusCode;
                 responseDetails.StatusText = response.StatusDescription;
                 // The Java byte data type is actually a signed byte, equivalent to sbyte in .NET.
                 //  Data.RestResponse is a direct port of the Java class so it uses 
@@ -253,7 +254,7 @@ namespace RestClient
                     //  the status code and description.
                     // Looks like they added ProtocolVersion to RestSharp in issue 795 (commit 
                     //  52c18a8) but it's only available in the FRAMEWORK builds.
-                    LOG.Debug("Http Response Status : {0} {1}", 
+                    LOG.Debug("Http Response Status : {0} {1}",
                         (int)response.StatusCode, response.StatusDescription);
                     LOG.Debug("Http Response Body : {0}", response.Content);
                 }
@@ -299,85 +300,103 @@ namespace RestClient
 
             AddHttpRequestHeaders(request, requestDetails);
 
-            if (IsEntityEnclosingMethod(httpMethod))
+            // Request type doesn't expect a body (eg GET, DELETE).
+            if (!IsEntityEnclosingMethod(httpMethod))
             {
-                string fileName = requestDetails.FileName;
-                if (!string.IsNullOrWhiteSpace(fileName))
+                return request;
+            }
+
+            // Simple file upload.
+            string fileName = requestDetails.FileName;
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                if (!File.Exists(fileName))
                 {
-                    if (!File.Exists(fileName))
-                    {
-                        throw new ArgumentException("File not found: " + fileName);
-                    }
-                    request.AddFile("file", fileName);
+                    throw new ArgumentException("File not found: " + fileName);
+                }
+                request.AddFile("file", fileName);
+                return request;
+            }
+
+            // Multipart file upload.
+            LinkedHashMap<string, Data.RestMultipart>
+                multipartFiles = requestDetails.MultipartFileNames;
+            if ((multipartFiles != null) && (multipartFiles.Count > 0))
+            {
+                ConfigureRequestMultipartFileUpload(request, requestDetails, multipartFiles);
+                return request;
+            }
+
+            if (string.IsNullOrWhiteSpace(requestDetails.Body))
+            {
+                return request;
+            }
+
+            // Request includes a body, eg standard POST or PUT.
+            string contentType = requestDetails.ContentType;
+            if (contentType != null)
+            {
+                if (contentType.Trim().Length == 0)
+                {
+                    contentType = null;
                 }
                 else
                 {
-                    // Add Multipart
-                    LinkedHashMap<string, Data.RestMultipart> 
-                        multipartFiles = requestDetails.MultipartFileNames;
-                    if ((multipartFiles != null) && (multipartFiles.Count > 0))
-                    {
-                        ConfigureRequestMultipartFileUpload(request, requestDetails, multipartFiles);
-                    }
-                    else if (!string.IsNullOrWhiteSpace(requestDetails.Body))
-                    {
-                        string contentType = requestDetails.ContentType;
-                        if (contentType != null)
-                        {
-                            if (contentType.Trim().Length == 0)
-                            {
-                                contentType = null;
-                            }
-                            else
-                            {
-                                contentType = contentType.ToLower();   
-                            }
-                        }
-                        if (contentType != null && contentType.Contains("json"))
-                        {
-                            request.RequestFormat = DataFormat.Json;
-                            contentType = requestDetails.ContentType;
-                        }
-                        else
-                        {
-                            request.RequestFormat = DataFormat.Xml;
-                            if (contentType != null && contentType.Contains("xml"))
-                            {
-                                contentType = requestDetails.ContentType;
-                            }
-                            else
-                            {
-                                // RestSharp supports only two RequestFormats: JSON and XML.
-                                contentType = "application/xml";
-                            }
-                        }
-
-                        // requestDetails.Body is a string, and RestRequest.AddBody, AddJsonBody 
-                        //  and AddXmlBody take objects as arguments, not strings.  Although they 
-                        //  won't throw exceptions, the result is not as expected if an object is 
-                        //  serialized to JSON or XML before being passed to one of the AddBody 
-                        //  methods.  
-                        //
-                        //  For example, if a Book object is serialized to JSON and the JSON string 
-                        //  is passed to AddBody or AddJsonBody the body sent across the wire is:
-                        //
-                        //  "{\"Id\":10,\"Title\":\"The Meaning of Liff\",\"Year\":1983}"
-                        //
-                        //  when it should be:
-                        //
-                        //  {Id: 10, Title: "The Meaning of Liff", Year: 1983}
-
-                        //  The incorrect format of the JSON in the request body will prevent it 
-                        //  from being desrialized correctly at the server end.
-
-                        // Instead of using one of the AddBody methods, use 
-                        //  AddParameter(..., ..., ParameterType.RequestBody) 
-                        //  which can handle objects serialized to JSON or XML strings.
-                        request.AddParameter(contentType, requestDetails.Body,
-                            ParameterType.RequestBody);
-                    }
+                    contentType = contentType.ToLower();
                 }
             }
+
+            string body = requestDetails.Body.Trim();
+
+            if (string.IsNullOrWhiteSpace(contentType))
+            {
+                // RestSharp has only two DataFormats: Json and Xml.
+
+                if (body.StartsWith("{") || body.StartsWith("["))
+                {
+                    request.RequestFormat = DataFormat.Json;
+                    contentType = "application/json";
+                }
+                else
+                {
+                    request.RequestFormat = DataFormat.Xml;
+                    contentType = "application/xml";
+                }
+
+            }
+            else if (contentType.Contains("json"))
+            {
+                request.RequestFormat = DataFormat.Json;
+                contentType = requestDetails.ContentType;
+            }
+            else
+            {
+                request.RequestFormat = DataFormat.Xml;
+                contentType = requestDetails.ContentType;
+            }
+
+            // requestDetails.Body is a string, and RestRequest.AddBody, AddJsonBody 
+            //  and AddXmlBody take objects as arguments, not strings.  Although they 
+            //  won't throw exceptions, the result is not as expected if an object is 
+            //  serialized to JSON or XML before being passed to one of the AddBody 
+            //  methods.  
+            //
+            //  For example, if a Book object is serialized to JSON and the JSON string 
+            //  is passed to AddBody or AddJsonBody the body sent across the wire is:
+            //
+            //  "{\"Id\":10,\"Title\":\"The Meaning of Liff\",\"Year\":1983}"
+            //
+            //  when it should be:
+            //
+            //  {Id: 10, Title: "The Meaning of Liff", Year: 1983}
+
+            //  The incorrect format of the JSON in the request body will prevent it 
+            //  from being desrialized correctly at the server end.
+
+            // Instead of using one of the AddBody methods, use 
+            //  AddParameter(..., ..., ParameterType.RequestBody) 
+            //  which can handle objects serialized to JSON or XML strings.
+            request.AddParameter(contentType, body, ParameterType.RequestBody);
 
             return request;
         }
@@ -509,7 +528,7 @@ namespace RestClient
             return false;
         }
 
-        private void ConfigureRequestMultipartFileUpload(RestSharp.RestRequest request, 
+        private void ConfigureRequestMultipartFileUpload(RestSharp.RestRequest request,
             Data.RestRequest requestDetails,
             LinkedHashMap<string, Data.RestMultipart> multipartFiles)
         {
@@ -521,7 +540,7 @@ namespace RestClient
             }
         }
 
-        private void ConfigureMultipart(RestSharp.RestRequest request, 
+        private void ConfigureMultipart(RestSharp.RestRequest request,
             string fileParamName, RestMultipart restMultipart)
         {
             RestMultipart.RestMultipartType type = restMultipart.Type;
@@ -534,11 +553,11 @@ namespace RestClient
                         fileName = restMultipart.Value;
                         using (var fileContent = new FileStream(fileName, FileMode.Open))
                         {
-                            request.AddFile(fileName, fileContent.CopyTo, fileName, 
+                            request.AddFile(fileName, fileContent.CopyTo, fileName,
                                 restMultipart.ContentType);
                         }
 
-                        LOG.Info("Configure Multipart file upload paramName={0} :  ContentType={1} for  file={2} ", 
+                        LOG.Info("Configure Multipart file upload paramName={0} :  ContentType={1} for  file={2} ",
                             new string[] { fileParamName, restMultipart.ContentType, fileName });
                         break;
                     }
@@ -553,7 +572,7 @@ namespace RestClient
                     //  ParameterType RequestBody doesn't work.
                     request.AddParameter(fileParamName, restMultipart.Value,
                         restMultipart.ContentType, ParameterType.GetOrPost);
-                    LOG.Info("Configure Multipart String upload paramName={0}:  ContentType={1} ", 
+                    LOG.Info("Configure Multipart String upload paramName={0}:  ContentType={1} ",
                         fileParamName, restMultipart.ContentType);
                     break;
                 default:
