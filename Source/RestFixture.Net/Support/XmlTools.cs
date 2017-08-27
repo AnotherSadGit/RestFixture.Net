@@ -35,9 +35,9 @@ namespace restFixture.Net.Support
     /// class.</remarks>
     public enum XPathEvaluationReturnType
     {
-        Boolean = 0,
-        Node,
+        Node = 0,
         Nodeset,
+        Boolean,
         Number, 
         String
     }
