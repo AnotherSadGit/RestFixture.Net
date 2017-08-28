@@ -1,0 +1,30 @@
+---
+Test
+---
+!define TEST_SYSTEM {FIT}
+!define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
+!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
+!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
+!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
+
+!| Import |
+| restFixture.Net |
+| restFixture.Net.Fixtures |
+| FitNesseTestServer.Test.FitNesse.Fixture |
+
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | Started   | false  |
+| enter | start server | 7654  |
+| check | started   | true  |
+| press | Reset Resources Database  |
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| GET | /resources   | 200 | Content-Length : [\d]+ |  |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | started   | true    |
+| press | stop server         |
+| check | started   | false   |

@@ -1,0 +1,8 @@
+!1 !-RestFixture.Net-!
+!3 A .NET FitNesse fixture for testing REST services
+
+Based on Fabrizio Cannizzo's Java !-RestFixture-! project: https://github.com/smartrics/RestFixture
+
+!contents -R2 -g -p -f -h
+
+!note FitNesse Version ${FITNESSE_VERSION}

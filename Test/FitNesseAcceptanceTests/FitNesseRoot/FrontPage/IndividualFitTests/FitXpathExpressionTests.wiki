@@ -1,0 +1,65 @@
+---
+Test
+---
+!define TEST_SYSTEM {FIT}
+!define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
+!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
+!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
+!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
+
+!| Import |
+| restFixture.Net |
+| restFixture.Net.Fixtures |
+| FitNesseTestServer.Test.FitNesse.Fixture |
+
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | Started   | false  |
+| enter | start server | 7654  |
+| check | started   | true  |
+| press | Reset Resources Database  |
+
+!3 GET
+
+!4 XPath expressions 
+!5 Must Evaluate to Nodes, not Booleans
+
+The XPath expressions must not evaluate to booleans so, for example, the XPath expression cannot be of 
+the form: {{{/resource/name/text() =='a funky name'}}}
+Instead the XPath expression must return a node.  The !-RestFixture-! table row will evaluate to true if 
+one or more matching nodes are returned, and false if no node is returned.  So the XPath expression 
+in the example should be of the form: {{{/resource/name[text()='a funky name']}}}
+
+!5 Namespaces
+
+Namespaces throw the XPath expressions out.  So 
+{{{/resource/nstag/number[text()='3']}}}
+will not return a node because the XML "number" node has a namespace.  One rather verbose way of 
+getting around this is to use local-name functions.  For example:
+{{{/*[local-name()="resource"]/*[local-name()="nstag"]/*[local-name()="number" and text()="3"]}}}
+will return the number element for the resource, as long as the number is "3":
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ | /*[local-name()="resource"]/*[local-name()="nstag"]/*[local-name()="number" and text()="3"] |
+
+A better way to deal with namespaces is to register the namespace via the !-RestFixtureConfig-!:
+
+!| Rest Fixture Config |
+| restfixture.xml.namespace.context | !-nst=http://smartrics/ns1 
+ns=http://schemas.datacontract.org/2004/07/resources-! |
+
+Specify an XPath expression with a non-default namespace:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0  | 200 | Content-Length : [\d]+ | /resource/nstag/nst:number[text()='3'] |
+
+Specify an XPath expression with both a default namespace and a non-default namespace:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/10 | 200 | Content-Length : [\d]+ | /ns:resource/ns:nstag/nst:number[text()='10'] |
+
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | started   | true    |
+| press | stop server         |
+| check | started   | false   |
