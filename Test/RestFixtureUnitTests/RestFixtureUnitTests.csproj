@@ -68,6 +68,9 @@
     <Compile Include="ContentTypeTests\ContentType_Config.cs" />
     <Compile Include="ContentTypeTests\ContentType_Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolsTests\Tools_FromHtml.cs" />
+    <Compile Include="ToolsTests\Tools_ToHtml.cs" />
+    <Compile Include="ToolsTests\Tools_Regex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
