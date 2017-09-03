@@ -5,4 +5,16 @@ Based on Fabrizio Cannizzo's Java !-RestFixture-! project: https://github.com/sm
 
 !contents -R2 -g -p -f -h
 
+!4 Note for Developers and Administrators: Source Control Line Endings
+If these tests are to be saved in source control, particularly in a git repository, then the 
+repository needs to be configured to handle line endings as commit as-is, check out as-is.  This 
+is in contrast to the git for Windows default which is commit UNIX-style, with LF line endings, 
+and check-out Windows-style, with CRLF line endings.
+
+This is because the new FitNesse *.wiki file format, which replaces the old content.txt and 
+properties.xml files, requires page properties to have LF line endings.  Page properties, which 
+can indicate whether the page is a test page or a suite page, will be ignored if they have CRLF 
+line endings.  In that case FitNesse will not recognise test and suite pages and users will be 
+unable to run tests.
+
 !note FitNesse Version ${FITNESSE_VERSION}

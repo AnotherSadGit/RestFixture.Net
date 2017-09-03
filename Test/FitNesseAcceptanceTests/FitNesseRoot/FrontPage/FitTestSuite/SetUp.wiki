@@ -1,0 +1,4 @@
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | started   | true  |
+| press | Reset Resources Database  |

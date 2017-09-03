@@ -1,0 +1,16 @@
+---
+Test
+---
+!3 DELETE
+
+!* Note
+For a GET after a DELETE, ie when requesting a non-existent resource, it may be best to avoid any 
+expectations in either the header cell or the body cell of the GET request.  See example below.
+*!
+
+A DELETE request should remove the specified resource and return a 204 (No Content) status code: 
+
+| Fit Rest Fixture | http://localhost:7654 | 
+| GET    | /resources/0 | 200 |  |         |
+| DELETE | /resources/0 | 204 |  | no-body |
+| GET    | /resources/0 | 404 |  |         |

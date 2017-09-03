@@ -1,0 +1,33 @@
+---
+Test
+---
+!3 HTTP Redirects
+
+!* Notes
+1) By default redirects are followed;
+2) To explicitly enable or disable the automatic following of redirects, use the !-RestFixtureConfig-! 
+setting '''restfixture.requests.follow.redirects'''.
+*!
+
+By default, a GET request should automatically follow a redirect:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/redirect/0  | 200 |  |  |
+
+!| Rest Fixture Config |
+| restfixture.requests.follow.redirects | false |
+
+A GET request should '''not''' automatically follow a redirect if the configuration setting 
+is false:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/redirect/0  | 301 | Location: /resources/0 | no-body |
+
+!| Rest Fixture Config |
+| restfixture.requests.follow.redirects | true |
+
+A GET request '''should''' automatically follow a redirect if the configuration setting 
+is true:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/redirect/0  | 200 |  |  |
