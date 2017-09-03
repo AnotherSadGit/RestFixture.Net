@@ -89,8 +89,8 @@ namespace restFixture.Net.TypeAdapters
 			bool? b;
 			try
 			{
-				XPathNodeIterator ret = XmlTools.extractXPath(Context, expr, content);
-                return !(ret == null || ret.Count == 0);
+				bool nodeFound = XmlTools.NodeMatchFound(Context, expr, content);
+                return nodeFound;
 			}
 			catch (System.ArgumentException)
 			{

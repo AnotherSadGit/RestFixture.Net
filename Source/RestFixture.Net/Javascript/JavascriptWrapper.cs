@@ -285,7 +285,7 @@ namespace restFixture.Net.Javascript
 				            return fileContents;
 				        }
 				    }
-				    catch (Exception ex)
+				    catch (Exception)
 				    {
 				        string errorMessage = string.Format("Invalid import file: {0}, path: {1}",
 				            name, Path.GetFullPath(name));

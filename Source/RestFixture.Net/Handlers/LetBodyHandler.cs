@@ -50,18 +50,12 @@ namespace restFixture.Net.Handlers
 			string val = null;
 			try
 			{
-                XPathNavigator singleNode = (XPathNavigator)XmlTools.extractXPath(
-                    namespaceContext, expression, body, XPathEvaluationReturnType.Node);
-				
-                if (singleNode != null)
-                {
-                    val = singleNode.Value;
-                }
+                val = XmlTools.GetNodeValue(namespaceContext, expression, body);
 			}
 			catch (System.ArgumentException)
 			{
 				// ignore - may be that it's evaluating to a string
-				val = (string) XmlTools.extractXPath(namespaceContext, expression, body,
+				val = (string)XmlTools.extractXPath(namespaceContext, expression, body,
                     XPathEvaluationReturnType.String);
 			}
 			if (val != null)

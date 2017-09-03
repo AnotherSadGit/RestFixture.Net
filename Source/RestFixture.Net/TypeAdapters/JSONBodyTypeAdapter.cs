@@ -101,7 +101,7 @@ namespace restFixture.Net.TypeAdapters
 			return result;
 		}
 
-		public string ToString(object obj)
+        public override string ToString(object obj)
 		{
 			if (obj == null || obj.ToString().Trim().Equals(""))
 			{

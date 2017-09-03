@@ -1385,7 +1385,6 @@ namespace restFixture.Net.Fixtures
                 int i = 0;
                 StackFrame stackFrame = stackTrace.GetFrame(i);
                 MethodBase methodBase = stackFrame.GetMethod();
-                bool ignoreCase = true;
                 while (i < stackTrace.FrameCount && methodBase.Name.StartsWith("debugMethodCall",
                     StringComparison.CurrentCultureIgnoreCase))
                 {
