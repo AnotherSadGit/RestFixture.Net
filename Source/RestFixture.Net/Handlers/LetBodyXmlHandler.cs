@@ -38,9 +38,9 @@ namespace restFixture.Net.Handlers
             RestResponse response, object expressionContext, string expression)
 		{
 			IDictionary<string, string> namespaceContext = (IDictionary<string, string>) expressionContext;
-			XPathNodeIterator list = 
+            XPathNavigator node = 
                 XmlTools.extractXPath(namespaceContext, expression, response.Body);
-			string val = XmlTools.xPathResultToXmlString(list);
+			string val = XmlTools.xPathResultToXmlString(node);
 			int pos = val.IndexOf("?>", StringComparison.Ordinal);
 			if (pos >= 0)
 			{
