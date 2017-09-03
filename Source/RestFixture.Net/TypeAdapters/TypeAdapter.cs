@@ -201,7 +201,7 @@ namespace restFixture.Net.TypeAdapters
             return obj;
         }
 
-        public virtual bool Equals(object a, object b)
+        public new virtual bool Equals(object a, object b)
         {
             bool isEqual = false;
 

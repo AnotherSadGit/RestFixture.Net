@@ -5,7 +5,7 @@ namespace UnitTests.ContentTypeTests
 {
     public class ContentTypeTestBase
     {
-        public void Reset()
+        public virtual void Reset()
         {
             RestData.DEFAULT_ENCODING = "UTF-8";
             ContentType.resetDefaultMapping();

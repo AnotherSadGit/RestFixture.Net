@@ -97,7 +97,7 @@ namespace restFixture.Net.TypeAdapters
 		///            the {@code List<String>} actual body, or an empty/null body
 		///            rendered as HTML </param>
 		/// <returns> the string representation </returns>
-		public string ToString(object obj)
+        public override string ToString(object obj)
 		{
 			if (obj == null || obj.ToString().Trim().Equals(""))
 			{
