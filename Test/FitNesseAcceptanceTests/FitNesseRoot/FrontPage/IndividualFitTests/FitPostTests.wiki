@@ -58,3 +58,4 @@ The setBody content cell may be encoded with ! - -! to add line breaks, etc.
 | LET              | id                   |header | Location:/resources/(.+)      |         |
 | GET              | /resources/%id%      |200    |                               | !-/resource/name[text()='test post']
 /resource/data[text()='some data']-! |
+

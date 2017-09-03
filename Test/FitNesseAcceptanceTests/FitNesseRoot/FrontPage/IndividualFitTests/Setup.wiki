@@ -9,3 +9,4 @@
 | enter | start server | 7654  |
 | check | started   | true  |
 | press | Reset Resources Database |
+

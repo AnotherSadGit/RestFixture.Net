@@ -29,3 +29,4 @@ is true:
 
 !| Fit Rest Fixture | http://localhost:7654 |
 | GET | /resources/redirect/0  | 200 |  |  |
+

@@ -17,3 +17,4 @@ A PUT request should update the specified resource and return a 200 (OK) status 
 | PUT       | /resources/0 | 200 | Echo-Header : echoed | no-body |
 | GET       | /resources/0 | 200 | Echo-Header : echoed | !-/resource/name[text()='name being updated']
 /resource/data[text()='data being updated']-! |
+

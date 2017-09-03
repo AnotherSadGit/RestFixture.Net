@@ -19,3 +19,4 @@ Test
 | start | Let Test Action Fixture  |
 | enter | symbolName  | nodeText   |
 | check | symbolValue | null       |
+

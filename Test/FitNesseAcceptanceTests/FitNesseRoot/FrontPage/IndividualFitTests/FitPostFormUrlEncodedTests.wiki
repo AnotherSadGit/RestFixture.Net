@@ -11,3 +11,4 @@ A POST request with a URL-encoded body should create a resouce:
 | GET              | /resources/%id%      |200    |                               | !-/resource/name[text()='test post']
 /resource/data[text()='some data']-! |
 
+

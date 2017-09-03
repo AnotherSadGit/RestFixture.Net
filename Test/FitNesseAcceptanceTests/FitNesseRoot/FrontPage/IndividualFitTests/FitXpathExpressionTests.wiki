@@ -39,3 +39,4 @@ Specify an XPath expression with both a default namespace and a non-default name
 
 !| Fit Rest Fixture | http://localhost:7654 |
 | GET | /resources/10 | 200 | Content-Length : [\d]+ | /ns:resource/ns:nstag/nst:number[text()='10'] |
+

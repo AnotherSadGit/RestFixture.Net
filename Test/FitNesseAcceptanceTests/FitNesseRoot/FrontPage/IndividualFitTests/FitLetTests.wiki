@@ -127,3 +127,4 @@ A variable that is set to null will be rendered using the configured null value 
 | Fit Rest Fixture | http://localhost:7654 |
 | GET              | /resources/%id% | 200 |  | /resource/name[text()='test post'] |
 | LET              | thisIsNull      | body   | /resource/nonexistentnode/text()   |  |
+

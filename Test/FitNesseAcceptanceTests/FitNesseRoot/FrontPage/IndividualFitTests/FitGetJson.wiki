@@ -14,3 +14,4 @@ JSON or !-JavaScript-!:
 | GET | /resources/1.json | 200 |  | jsonbody.resource.name=="a funky name" |
 | GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
 jsonbody.resource.data=='an important message'-! |
+

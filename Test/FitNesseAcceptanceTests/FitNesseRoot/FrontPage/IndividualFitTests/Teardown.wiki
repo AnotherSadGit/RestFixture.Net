@@ -3,3 +3,4 @@
 | check | started   | true    |
 | press | stop server         |
 | check | started   | false   |
+
