@@ -1,0 +1,5 @@
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | started   | true    |
+| press | stop server         |
+| check | started   | false   |

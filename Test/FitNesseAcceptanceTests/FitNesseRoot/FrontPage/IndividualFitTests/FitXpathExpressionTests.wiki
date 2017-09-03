@@ -1,24 +1,6 @@
 ---
 Test
 ---
-!define TEST_SYSTEM {FIT}
-!define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
-!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
-!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
-!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
-
-!| Import |
-| restFixture.Net |
-| restFixture.Net.Fixtures |
-| FitNesseTestServer.Test.FitNesse.Fixture |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | Started   | false  |
-| enter | start server | 7654  |
-| check | started   | true  |
-| press | Reset Resources Database  |
-
 !3 GET
 
 !4 XPath expressions 
@@ -57,9 +39,3 @@ Specify an XPath expression with both a default namespace and a non-default name
 
 !| Fit Rest Fixture | http://localhost:7654 |
 | GET | /resources/10 | 200 | Content-Length : [\d]+ | /ns:resource/ns:nstag/nst:number[text()='10'] |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | started   | true    |
-| press | stop server         |
-| check | started   | false   |

@@ -1,24 +1,6 @@
 ---
 Test
 ---
-!define TEST_SYSTEM {FIT}
-!define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
-!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
-!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
-!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
-
-!| Import |
-| restFixture.Net |
-| restFixture.Net.Fixtures |
-| FitNesseTestServer.Test.FitNesse.Fixture |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | Started   | false  |
-| enter | start server | 7654  |
-| check | started   | true  |
-| press | Reset Resources Database  |
-
 !3 LET
 
 !* Notes
@@ -145,9 +127,3 @@ A variable that is set to null will be rendered using the configured null value 
 | Fit Rest Fixture | http://localhost:7654 |
 | GET              | /resources/%id% | 200 |  | /resource/name[text()='test post'] |
 | LET              | thisIsNull      | body   | /resource/nonexistentnode/text()   |  |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | started   | true    |
-| press | stop server         |
-| check | started   | false   |

@@ -1,25 +1,7 @@
 ---
 Test
 ---
-!define TEST_SYSTEM {FIT}
-!define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
-!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
-!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
-!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
-
 !3 GET JSON
-
-!| Import |
-| restFixture.Net |
-| restFixture.Net.Fixtures |
-| FitNesseTestServer.Test.FitNesse.Fixture |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | Started   | false  |
-| enter | start server | 7654  |
-| check | started   | true  |
-| press | Reset Resources Database  |
 
 Expectations about the response body can be specified in !-JavaScript-! for responses that return 
 JSON or !-JavaScript-!:
@@ -32,9 +14,3 @@ JSON or !-JavaScript-!:
 | GET | /resources/1.json | 200 |  | jsonbody.resource.name=="a funky name" |
 | GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
 jsonbody.resource.data=='an important message'-! |
-
-!| Action Fixture |
-| start | Http Server Fixture |
-| check | started   | true    |
-| press | stop server         |
-| check | started   | false   |
