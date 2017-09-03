@@ -62,3 +62,18 @@ other RestFixture.Net test server DLLs.
 --------------------------------------------------------------
 Run the batch file FitNesseStart_RestFixtureNet.cmd to start FitNesse.  The batch file configures 
 FitNesse to listen on port 8090.  Edit the batch file if you want to use a different port.
+
+--------------------------------------------------------------------
+NOTE: Source Control Configuration
+--------------------------------------------------------------------
+One of the FitNesse releases in 2015 or 2016 introduced a new page format: *.wiki files replaced 
+content.txt and properties.xml.  The new format can only read page properties, such as whether a 
+page is a test page or a suite page, with LF line endings.  It cannot read properties with CRLF 
+endings.
+
+Therefore this Git repository has been configured to checkout and commit line endings as-is 
+(core.autocrlf="false") rather than the default which is checkout Windows-style CRLF and commit 
+Unix-style LF (core.autocrlf="true").  
+
+If core.autocrlf were set to "true" then all the line endings in FitNesse pages would effectively 
+be converted to CRLF and FitNesse would be unable to read the page properties.
