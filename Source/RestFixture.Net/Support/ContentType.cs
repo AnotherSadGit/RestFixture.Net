@@ -197,11 +197,11 @@ namespace restFixture.Net.Support
             {
                 IDictionary<string, ContentType> defaultMappings = 
                     new Dictionary<string, ContentType>();
-                defaultMappings.Add("default", ContentType.XML);
                 defaultMappings.Add("application/xml", ContentType.XML);
                 defaultMappings.Add("application/json", ContentType.JSON);
                 defaultMappings.Add("text/plain", ContentType.TEXT);
                 defaultMappings.Add("application/x-javascript", ContentType.JS);
+                defaultMappings.Add("default", ContentType.XML);
                 return defaultMappings;
             }
 	    }
