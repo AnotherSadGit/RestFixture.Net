@@ -38,7 +38,7 @@ namespace restFixture.Net.Support
         Node = 0,
         Nodeset,
         Boolean,
-        Number, 
+        Number,
         String
     }
 
@@ -79,13 +79,12 @@ namespace restFixture.Net.Support
         public static bool NodeMatchFound(IDictionary<string, string> ns,
             string xpathExpression, string content)
         {
-            object result = extractXPath(ns, xpathExpression, content,
-                XPathEvaluationReturnType.Node);
-            if (result != null)
-            {
-                return true;
-            }
-            return false;
+            XPathNavigator navigator = null;
+            XmlNamespaceManager namespaceManager = null;
+            GetXPathNavigator(ns, xpathExpression, content, out navigator, out namespaceManager);
+
+            bool result = navigator.Matches(xpathExpression);
+            return result;
         }
 
         /// <summary>
@@ -102,18 +101,13 @@ namespace restFixture.Net.Support
             string xpathExpression, string content)
         {
             object result = extractXPath(ns, xpathExpression, content,
-                XPathEvaluationReturnType.Node);
+                XPathEvaluationReturnType.String);
             if (result == null)
             {
                 return null;
             }
 
-            if (result is XPathNavigator)
-            {
-                return ((XPathNavigator)result).Value;
-            }
-
-            return null;
+            return result.ToString();
         }
 
         /// <summary>
@@ -139,12 +133,12 @@ namespace restFixture.Net.Support
         /// However, in .NET charset or encoding does not need to be specified as the content 
         /// being parsed is a .NET string, which does not have encoding associated with it.  It 
         /// would be different if we had to parse the contents of a stream or a file.</remarks>
-        public static object extractXPath(string xpathExpression, string content, 
+        public static object extractXPath(string xpathExpression, string content,
             XPathEvaluationReturnType returnType)
         {
             // Use the java Xpath API to return a NodeList to the caller so they can
             // iterate through
-            return extractXPath(new Dictionary<string, string>(), xpathExpression, content, 
+            return extractXPath(new Dictionary<string, string>(), xpathExpression, content,
                 returnType);
         }
 
@@ -200,8 +194,46 @@ namespace restFixture.Net.Support
         /// However, in .NET charset or encoding does not need to be specified as the content 
         /// being parsed is a .NET string, which does not have encoding associated with it.  It 
         /// would be different if we had to parse the contents of a stream or a file.</remarks>
-        public static object extractXPath(IDictionary<string, string> ns, string xpathExpression, 
+        public static object extractXPath(IDictionary<string, string> ns, string xpathExpression,
             string content, XPathEvaluationReturnType returnType)
+        {
+            XPathNavigator navigator = null;
+            XmlNamespaceManager namespaceManager = null;
+            GetXPathNavigator(ns, xpathExpression, content, out navigator, out namespaceManager);
+
+            object result = null;
+
+            try
+            {
+                result = navigator.Evaluate(xpathExpression, namespaceManager);
+                result = GetNodeValue(result, returnType);
+                if (result == null)
+                {
+                    return null;
+                }
+                return result;
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(
+                    "xPath expression would return a node set: " + xpathExpression,
+                    ex);
+            }
+            catch (XPathException)
+            {
+                throw new ArgumentException(
+                    "xPath expression is not valid: " + xpathExpression);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(
+                    "Error parsing XML with xPath expression " + xpathExpression, ex);
+            }
+        }
+
+        private static void GetXPathNavigator(IDictionary<string, string> ns, 
+            string xpathExpression, string content,
+            out XPathNavigator navigator, out XmlNamespaceManager namespaceManager)
         {
             if (string.IsNullOrWhiteSpace(xpathExpression))
             {
@@ -213,7 +245,6 @@ namespace restFixture.Net.Support
             }
 
             XPathDocument document = null;
-            XmlNamespaceManager namespaceManager = null;
 
             using (StringReader sr = new StringReader(content))
             using (XmlReader xr = XmlReader.Create(sr))
@@ -237,40 +268,12 @@ namespace restFixture.Net.Support
                 //  respectively, with the resolver set to null.  So we'll just pass null in as 
                 //  the resolver if we have no namespaces.
                 namespaceManager = GetNamespaceManager(ns, xr.NameTable);
-                }
-
-            object result = null;
-                XPathNavigator navigator = document.CreateNavigator();
-
-                try
-                {
-                    result = navigator.Evaluate(xpathExpression, namespaceManager);
-                result = GetNodeValue(result, returnType);
-                if (result == null)
-                {
-                    return null;
-                }
-                return result;
-            }
-                catch (ArgumentException ex)
-                {
-                    throw new ArgumentException(
-                        "xPath expression would return a node set: " + xpathExpression,
-                        ex);
-                }
-            catch (XPathException)
-                {
-                    throw new ArgumentException(
-                        "xPath expression is not valid: " + xpathExpression);
-                }
-            catch (Exception ex)
-                {
-                throw new ArgumentException(
-                    "Error parsing XML with xPath expression " + xpathExpression, ex);
-                }
             }
 
-        private static XmlNamespaceManager GetNamespaceManager(IDictionary<string, string> ns, 
+            navigator = document.CreateNavigator();
+        }
+
+        private static XmlNamespaceManager GetNamespaceManager(IDictionary<string, string> ns,
             XmlNameTable nameTable)
         {
             if (ns == null || ns.Keys.Count <= 0)
@@ -331,7 +334,7 @@ namespace restFixture.Net.Support
             return rawResult;
         }
 
-        private static void CheckExtractionReturnType(object returnValue, 
+        private static void CheckExtractionReturnType(object returnValue,
             XPathEvaluationReturnType expectedReturnType)
         {
             // According to https://docs.microsoft.com/en-us/dotnet/api/system.xml.xpath.xpathnavigator.evaluate?view=netframework-4.5
@@ -361,7 +364,7 @@ namespace restFixture.Net.Support
             if (!expectedType.IsAssignableFrom(actualType) && expectedType != typeof(string))
             {
                 errorMessage = string.Format("XPath expression return type {0} is not compatible "
-                            + "with the specified return type {1}.", 
+                            + "with the specified return type {1}.",
                             actualType.FullName, expectedReturnType);
                 throw new XPathException(errorMessage);
             }
@@ -451,7 +454,7 @@ namespace restFixture.Net.Support
             try
             {
                 XmlNamespaceManager namespaceManager = GetNamespaceManager(ns, new NameTable());
-                XPathExpression expression = 
+                XPathExpression expression =
                     XPathExpression.Compile(xpathExpression, namespaceManager);
                 return expression;
             }

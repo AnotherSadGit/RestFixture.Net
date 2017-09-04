@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using Jurassic;
 using Jurassic.Library;
 
@@ -110,17 +111,33 @@ namespace restFixture.Net.Javascript
 
         /// <param name="name"> the header name </param>
         /// <returns> all headers with the given name </returns>
-        [JSFunction(Name = "headers")]
-        public virtual IList<string> headers(string name)
+        [JSFunction(Name = "headersText")]
+        public virtual string headersText(string name)
         {
             int sz = headerListSize(name);
-            if (sz > 0)
+            if (sz == 0)
             {
-                return _headers[name];
+                return string.Empty;
+            }
+            if (sz == 1)
+            {
+                return header0(name);
             }
             else
             {
-                return new List<string>();
+                StringBuilder sb = new StringBuilder("[");
+                bool isFirstPass = true;
+                foreach (string header in _headers[name])
+                {
+                    if (!isFirstPass)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(header);
+                    isFirstPass = false;
+                }
+                sb.Append("]");
+                return sb.ToString();
             }
         }
 

@@ -58,9 +58,9 @@
       <HintPath>..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jurassic.2.2.1\lib\net35\Jurassic.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Jurassic, Version=2.3.0.0, Culture=neutral, PublicKeyToken=42f272f6dd312a2c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLLs\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -132,6 +132,8 @@
     <Compile Include="SvgImage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DLLs\Jurassic.dll" />
+    <Content Include="DLLs\Jurassic_README.txt" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

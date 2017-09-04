@@ -32,12 +32,16 @@ namespace restFixture.Net.Variables
         // Modified to use instance symbols rather than the obsolete static symbols.
         private Symbols _symbols;
 
+        private IDictionary<string, object> _privateSymbolsDictionary = null;
+
 		/// <summary>
 		/// initialises variables with default config. See @link
 		/// <seealso cref="#FitVariables(Config)"/>
 		/// </summary>
+		/// <remarks>Used in testing.</remarks>
 		public FitVariables() : base()
 		{
+            this._symbols = new Symbols();
 		}
 
 		/// <summary>
@@ -81,7 +85,7 @@ namespace restFixture.Net.Variables
 		/// </summary>
 		public virtual void clearAll()
 		{
-			_symbols.Clear();
+            _symbols.Clear();
 		}
 
         public override IDictionary<string, object> Items
@@ -93,11 +97,16 @@ namespace restFixture.Net.Variables
 	                return null;
 	            }
 
+	            if (_privateSymbolsDictionary != null)
+	            {
+	                return _privateSymbolsDictionary;
+	            }
+
                 // Use reflection to get private dictionary within Symbols.
                 //  This is a horrible hack and brittle as hell but the Symbols class doesn't 
                 //  expose any proper way of enumerating the variables it contains.
                 FieldInfo privateSymbolsInfo =
-                    typeof(Symbols).GetField("items",
+                    typeof(Symbols).BaseType.GetField("items",
                                             BindingFlags.NonPublic | BindingFlags.Instance);
 
 	            if (privateSymbolsInfo == null)
@@ -105,10 +114,10 @@ namespace restFixture.Net.Variables
 	                return null;
 	            }
 
-                IDictionary<string, object> privateSymbolsDictionary =
+                _privateSymbolsDictionary =
                     (IDictionary<string, object>)privateSymbolsInfo.GetValue(_symbols);
 
-                return privateSymbolsDictionary;
+                return _privateSymbolsDictionary;
 	        }
 	    }
 	}

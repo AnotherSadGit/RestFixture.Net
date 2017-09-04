@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Jurassic;
 using restFixture.Net.Support;
 using restFixture.Net.Variables;
 using RestClient.Data;
@@ -134,11 +135,17 @@ namespace restFixture.Net.Javascript
 		{
 			try
 			{
-				return _engine.Evaluate(expression);
+				object result = _engine.Evaluate(expression);
+			    if (result is Jurassic.Null)
+			    {
+			        return null;
+			    }
+
+			    return result;
 			}
-			catch (System.Exception e)
+			catch (System.Exception ex)
 			{
-				throw new JavascriptException(e.Message);
+				throw new JavascriptException(ex.Message);
 			}
 		}
 
@@ -148,13 +155,13 @@ namespace restFixture.Net.Javascript
 		    {
 		        if (r == null)
 		        {
-		            _engine.SetGlobalValue(RESPONSE_OBJ_NAME, null);
+		            _engine.SetGlobalValue(RESPONSE_OBJ_NAME, Null.Value);
 		            return;
 		        }
 
 
 		        _engine.SetGlobalValue(RESPONSE_CTOR_NAME, new JsResponseConstructor(_engine));
-		        string javascript = string.Format("{0} = {1}();",
+		        string javascript = string.Format("{0} = new {1}();",
 		            RESPONSE_OBJ_NAME, RESPONSE_CTOR_NAME);
 		        _engine.Execute(javascript);
 
@@ -164,7 +171,8 @@ namespace restFixture.Net.Javascript
 		        bool isJson = isJsonResponse(r);
 		        if (isJson)
 		        {
-		            putPropertyOnJsObject(RESPONSE_OBJ_NAME, JSON_OBJ_NAME, r.Body);
+                    bool valueIsJson = true;
+                    putPropertyOnJsObject(RESPONSE_OBJ_NAME, JSON_OBJ_NAME, r.Body, valueIsJson);
 		        }
 		        putPropertyOnJsObject(RESPONSE_OBJ_NAME, "resource", r.Resource);
 		        putPropertyOnJsObject(RESPONSE_OBJ_NAME, "statusText", r.StatusText);
@@ -208,18 +216,33 @@ namespace restFixture.Net.Javascript
             _engine.Execute(javaScript);
 		}
 
-		private void putPropertyOnJsObject(string jsObjectName, string propertyName, object value)
-		{
-			string javaScriptTemplate = "{0}.{1} = {2};";
-		    if (value is string)
-		    {
-		        javaScriptTemplate = "{0}.{1} = '{2}';";
-		    }
-		    string javaScript = string.Format(javaScriptTemplate, 
+        private void putPropertyOnJsObject(string jsObjectName, string propertyName, object value)
+        {
+            bool valueIsJson = false;
+            putPropertyOnJsObject(jsObjectName, propertyName, value, valueIsJson);
+        }
+
+        private void putPropertyOnJsObject(string jsObjectName, string propertyName, object value, 
+            bool valueIsJson)
+        {
+            bool valueIsNull = value == null;
+
+            string javaScriptTemplate = "{0}.{1} = {2};";
+            if (value is string && !valueIsJson && !valueIsNull)
+            {
+                javaScriptTemplate = "{0}.{1} = '{2}';";
+            }
+
+            if (valueIsNull)
+            {
+                value = "null";
+            }
+
+            string javaScript = string.Format(javaScriptTemplate,
                 jsObjectName, propertyName, value);
 
             _engine.Execute(javaScript);
-		}
+        }
 
 		private bool isJsonResponse(RestResponse r)
 		{
