@@ -1,0 +1,127 @@
+---
+Test
+---
+!3 !-RestFixture-! V2 LET !-Javascript-! Functionality
+
+Version 2 of the original Java implementation of !-RestFixture-! introduced !-Javascript-! extensions to 
+LET for handling JSON data, particularly from HTTP response bodies.
+
+!-RestFixture.Net-! supports this version 2 LET !-Javascript-! functionality, in addition to the original 
+LET XPath functionality for parsing JSON response bodies.
+
+!* !4 LET !-Javascript-! Syntax
+1) First cell: The "let" command;
+2) Second cell: The variable name;
+3) Third cell: '''"js"''';
+4) Fourth cell: The !-Javascript-! expression to evaluate.  The result of the evaluation will be 
+assigned to the specified variable.  Any !-Javascript-! expression can be evaluated, it doesn't have 
+to come from the HTTP response body.
+*!
+
+Examples:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| LET              | message         | js | 'Hello, World!'      | Hello, World! |
+| LET              | sum             | js | '2 + 5 = ' + (2 + 5) | 2 + 5 = 7     |
+| LET              | two_expressions | js | !-a=1;
+'a is ' + a-! | a is 1 |
+| LET              | json_expr       | js | !-json = {
+    "widget": {
+        "debug": "on",
+        "window": {
+            "title": "Sample Konfabulator Widget",
+            "name": "main_window",
+            "width": 500,
+            "height": 500
+        },
+        "image": { 
+            "src": "Images/Sun.png",
+            "name": "sun1",
+            "hOffset": 250,
+            "vOffset": 250,
+            "alignment": "center"
+        },
+        "text": {
+            "data": "Click Here",
+            "size": 36,
+            "style": "bold",
+            "name": "text1",
+            "hOffset": 250,
+            "vOffset": 100,
+            "alignment": "center",
+            "onMouseUp": "sun1.opacity = (sun1.opacity / 100) * 90;"
+        }
+    }
+};
+json.widget.image.src-! | Images/Sun.png |
+
+(Example courtesy of http://json.org/example.html)
+
+The fixture Symbols map, containing both regular symbols and variables set via LET, should be 
+accessible in !-JavaScript-! via symbols[''symbol name'']:
+
+!* Syntax Difference from Java !-RestFixture-!:
+!-RestFixture.Net-! has a slightly different syntax for accessing symbols in !-JavaScript-! than the 
+Java !-RestFixture-!:
+
+'''!-RestFixture-!:''' symbols.get(''symbol name'')
+'''!-RestFixture.Net-!:''' symbols[''symbol name'']
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setBody          | <resource><name>Bill</name><data>Some data on Bill</data></resource> |
+| POST             | /resources/           | 201 |   | no-body |
+| LET              | id                    | header  | Location:/resources/(.+) |  |
+| LET              | id_string             | js      | 'The id is: ' + symbols['id'] | The id is: %id% |
+
+The most recent HTTP response should be accessible in !-JavaScript-! via the '''response''' object:
+
+!* Accessing the Response Body in !-JavaScript-!:
+The body of the response is read from different properties in responses with different Content-Types:
+
+1) '''Content-Type = application/xml:''' Read the response body from the '''response.body''' property;
+2) '''Content-Type = application/json:''' Read the response body from the '''response.jsonbody''' property.
+*!
+
+!* Accessing the Headers in !-JavaScript-!:
+Sometimes a response may have multiple headers with the same name.  There are various methods of 
+retrieving headers from a response:
+
+1) header(''name'', ''index''):  Retrieves the header with the specified name and the specified index.  
+So, for example, if there are two Content-Type headers then header('Content-Type', 0) would retrieve 
+the first one and header('Content-Type', 1) would retrieve the second one;
+
+2) header0(''name''):  This is a shortcut for header(''name'', 0), to retrieve the first header with the 
+specified name;
+
+3) headersText(''name''):  Unfortunately, due to the !-JavaScript-! engine used in !-RestFixture.Net-!, it is 
+not possible to get a list of headers of the same name.  headersText is the next best thing: A string 
+representation of the list of headers of the same name.  It works fine for displaying results but would 
+cause problems if the list of headers needed further processing;
+
+4) headerListSize(''name''): Returns the number of headers with the specified name;
+
+5) headersSize():  Returns the total number of headers in the response.  If multiple headers have the same 
+name they are counted separately.
+
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/1          | 200 |  |  |
+| LET              | body_value            | js  | response.body | { "resource" : { "name" : "a funky name", "data" : "an important message" } }|
+| setBody          | <resource><name>Bill</name><data>Some data on Bill</data></resource> |
+| POST             | /resources/           | 201 |   | no-body |
+| LET              | status_code_value     | js  | response.statusCode | 201 |
+| LET              | status_text_value     | js  | response.statusText | Created |
+| LET              | loc                   | js  |response.header('Location', 0) | /resources/102 |
+| LET              | loc                   | js  |response.header0('Location')   | /resources/102 |
+| LET              | header_size           | js  | response.headerListSize('Location') | 1 |
+| LET              | all_headers_size     | js  | response.headersSize() | 4 |
+
+For a response with Content-Type application/json the response body should be accessible as a JSON 
+object via response.jsonbody.  Properties of the JSON object should be accessible via dot notation:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/1.json     | 200 |  |  |
+| LET              | body_value            | js  | response.jsonbody |  |
+| LET              | body_value            | js  | response.jsonbody.resource.name | a funky name |
