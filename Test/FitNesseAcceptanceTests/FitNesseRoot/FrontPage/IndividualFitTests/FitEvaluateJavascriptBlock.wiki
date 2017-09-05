@@ -1,0 +1,10 @@
+---
+Test
+---
+The contents of the expectation cell should be evaluated as a block of !-JavaScript-! code if the 
+cell is headed by the following block comment: '''/* javascript */''':
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json | !-/*   JavaScript */
+var concat = jsonbody.resource.name + " and " + jsonbody.resource.data
+concat=="a funky name and an important message" -! |

@@ -1,0 +1,54 @@
+---
+Test
+---
+!3 Expectations in !-JavaScript-! on Responses with Content Type application/json
+!-RestFixture.Net-! supports the !-JavaScript-! functionality of !-RestFixture-! version 2:  Expectations 
+may be written in !-JavaScript-! against response body contents in JSON format.
+
+!* XPaths and JSON
+!-RestFixture.Net-! retains the !-RestFixture-! version 1 functionality, in addition to the version 2 
+functionality:  Expectations against a response body in JSON format can be written as XPath 
+expressions, as well as !-JavaScript-! expressions.
+*!
+
+!* JSON Object Representing Response Body
+For responses with Content-Type '''application/json''' the response body is represented by a JSON 
+object called '''jsonbody'''.  
+
+Properties in the the JSON body of the response can be read from the jsonbody object using normal 
+!-JavaScript-! dot notation.  For example:
+{{{jsonbody.someProperty}}}
+*!
+
+The test should pass if the !-JavaScript-! expectation evaluates to true:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json | jsonbody.resource.name=="a funky name" && jsonbody.resource.data=="an important message" |
+
+Multiple expectations may be specified, one on each line.  The test should pass if all expectations 
+evaluate to true (expectations on different lines should be effectively ANDed together):
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json | !-jsonbody.resource.name.length>=0 
+jsonbody.resource.name.length<1000-! |
+
+The contents of the expectation cell should be evaluated as a block of !-JavaScript-! code if the 
+cell is headed by the following block comment: '''/* javascript */''':
+
+!* "/* javascript */" Identifier in !-RestFixture.Net-!:
+The !-JavaScript-! identifier in !-RestFixture.Net-! is more robust than the one in the Java 
+!-RestFixture-!.  
+
+In !-RestFixture-! the identifier must contain exactly one leading space and one trailing space.  
+So {{{/*  javascript  */}}} would fail, because it has multiple leading and trailing spaces.  
+
+In !-RestFixture.Net-! the "javascript" text is case-insensitive and the surrounding whitespace 
+can be any combination of spaces and/or tabs.  The surrounding whitespace is optional, so can be 
+excluded (eg "/*javascript*/"), or can include any number of spaces and tabs.  The number of 
+leading and trailing whitespaces do not have to match, so {{{/*   javascript */}}} is acceptable.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json | !-/* javascript */
+var concat = jsonbody.resource.name + " and " + jsonbody.resource.data
+concat=="a funky name and an important message" -! |
