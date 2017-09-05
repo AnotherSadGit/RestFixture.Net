@@ -83,9 +83,7 @@ namespace restFixture.Net.TypeAdapters
 			{
 				return checkNoBody(expected);
 			}
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in .NET:
-//ORIGINAL LINE: if (expected instanceof java.util.List<?>)
-			if (expected is IEnumerable)
+			if (expected is IList<string>)
 			{
 				return base.Equals(expected, actual);
 			}
