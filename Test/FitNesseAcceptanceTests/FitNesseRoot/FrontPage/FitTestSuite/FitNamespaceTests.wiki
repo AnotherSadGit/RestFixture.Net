@@ -1,0 +1,27 @@
+---
+Test
+---
+!3 XML Namespaces
+
+!* Notes
+1) Namespaces are supported by declaring the alias=uri map in the !-RestFixtureConfig-!, using the 
+key '''restfixture.xml.namespace.context''';
+2) If there are multiple namespaces they should be declared at the same time.  The different 
+namespaces should be declared on different lines in the same cell.  Do '''not''' try to declare multiple 
+namespaces by setting restfixture.xml.namespace.context multiple times as the most recent setting 
+will overwrite earlier ones.
+*!
+
+!| Rest Fixture Config |
+| restfixture.xml.namespace.context | !-nst=http://smartrics/ns1 
+ns=http://schemas.datacontract.org/2004/07/resources-! |
+
+Specify an XPath expression with a non-default namespace:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0  | 200 | Content-Length : [\d]+ | /resource/nstag/nst:number[text()='3'] |
+
+Specify an XPath expression with both a default namespace and a non-default namespace:
+
+!| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/10 | 200 | Content-Length : [\d]+ | /ns:resource/ns:nstag/nst:number[text()='10'] |

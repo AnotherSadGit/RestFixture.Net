@@ -1,0 +1,7 @@
+---
+Test
+---
+| Fit Rest Fixture   | http://localhost:7654 |
+| GET | /resources   | 200 | Content-Length : [\d]+ |  |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+

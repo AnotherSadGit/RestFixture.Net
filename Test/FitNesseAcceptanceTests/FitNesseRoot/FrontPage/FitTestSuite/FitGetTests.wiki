@@ -1,0 +1,71 @@
+---
+Test
+---
+!3 GET
+
+!* Notes
+Syntax of a !-RestFixture-! GET request:
+1) First cell: '''GET''';
+2) Second cell: URI of resource to retrieve.  The URI can be relative to the base URI or it 
+can be absolute;
+3) Third cell: The expected HTTP status code of the response;
+4) Fourth cell: A subset of the expected response headers.  Regular expressions are allowed;
+5) Fifth cell: Tests to be executed against the body of the response.  For JSON use !-JavaScript-! 
+to test the data returned in the body.  For XML use XPath expressions.  The XPath expressions 
+should '''not''' be boolean expressions.  Instead they should specify one or more nodes.  The 
+test will succeed if one or more nodes is returned.  If no nodes are returned that match the XPath 
+expression the test will fail.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -!|
+
+A GET request (as with all other request types) accepts both relative and absolute resource paths
+(the path in the table below is an absolute path, although it will be rendered as a relative path 
+by !-RestFixture-!):
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | http://localhost:7654/resources/0 | 200 | Content-Length : [\d]+ | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -!|
+
+A GET request properly handles query strings. In this example the stub resource echoes the query string in a Query-String header:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0?param=echome&something=else&another=parameter | 200 | !-Content-Length : [\d]+
+Query-String : param=echome&something=else&another=parameter-! | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -!|
+
+A GET request to a non-existent resource should not return any content:
+!* Note
+Instead of XPaths you can specify '''no-body''' if the operation is expected to return an empty body.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/999 | 404 | Content-Length : 0 | no-body |
+
+A GET request will not fail if the query string contains parameter arrays:  
+!* Note
+Unlike the Java version of !-RestFixture-!, 
+!-RestFixture.Net-! doesn't need any special configuration to support query string 
+parameter arrays.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0?a[0]=2&a[1]=4 | 200 |  |  |
+
+Expectations about the response body can be specified in !-JavaScript-! for responses that return 
+JSON or !-JavaScript-!:
+!* Notes
+!-JavaScript-! expectations should work for responses whose content type is "application.json" or 
+"application/x-javascript"
+
+For these content types, the JSON document from the HTTP response is assigned to the '''jsonbody''' 
+!-JavaScript-! object.  Properties of the JSON document can be accessed from the jsonbody object 
+via standard !-JavaScript-! dot notation.  For example: 
+{{{jsonbody.resource.name=='my name'}}}
+*!
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 |  |  |
+| GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
+jsonbody.resource.data=='an important message'-! |

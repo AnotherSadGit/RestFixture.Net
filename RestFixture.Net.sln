@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestFixture.Net", "RestFixture.Net\RestFixture.Net.csproj", "{19D1017E-BA1E-40B3-937A-F6BDAF43E096}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestFixture.Net", "Source\RestFixture.Net\RestFixture.Net.csproj", "{19D1017E-BA1E-40B3-937A-F6BDAF43E096}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63F4F3BB-9214-4A45-8487-419AE034BE3A}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestClient", "RestClient\RestClient.csproj", "{8F093637-0E71-4DE2-800B-A83984569112}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestClient", "Source\RestClient\RestClient.csproj", "{8F093637-0E71-4DE2-800B-A83984569112}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89-D6FF-44F3-83C8-CFF7AFBC0A68}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,7 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{49DA7A89
 		Notes\WrappersAndFormatters_Notes.txt = Notes\WrappersAndFormatters_Notes.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastClone", "FastClone\FastClone.csproj", "{19AD251E-12E8-4BA0-882E-A84C194CA217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastClone", "Source\FastClone\FastClone.csproj", "{19AD251E-12E8-4BA0-882E-A84C194CA217}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestFixtureUnitTests", "Test\RestFixtureUnitTests\RestFixtureUnitTests.csproj", "{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{0D55E88E-8F3C-4200-B13F-A70B328EEEE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{43229683-ADC4-45B4-83EA-DB050FFA599F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitNesseTestServer", "Test\FitNesseTestServer\FitNesseTestServer.csproj", "{F39E89E8-901D-418F-94DB-14DAD0D75723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,8 +50,23 @@ Global
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19AD251E-12E8-4BA0-882E-A84C194CA217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19D1017E-BA1E-40B3-937A-F6BDAF43E096} = {0D55E88E-8F3C-4200-B13F-A70B328EEEE3}
+		{8F093637-0E71-4DE2-800B-A83984569112} = {0D55E88E-8F3C-4200-B13F-A70B328EEEE3}
+		{19AD251E-12E8-4BA0-882E-A84C194CA217} = {0D55E88E-8F3C-4200-B13F-A70B328EEEE3}
+		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE} = {43229683-ADC4-45B4-83EA-DB050FFA599F}
+		{F39E89E8-901D-418F-94DB-14DAD0D75723} = {43229683-ADC4-45B4-83EA-DB050FFA599F}
 	EndGlobalSection
 EndGlobal

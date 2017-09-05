@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F39E89E8-901D-418F-94DB-14DAD0D75723}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FitNesseTestServer</RootNamespace>
+    <AssemblyName>FitNesseTestServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Source\RestFixture.Net\bin\Debug\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LogHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test\FitNesse\Fixture\FileUtilFixture.cs" />
+    <Compile Include="HashMapHelperClass.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpDeleteHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpGetHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpMethod.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpMethodHandlerBase.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpPostHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpPutHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\HttpRequestHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\IHttpMethodHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\RequestProcessorParameter.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpServer.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpServerFixture.cs" />
+    <Compile Include="Test\FitNesse\Fixture\HttpRequestHandlers\IHttpRequestHandler.cs" />
+    <Compile Include="Test\FitNesse\Fixture\LetTestActionFixture.cs" />
+    <Compile Include="Test\FitNesse\Fixture\Resource.cs" />
+    <Compile Include="Test\FitNesse\Fixture\Resources.cs" />
+    <Compile Include="StringHelperClass.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

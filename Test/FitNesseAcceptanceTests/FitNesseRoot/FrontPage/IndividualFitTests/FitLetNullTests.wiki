@@ -1,0 +1,22 @@
+---
+Test
+---
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0    | 200 |  | /resource/name[text()='a funky name']  |
+| LET              | nodeText        | body   | /resource/nonexistentnode/text() |  |
+
+| Action Fixture                   |
+| start | Let Test Action Fixture  |
+| enter | symbolName  | nodeText   |
+| check | symbolValue | null       |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0    | 200 |  | /resource/name[text()='a funky name']  |
+| LET              | nodeText        | body   | /resource/name/text()            |  |
+| LET              | nodeText        | body   | /resource/nonexistentnode/text() |  |
+
+| Action Fixture                   |
+| start | Let Test Action Fixture  |
+| enter | symbolName  | nodeText   |
+| check | symbolValue | null       |
+

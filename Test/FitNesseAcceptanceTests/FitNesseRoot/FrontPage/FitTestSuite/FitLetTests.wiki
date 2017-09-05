@@ -1,0 +1,124 @@
+---
+Test
+---
+!3 LET
+
+!* Notes
+!4 Terminology
+LET assigns a value to a variable.  Variables are also known as labels.
+
+!4 Source Data Read by LET
+A LET operation will read the data from the last successful HTTP response in the same test table.  
+It cannot read an HTTP response from a previous test table; the response must have been in a 
+previous row of the same table as the LET operation.
+
+!4 LET Syntax
+1) First cell: The "let" command;
+2) Second cell: The variable name;
+3) Third cell: Where to read the data from; either '''"header"''' or '''"body"''' of the last successful HTTP 
+response;
+4) Fourth cell: The expression to extract the value that will be assigned to the variable.  
+Different types of expression are used to read values from headers and body:
+    a) Header: Use a regular expression
+	b) Body: Use an XPath expression that returns a string node.  Use XPath with both XML and 
+        JSON bodies.
+
+!4 Using a Variable
+Enclose the variable name in '''%...%'''.  For example, to read the value from variable "id", 
+use '''%id%'''.  Use the percentage-enclosed variable name as a placeholder in a test table, 
+anywhere the equivalent literal value might be used.  For example, if you can GET a resource named 
+"/resources/0" then you could use "/resources/%id%" instead.  
+
+These percentage-enclosed variables can be included in multiple columns in a test table, 
+including the expected result.
+
+Variable values can be accessed from code using '''new Variables().get("variablename");'''
+
+Variables have global scope: A variable defined in one test table can be used in a subsequent 
+test table.  
+
+Variables created via LET will be added to the regular Fixture.Symbols map.  The percentage-
+enclosed variable name convention can retrieve any Fixture symbols, not just those created 
+via LET.
+*!
+
+LET should extract a value from a '''header''' using a '''regular expression''' then assign it to a variable:
+
+!* Notes
+The regex is applied to each header. On the first match the first group is extracted and
+assigned as the value to the variable "id".
+
+In the wiki markup of this page the resource text of the GET row of the table below is specified 
+as "/resources/%id%".  You can see this in the rendered page before the test is run.  However, 
+when the page test results are displayed the placeholder %id% will be replaced by the value 
+defined in the LET operation.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setBody          | <resource><name>test post</name><data>some data</data></resource> |
+| POST             | /resources      | 201    |                               | no-body |
+| LET              | id              | header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id% | 200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+LET should extract a value from an '''XML body''' using an '''XPath expression''' then assign it to a variable:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0 | 200    |  | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message']-! |
+| LET              | name         | body   | /resource/name/text() |  |
+
+LET should extract a value from a '''JSON body''' using an '''XPath expression''' then assign it to a variable:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/1.json | 200 | Content-Type : application/json | !-jsonbody.resource.name=='a funky name'
+jsonbody.resource.data=='an important message'-! |
+| LET              | name         | body   | /resource/name/text() |  |
+
+Variables are global and should be able to be shared between test tables:
+
+!* Note
+Once again, in the wiki markup of this page the resource text of the GET row of the table below is 
+specified as "/resources/%id%".  As before, when the page test results are displayed the 
+placeholder %id% will be replaced by the variable's value.  This time, however, the variable will 
+have been defined in the LET operation in the previous table.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/%id% |200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+A variable defined via LET will be available to other fixtures in the regular Fixture.Symbols map:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0  |200    |  |  |
+| LET              | theName | body   | /resource/name/text() |  |
+
+!* !-LetTestActionFixture-!
+!-LetTestActionFixture-! allows the setting and getting of regular Fixture.Symbols.
+*!
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | theName      |
+| check | symbolValue | a funky name |
+
+!-RestFixture.Net-! should read regular FitNesse symbols which have been defined in other fixture 
+types, not via LET:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | resType      |
+| enter | symbolValue | /resources   |
+
+!* Note
+In the wiki markup of this page the resource text of the GET row below is specified as 
+"%resType%/%id%" (without the quotes).  When the page test results are displayed the 
+placeholders %resType% and %id% will be replaced by the variables' values.  
+
+%resType% is a regular symbol created by a different fixture; it wasn't created via LET.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | %resType%/%id% |200    |  |  |
+

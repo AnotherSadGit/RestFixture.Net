@@ -1,0 +1,10 @@
+!| Import |
+| restFixture.Net |
+| restFixture.Net.Fixtures |
+| FitNesseTestServer.Test.FitNesse.Fixture |
+
+!| Action Fixture |
+| start | Http Server Fixture |
+| check | Started   | false  |
+| enter | start server | 7654  |
+| check | started   | true  |

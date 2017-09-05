@@ -1,0 +1,15 @@
+---
+Suite
+---
+!1 Individual Fit Tests
+
+!3 Tests of !-RestFixture.Net-! functionality using the Fit test system
+
+These tests were created during development of !-RestFixture.Net-!, while testing and debugging the 
+application.  The tests were created as individual tests, rather than in a test suite, to simplify 
+capturing of HTTP requests and responses via a traffic analyser (Wireshark).
+
+Most of these tests have been subsequently incorporated into the Fit Tests suite. 
+
+!contents -R2 -g -p -f -h
+

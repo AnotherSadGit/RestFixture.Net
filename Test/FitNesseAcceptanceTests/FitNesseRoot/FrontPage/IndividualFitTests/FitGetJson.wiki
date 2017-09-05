@@ -1,0 +1,17 @@
+---
+Test
+---
+!3 GET JSON
+
+Expectations about the response body can be specified in !-JavaScript-! for responses that return 
+JSON or !-JavaScript-!:
+!* Note
+!-JavaScript-! expectations should work for responses whose content type is "application.json" or 
+"application/x-javascript"
+*!
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 |  |  |
+| GET | /resources/1.json | 200 |  | jsonbody.resource.name=="a funky name" |
+| GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
+jsonbody.resource.data=='an important message'-! |
+

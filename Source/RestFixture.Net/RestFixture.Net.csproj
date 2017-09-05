@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19D1017E-BA1E-40B3-937A-F6BDAF43E096}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>restFixture.Net</RootNamespace>
+    <AssemblyName>RestFixture.Net</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jurassic, Version=2.3.0.0, Culture=neutral, PublicKeyToken=42f272f6dd312a2c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLLs\Jurassic.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.3\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fixtures\CommonRestFixture.cs" />
+    <Compile Include="TableElements\FitCell.cs" />
+    <Compile Include="TableElements\FitFormatter.cs" />
+    <Compile Include="Fixtures\FitRestFixture.cs" />
+    <Compile Include="TableElements\FitRow.cs" />
+    <Compile Include="Javascript\JavascriptResponseClasses.cs" />
+    <Compile Include="PartsFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Fixtures\RestFixture.cs" />
+    <Compile Include="RestFixtureConfig.cs" />
+    <Compile Include="IRunnerVariablesProvider.cs" />
+    <Compile Include="TableElements\SlimCell.cs" />
+    <Compile Include="TableElements\SlimFormatter.cs" />
+    <Compile Include="TableElements\SlimRow.cs" />
+    <Compile Include="Support\Runner.cs" />
+    <Compile Include="Support\XmlTools.cs" />
+    <Compile Include="TypeAdapters\BodyTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\BodyTypeAdapterFactory.cs" />
+    <Compile Include="TableElements\ICellFormatter.cs" />
+    <Compile Include="TableElements\ICellWrapper.cs" />
+    <Compile Include="Support\Config.cs" />
+    <Compile Include="Support\ContentType.cs" />
+    <Compile Include="Variables\FitVariables.cs" />
+    <Compile Include="Support\HashMapHelperClass.cs" />
+    <Compile Include="TypeAdapters\HeadersTypeAdapter.cs" />
+    <Compile Include="Support\RestClientBuilder.cs" />
+    <Compile Include="Javascript\JavascriptException.cs" />
+    <Compile Include="Javascript\JavascriptWrapper.cs" />
+    <Compile Include="TypeAdapters\JSONBodyTypeAdapter.cs" />
+    <Compile Include="Handlers\LetBodyConstHandler.cs" />
+    <Compile Include="Handlers\LetBodyHandler.cs" />
+    <Compile Include="Handlers\LetBodyJsHandler.cs" />
+    <Compile Include="Handlers\LetBodyXmlHandler.cs" />
+    <Compile Include="Handlers\ILetHandler.cs" />
+    <Compile Include="Handlers\LetHandlerFactory.cs" />
+    <Compile Include="Handlers\LetHeaderHandler.cs" />
+    <Compile Include="TypeAdapters\RestDataTypeAdapter.cs" />
+    <Compile Include="TableElements\IRowWrapper.cs" />
+    <Compile Include="Variables\VariablesJavaScriptWrapper.cs" />
+    <Compile Include="Variables\SlimVariables.cs" />
+    <Compile Include="TypeAdapters\StatusCodeTypeAdapter.cs" />
+    <Compile Include="Support\StringHelperClass.cs" />
+    <Compile Include="TypeAdapters\StringTypeAdapter.cs" />
+    <Compile Include="TypeAdapters\TextBodyTypeAdapter.cs" />
+    <Compile Include="Support\Tools.cs" />
+    <Compile Include="TypeAdapters\TypeAdapter.cs" />
+    <Compile Include="Support\TypeParseException.cs" />
+    <Compile Include="Support\Url.cs" />
+    <Compile Include="Variables\Variables.cs" />
+    <Compile Include="TypeAdapters\XPathBodyTypeAdapter.cs" />
+    <Compile Include="SvgImage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DLLs\Jurassic.dll" />
+    <Content Include="DLLs\Jurassic_README.txt" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FastClone\FastClone.csproj">
+      <Project>{19ad251e-12e8-4ba0-882e-a84c194ca217}</Project>
+      <Name>FastClone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestClient\RestClient.csproj">
+      <Project>{8f093637-0e71-4de2-800b-a83984569112}</Project>
+      <Name>RestClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

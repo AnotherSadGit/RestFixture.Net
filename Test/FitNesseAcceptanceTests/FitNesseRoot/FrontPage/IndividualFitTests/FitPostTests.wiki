@@ -1,0 +1,61 @@
+---
+Test
+---
+!3 POST
+
+A POST request with an XML body should create a resource:
+
+!* Note
+You set the body for the POST operation with the setBody.
+
+This example also shows how LET is used:
+1) First cell: The "let" command;
+1) Second cell: The variable name;
+2) Third cell: Where to read the data from; either "header" or "body" of the last successful HTTP 
+response;
+3) Fourth cell: The expression to extract the value that will be assigned to the variable.  For 
+header it must be a regular expression, for body it must be an XPath expression that returns a 
+string node.
+
+Variables are global: here the GET op is executed on an URI containing '''%id%''' where the label 'id' 
+is defined in the test above.  In the displayed page the placeholder %id% will be replaced by the 
+value defined in the let method.
+You can also include variables in the expected result.
+
+Label values can be accessed from code using '''new Variables().get("labelname");'''
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setBody          | <resource><name>test post</name><data>some data</data></resource> |
+| POST             | /resources      | 201   |                               | no-body |
+| LET              | id              |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id% |200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+A POST request with a JSON body should create a resource:
+
+!* Json
+Variables may be substituted in the expected result.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setBody          | { "resource" : { "name" : "test post", "data" : "some data" } }   |
+| POST             | /resources           | 201   |                               | no-body |
+| LET              | id                   |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id%.json |200    | Content-Type : application/json | !-jsonbody.resource.name=='test post'
+jsonbody.resource.data=='some data'-! |
+
+A POST request with a URL-encoded body should create a resouce:
+
+!* setBody Encoding
+The setBody content cell may be encoded with ! - -! to add line breaks, etc.
+*!
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | Content-Type : application/x-www-form-urlencoded;charset=UTF-8    |
+| setBody          | name=test%20post&data=some%20data                                 |
+| POST             | /resources           | 201   |                               | no-body |
+| LET              | id                   |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id%      |200    |                               | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
