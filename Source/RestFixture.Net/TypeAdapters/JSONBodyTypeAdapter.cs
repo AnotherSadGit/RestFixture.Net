@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using restFixture.Net.Javascript;
 using restFixture.Net.Support;
 
@@ -35,6 +36,8 @@ namespace restFixture.Net.TypeAdapters
 		private readonly IDictionary<string, string> imports;
 		private readonly JavascriptWrapper wrapper;
 		private bool forceJsEvaluation = false;
+        private Regex _jsHeaderRegex = new Regex(@"\/\*\s*javascript\s*\*\/", 
+            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
 		/// <summary>
 		/// def ctor
@@ -64,7 +67,7 @@ namespace restFixture.Net.TypeAdapters
 
 		public override object parse(string possibleJsContent)
 		{
-			if (possibleJsContent == null || !possibleJsContent.Trim().Contains("/* javascript */"))
+            if (possibleJsContent == null || !HasJavaScriptHeader(possibleJsContent.Trim()))
 			{
 				forceJsEvaluation = false;
 				return base.parse(possibleJsContent);
@@ -115,6 +118,25 @@ namespace restFixture.Net.TypeAdapters
 			return XmlTools.fromJSONtoXML(content);
 		}
 
+        /// <summary>
+        /// Determines whether the specified content string contains a JavaScript block 
+        /// identifier: "/* javascript */"
+        /// </summary>
+        /// <param name="jsContent">The content to check.</param>
+        /// <returns>This is more robust than the Java RestFixture implementation, which 
+        /// just does a string.Contains, so would fail if the identifier isn't exactly as 
+        /// specified (eg contains zero or more than one leading or trailing space, or 
+        /// uses tabs instead of spaces).</returns>
+	    private bool HasJavaScriptHeader(string jsContent)
+	    {
+	        if (string.IsNullOrWhiteSpace(jsContent))
+	        {
+	            return false;
+	        }
+
+            bool isMatch = _jsHeaderRegex.IsMatch(jsContent);
+            return isMatch;
+	    }
 	}
 
 }
