@@ -31,31 +31,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jurassic, Version=2.3.0.0, Culture=neutral, PublicKeyToken=42f272f6dd312a2c, processorArchitecture=MSIL">
@@ -63,11 +63,11 @@
       <HintPath>DLLs\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.3\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
