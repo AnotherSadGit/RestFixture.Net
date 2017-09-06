@@ -1,5 +1,6 @@
 ﻿using System;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using restFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
@@ -120,7 +121,7 @@ namespace restFixture.Net.TableElements
         public void wrong(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
             string expectedContent = expected.body();
-			string body = Tools.makeContentForWrongCell(expectedContent, typeAdapter, this, minLenForToggle);
+			string body = Tools.HtmlTools.makeContentForWrongCell(expectedContent, typeAdapter, this, minLenForToggle);
             expected.body(body);
             fixture.Wrong(expected.Wrapped);
 		}
@@ -128,13 +129,13 @@ namespace restFixture.Net.TableElements
         public void right(ICellWrapper<Parse> expected, RestDataTypeAdapter typeAdapter)
 		{
             string expectedContent = expected.body();
-            expected.body(Tools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
+            expected.body(Tools.HtmlTools.makeContentForRightCell(expectedContent, typeAdapter, this, minLenForToggle));
             fixture.Right(expected.Wrapped);
 		}
 
 		public string gray(string text)
 		{
-			return ActionFixture.Gray(Tools.toHtml(text));
+			return ActionFixture.Gray(HtmlTools.toHtml(text));
 		}
 
         public void asLink(ICellWrapper<Parse> cell, string resolvedUrl, string link, string text)
@@ -143,13 +144,13 @@ namespace restFixture.Net.TableElements
 			string parsed = null;
 			if (displayAbsoluteURLInFull)
 			{
-				parsed = Tools.fromSimpleTag(resolvedUrl);
+				parsed = HtmlTools.fromSimpleTag(resolvedUrl);
 				if (parsed.Trim().StartsWith("http", StringComparison.Ordinal))
 				{
 					actualText = parsed;
 				}
 			}
-			cell.body(Tools.toHtmlLink(link, actualText));
+			cell.body(HtmlTools.toHtmlLink(link, actualText));
 		}
 
 		public string fromRaw(string text)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
@@ -40,7 +41,7 @@ namespace restFixture.Net.Handlers
 			{
 				foreach (RestData.Header e in response.Headers)
 				{
-					string @string = Tools.convertEntryToString(e.Name, e.Value, ":");
+					string @string = StringTools.convertEntryToString(e.Name, e.Value, ":");
 					content.Add(@string);
 				}
 			}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using restFixture.Net.Fixtures;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -158,11 +159,11 @@ namespace restFixture.Net
 					string v = row[1];
 					c.add(k, v);
 					row[0] = "";
-					row[1] = "pass:" + Tools.toHtml(v);
+					row[1] = "pass:" + HtmlTools.toHtml(v);
 				}
 				else
 				{
-					row[0] = "error:" + k + Tools.toHtml("\n\nthis line doesn't conform to NVP format " + "(col 0 for name, col 1 for value) - content skipped");
+					row[0] = "error:" + k + HtmlTools.toHtml("\n\nthis line doesn't conform to NVP format " + "(col 0 for name, col 1 for value) - content skipped");
 				}
 			}
 			return rows;
@@ -182,7 +183,7 @@ namespace restFixture.Net
                 string value = cells.More.Text;
 				Config c = Config;
 				c.add(key, value);
-				string fValue = Tools.toHtml(value);
+				string fValue = HtmlTools.toHtml(value);
 				Parse valueParse = cells.More;
 				valueParse.SetBody(fValue);
 				Right(valueParse);

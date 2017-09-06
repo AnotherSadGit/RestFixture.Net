@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Jurassic;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using restFixture.Net.Variables;
 using RestClient.Data;
 
@@ -252,7 +253,7 @@ namespace restFixture.Net.Javascript
 				return true;
 			}
 
-			if (r.Body != null && Tools.regex(r.Body.Trim(), "\\{.+\\}"))
+			if (r.Body != null && StringTools.regex(r.Body.Trim(), "\\{.+\\}"))
 			{
 				return XmlTools.isValidJson(r.Body);
 			}

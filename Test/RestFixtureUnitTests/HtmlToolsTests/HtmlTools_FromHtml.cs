@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
 
-namespace RestFixtureUnitTests.ToolsTests
+namespace RestFixtureUnitTests.HtmlToolsTests
 {
     [TestClass]
-    public class Tools_FromHtml
+    public class HtmlTools_FromHtml
     {
         [TestMethod]
         public void Should_Convert_AngleBrackets()
@@ -14,7 +13,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "<a>bb</a>";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);
@@ -28,7 +27,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "bb";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);
@@ -42,7 +41,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "aa\nbb\ncc\ndd\nee";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);
@@ -56,7 +55,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "--&--";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);
@@ -70,7 +69,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "aabbcc";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);
@@ -84,7 +83,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string expectedText = "aa bb";
 
             // Act.
-            string actualText = Tools.fromHtml(originalText);
+            string actualText = restFixture.Net.Tools.HtmlTools.fromHtml(originalText);
 
             // Assert.
             Assert.AreEqual(expectedText, actualText);

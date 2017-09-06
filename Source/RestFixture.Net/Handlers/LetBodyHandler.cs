@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.XPath;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using restFixture.Net.TypeAdapters;
 using RestClient.Data;
 

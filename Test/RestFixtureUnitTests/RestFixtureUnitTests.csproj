@@ -68,14 +68,18 @@
     <Compile Include="ContentTypeTests\ContentTypeTestBase.cs" />
     <Compile Include="ContentTypeTests\ContentType_Config.cs" />
     <Compile Include="ContentTypeTests\ContentType_Parse.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_FromSimpleTag.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_ToCode.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_ToHtmlLink.cs" />
     <Compile Include="JavascriptWrapper_EvaluateExpression.cs" />
     <Compile Include="LetHandlersTests\LetBodyHandler_Handle.cs" />
     <Compile Include="LetHandlersTests\LetBodyJsHandler_Handle.cs" />
     <Compile Include="LetHandlersTests\LetHandlersTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToolsTests\Tools_FromHtml.cs" />
-    <Compile Include="ToolsTests\Tools_ToHtml.cs" />
-    <Compile Include="ToolsTests\Tools_Regex.cs" />
+    <Compile Include="StringToolsTests\StringTools_ConvertStringToMap.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_FromHtml.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_ToHtml.cs" />
+    <Compile Include="StringToolsTests\StringTools_Regex.cs" />
     <Compile Include="XmlToolsTests\XmlTools_ExtractPath.cs" />
   </ItemGroup>
   <ItemGroup>

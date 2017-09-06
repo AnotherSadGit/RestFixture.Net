@@ -1,5 +1,6 @@
 ﻿using System;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using restFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
@@ -71,14 +72,14 @@ namespace restFixture.Net.TableElements
 
         public void exception(ICellWrapper<String> cell, string exceptionMessage)
 		{
-			cell.body("error:" + Tools.wrapInDiv(exceptionMessage));
+			cell.body("error:" + HtmlTools.wrapInDiv(exceptionMessage));
 		}
 
         public void exception(ICellWrapper<String> cell, Exception exception)
 		{
 			//String m = Tools.toHtml(cell.getWrapped() + "\n-----\n") + Tools.toCode(Tools.toHtml(out.toString()));
-			string m = Tools.toHtml(cell.Wrapped + "\n-----\n") + Tools.toCode(Tools.toHtml(exception.ToString()));
-			cell.body("error:" + Tools.wrapInDiv(m));
+			string m = HtmlTools.toHtml(cell.Wrapped + "\n-----\n") + HtmlTools.toCode(HtmlTools.toHtml(exception.ToString()));
+			cell.body("error:" + HtmlTools.wrapInDiv(m));
 			//cell.body("error:" + m);
 		}
 
@@ -109,24 +110,24 @@ namespace restFixture.Net.TableElements
 
 	    public string label(string @string)
 		{
-			return Tools.toHtmlLabel(@string);
+			return HtmlTools.toHtmlLabel(@string);
 		}
 
         public void wrong(ICellWrapper<String> expected, RestDataTypeAdapter ta)
 		{
 			string expectedContent = expected.body();
-			expected.body(Tools.makeContentForWrongCell(expectedContent, ta, this, minLenForToggle));
-			expected.body("fail:" + Tools.wrapInDiv(expected.body()));
+			expected.body(Tools.HtmlTools.makeContentForWrongCell(expectedContent, ta, this, minLenForToggle));
+			expected.body("fail:" + HtmlTools.wrapInDiv(expected.body()));
 		}
 
         public void right(ICellWrapper<String> expected, RestDataTypeAdapter typeAdapter)
 		{
-			expected.body("pass:" + Tools.wrapInDiv(Tools.makeContentForRightCell(expected.body(), typeAdapter, this, minLenForToggle)));
+			expected.body("pass:" + HtmlTools.wrapInDiv(Tools.HtmlTools.makeContentForRightCell(expected.body(), typeAdapter, this, minLenForToggle)));
 		}
 
 		public string gray(string @string)
 		{
-			return "report:" + Tools.wrapInDiv(Tools.toHtml(@string));
+			return "report:" + HtmlTools.wrapInDiv(HtmlTools.toHtml(@string));
 		}
 
         public void asLink(ICellWrapper<String> cell, string resolvedUrl, string link, string text)
@@ -135,18 +136,18 @@ namespace restFixture.Net.TableElements
 			string parsed = null;
 			if (displayAbsoluteURLInFull)
 			{
-				parsed = Tools.fromSimpleTag(resolvedUrl);
+				parsed = HtmlTools.fromSimpleTag(resolvedUrl);
 				if (parsed.Trim().StartsWith("http", StringComparison.Ordinal))
 				{
 				   actualText = parsed;
 				}
 			}
-			cell.body("report:" + Tools.wrapInDiv(Tools.toHtmlLink(link, actualText)));
+			cell.body("report:" + HtmlTools.wrapInDiv(HtmlTools.toHtmlLink(link, actualText)));
 		}
 
 		public string fromRaw(string text)
 		{
-			return Tools.fromHtml(text);
+			return HtmlTools.fromHtml(text);
 		}
 
 	}

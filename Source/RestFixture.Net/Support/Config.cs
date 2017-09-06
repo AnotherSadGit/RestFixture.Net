@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using NLog.LayoutRenderers.Wrappers;
+using restFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -238,7 +239,7 @@ namespace restFixture.Net.Support
 			{
 			    if (val != null)
 			    {
-			        IDictionary<string, string> result = Tools.convertStringToMap(val, "=", "\n", true);
+			        IDictionary<string, string> result = StringTools.convertStringToMap(val, "=", "\n", true);
 			        if (result != null && result.Keys.Count > 0)
 			        {
 			            foreach (string key2 in result.Keys)

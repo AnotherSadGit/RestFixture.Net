@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.XPath;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -128,7 +129,7 @@ namespace restFixture.Net.TypeAdapters
 			{
 				return expectedXPathAsList;
 			}
-			expStr = Tools.fromHtml(expStr);
+			expStr = HtmlTools.fromHtml(expStr);
             string[] nvpArray = expStr.Split(new string[] {"\r", "\n", "\r\n"}, 
                 StringSplitOptions.None);
 			foreach (string nvp in nvpArray)

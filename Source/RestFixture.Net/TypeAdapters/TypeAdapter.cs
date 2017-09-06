@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using fit;
 using FastClone;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
 // Modified or written by Object Mentor, Inc. for inclusion with FitNesse.
 // Copyright (c) 2002 Cunningham & Cunningham, Inc.
@@ -197,7 +198,7 @@ namespace restFixture.Net.TypeAdapters
         public virtual object parse(string s)
         {
             object obj;
-            obj = isRegex ? s : Tools.parse(s, type);
+            obj = isRegex ? s : StringTools.parse(s, type);
             return obj;
         }
 

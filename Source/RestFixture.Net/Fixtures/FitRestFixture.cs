@@ -4,6 +4,7 @@ using fit;
 using NLog;
 using restFixture.Net.Support;
 using restFixture.Net.TableElements;
+using restFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -301,7 +302,7 @@ namespace restFixture.Net.Fixtures
 				string url = BaseUrlFromArgs;
 				if (url != null)
 				{
-					restFixture.BaseUrl = new Url(Tools.fromSimpleTag(url));
+					restFixture.BaseUrl = new Url(HtmlTools.fromSimpleTag(url));
 				}
                 restFixture.initialize(Runner.FIT);
 				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
