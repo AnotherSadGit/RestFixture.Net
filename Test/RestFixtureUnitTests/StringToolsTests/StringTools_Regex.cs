@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
-namespace RestFixtureUnitTests.ToolsTests
+namespace RestFixtureUnitTests.StringToolsTests
 {
     [TestClass]
     public class Tools_Regex
@@ -19,7 +15,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string regexPattern = "200";
 
             // Act & Assert.
-            Assert.IsTrue(Tools.regex(text, regexPattern));
+            Assert.IsTrue(StringTools.regex(text, regexPattern));
         }
 
         [TestMethod]
@@ -30,7 +26,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string regexPattern = "404";
 
             // Act & Assert.
-            Assert.IsFalse(Tools.regex(text, regexPattern));
+            Assert.IsFalse(StringTools.regex(text, regexPattern));
         }
 
         [TestMethod]
@@ -42,7 +38,7 @@ namespace RestFixtureUnitTests.ToolsTests
             string regexPattern = "40[]4";
 
             // Act & Assert.
-            Tools.regex(text, regexPattern);
+            StringTools.regex(text, regexPattern);
         }
     }
 }

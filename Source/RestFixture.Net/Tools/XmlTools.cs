@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using restFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -25,7 +26,7 @@ using Newtonsoft.Json.Linq;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace restFixture.Net.Tools
 {
     /// <summary>
     /// Specifies the type of object returned when evaluating an XPath expression that has been 

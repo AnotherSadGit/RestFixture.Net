@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.XPath;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms

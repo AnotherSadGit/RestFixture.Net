@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
@@ -59,7 +60,7 @@ namespace restFixture.Net.TypeAdapters
 			foreach (RestData.Header h in actual)
 			{
 				bool nameMatches = h.Name.Equals(k.Name);
-				bool valueMatches = Tools.regex(h.Value, k.Value);
+				bool valueMatches = StringTools.regex(h.Value, k.Value);
 				if (nameMatches && valueMatches)
 				{
 					return h;
@@ -75,7 +76,7 @@ namespace restFixture.Net.TypeAdapters
 			IList<RestData.Header> expected = new List<RestData.Header>();
 			if (!"".Equals(s.Trim()))
 			{
-				string expStr = Tools.fromHtml(s.Trim());
+				string expStr = HtmlTools.fromHtml(s.Trim());
 				string[] nvpArray = expStr.Split(new char[] {'\n'});
 				foreach (string nvp in nvpArray)
 				{

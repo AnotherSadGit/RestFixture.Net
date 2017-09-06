@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using restFixture.Net.Javascript;
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -73,7 +74,7 @@ namespace restFixture.Net.TypeAdapters
 				return base.parse(possibleJsContent);
 			}
 			forceJsEvaluation = true;
-			return Tools.fromHtml(possibleJsContent.Trim());
+			return HtmlTools.fromHtml(possibleJsContent.Trim());
 		}
 
 		public override bool Equals(object expected, object actual)

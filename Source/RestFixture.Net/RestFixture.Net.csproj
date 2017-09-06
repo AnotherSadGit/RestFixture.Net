@@ -94,7 +94,8 @@
     <Compile Include="TableElements\SlimFormatter.cs" />
     <Compile Include="TableElements\SlimRow.cs" />
     <Compile Include="Support\Runner.cs" />
-    <Compile Include="Support\XmlTools.cs" />
+    <Compile Include="Tools\HtmlTools.cs" />
+    <Compile Include="Tools\XmlTools.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapter.cs" />
     <Compile Include="TypeAdapters\BodyTypeAdapterFactory.cs" />
     <Compile Include="TableElements\ICellFormatter.cs" />
@@ -123,7 +124,7 @@
     <Compile Include="Support\StringHelperClass.cs" />
     <Compile Include="TypeAdapters\StringTypeAdapter.cs" />
     <Compile Include="TypeAdapters\TextBodyTypeAdapter.cs" />
-    <Compile Include="Support\Tools.cs" />
+    <Compile Include="Tools\StringTools.cs" />
     <Compile Include="TypeAdapters\TypeAdapter.cs" />
     <Compile Include="Support\TypeParseException.cs" />
     <Compile Include="Support\Url.cs" />
