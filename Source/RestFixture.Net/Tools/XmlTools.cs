@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -459,10 +460,10 @@ namespace restFixture.Net.Tools
         }
 
         /// <summary>
-        /// Parses the string and returns  true if parse succeeds.
+        /// Parses the string and returns true if parse succeeds.
         /// </summary>
-        /// <param name="presumeblyJson"> string with some json (possibly). </param>
-        /// <returns> true if json is valid </returns>
+        /// <param name="presumeblyJson">String to be tested.</param>
+        /// <returns>true if the string to be tested is valid JSON, otherwise false.</returns>
         public static bool isValidJson(string presumeblyJson)
         {
             object o = null;
@@ -481,7 +482,16 @@ namespace restFixture.Net.Tools
         /// <returns> the string as xml. </returns>
         public static string fromJSONtoXML(string json)
         {
-            XmlDocument doc = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
+            XmlDocument doc = null;
+            try
+            {
+                doc = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException
+                    ("Unable to convert JSON string '{0}' to XML: String is not valid JSON.", json);
+            }
 
             var stringBuilder = new StringBuilder();
 
