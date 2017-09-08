@@ -108,10 +108,6 @@ namespace restFixture.Net.Tools
         /// in fitnesse. </returns>
         public static string makeToggleCollapseable(string message, string content)
         {
-            Random random = new Random();
-            // The Java implementation used random.nextLong but the .NET Random class only has 
-            //  Next, which returns an int.
-            string id = Convert.ToString(content.GetHashCode()) + Convert.ToString(random.Next());
             StringBuilder sb = new StringBuilder();
             sb.Append("<div class='collapsible closed'>");
             sb.Append(
