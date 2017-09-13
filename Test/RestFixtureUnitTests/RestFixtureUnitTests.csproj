@@ -117,6 +117,7 @@
     <Compile Include="HtmlToolsTests\HtmlTools_FromHtml.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToHtml.cs" />
     <Compile Include="StringToolsTests\StringTools_Regex.cs" />
+    <Compile Include="VariablesTests\Variables_VariablesRegex.cs" />
     <Compile Include="XmlToolsTests\XmlTools_ExtractPath.cs" />
     <Compile Include="XmlToolsTests\XmlTools_FromJSONtoXML.cs" />
     <Compile Include="XmlToolsTests\XmlTools_IsValidJson.cs" />
