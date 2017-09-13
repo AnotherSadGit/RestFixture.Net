@@ -23,7 +23,7 @@ Different types of expression are used to read values from headers and body:
 	b) Body: Use an XPath expression that returns a string node.  Use XPath with both XML and 
         JSON bodies.
 
-!4 Using a Variable
+!4 Using a Variable (AKA Label or Symbol)
 Enclose the variable name in '''%...%'''.  For example, to read the value from variable "id", 
 use '''%id%'''.  Use the percentage-enclosed variable name as a placeholder in a test table, 
 anywhere the equivalent literal value might be used.  For example, if you can GET a resource named 
