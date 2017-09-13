@@ -99,6 +99,8 @@
     <Compile Include="FitCellTests\FitCell_AddToBody.cs" />
     <Compile Include="FitCellTests\FitCell_Body.cs" />
     <Compile Include="FitCellTests\FitCell_Wrapped.cs" />
+    <Compile Include="HeadersTypeAdapterTests\HeadersTypeAdapter_Equals.cs" />
+    <Compile Include="HeadersTypeAdapterTests\HeadersTypeAdapter_Parse.cs" />
     <Compile Include="Helpers\TestStubRowWrapper.cs" />
     <Compile Include="Helpers\RestFixtureTestHelper.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_FromSimpleTag.cs" />
