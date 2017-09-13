@@ -1,0 +1,187 @@
+---
+Test
+---
+!3 Symbols (AKA Labels in !-RestFixture-!)
+Symbols are just variables that can be used in FitNesse test tables.  In !-restFixture-! symbols are 
+known as labels.
+
+!* Using a Label
+Enclose the label name in '''%...%'''.  For example, to read the value from label "id", 
+use '''%id%'''.  Use the percentage-enclosed label name as a placeholder in a test table, 
+anywhere the equivalent literal value might be used.  For example, if you can GET a resource named 
+"/resources/0" then you could use "/resources/%id%" instead.  
+
+These percentage-enclosed labels can be included in multiple columns in a test table, 
+including the expected result.
+
+Label values can be accessed from code using '''new Variables().get("variablename");'''
+
+Labels have global scope: A label defined in one test table can be used in a subsequent 
+test table.  
+
+Labels created via LET will be added to the regular Fixture.Symbols map.  The percentage-
+enclosed label name convention can retrieve any Fixture symbols, not just those created 
+via LET.
+*!
+
+!* !-LetTestActionFixture-!
+!-LetTestActionFixture-! allows the setting and getting of standard Fixture.Symbols.
+*!
+
+Use symbol in the resource column:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | resType      |
+| enter | symbolValue | /resources   |
+
+The resource text in the following GET is specified as "%resType%/0" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | %resType%/0 |200    | Content-Length : [\d]+ | /resource/name[text()='a funky name'] |
+
+Use symbol in the expected status code column:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | status       |
+| enter | symbolValue | 200          |
+
+The expected status code in the following GET is specified as "%status%" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0 | %status% | Content-Length : [\d]+ | /resource/name[text()='a funky name'] |
+
+Use symbol in the expected headers column:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | headerName     |
+| enter | symbolValue | Content-Length |
+
+The expected header text in the following GET is specified as "%headerName% : [\d]+" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0 | 200 | %headerName% : [\d]+ | /resource/name[text()='a funky name'] |
+
+Use symbol in the expected body column #1, with XPath expression:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | xPath          |
+| enter | symbolValue | /resource/name |
+
+The expected body in the following GET is specified as "%xPath%[text()='a funky name']" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0 | 200 | Content-Length : [\d]+ | %xPath%[text()='a funky name'] |
+
+Use symbol in the expected body column #2, with XPath expression:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | nodeValue    |
+| enter | symbolValue | a funky name |
+
+The expected body in the following GET is specified as "/resource/name[text()='%nodeValue%']" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/0 | 200 | Content-Length : [\d]+ | /resource/name[text()='%nodeValue%'] |
+
+Use symbol in the expected body column #3, with !-JavaScript-! expression:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | nodeValue    |
+| enter | symbolValue | a funky name |
+
+The expected body in the following GET is specified as "jsonbody.resource.name=='%nodeValue%'" (without the double quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/1.json |200    | Content-Type : application/json | jsonbody.resource.name=='%nodeValue%' |
+
+Use symbol in setHeader:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | contentType     |
+| enter | symbolValue | application/xml |
+
+The header being set in the following POST is specified as "Content-Type : %contentType%" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | Content-Type : %contentType% |
+| setBody          | <resource><name>test post</name><data>some data</data></resource> |
+| POST             | /resources      | 201   |                               | no-body |
+| LET              | id              |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id% |200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+Use symbol in setHeader with multiple headers:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | contentType     |
+| enter | symbolValue | application/xml |
+
+The first header being set in the following POST is specified as "Content-Type : %contentType%" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | !-Content-Type : %contentType%
+X-CustomHeader : SomeText-! |
+| setBody          | <resource><name>test post</name><data>some data</data></resource> |
+| POST             | /resources      | 201   |                               | no-body |
+| LET              | id              |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id% |200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+Use symbol in setBody, with XML body:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | bodyData     |
+| enter | symbolValue | some data    |
+
+The body being set in the following POST is specified as "<resource><name>test post</name><data>%bodyData%</data></resource>" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | Content-Type : %contentType% |
+| setBody          | <resource><name>test post</name><data>%bodyData%</data></resource> |
+| POST             | /resources      | 201   |                               | no-body |
+| LET              | id              |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id% |200    |  | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
+
+Use symbol in setBody, with JSON body:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | bodyData     |
+| enter | symbolValue | some data    |
+
+The body being set in the following POST is specified as '{ "resource" : { "name" : "test post", "data" : "%bodyData%" } }' (without the single quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | Content-Type : application/json    |
+| setBody          | { "resource" : { "name" : "test post", "data" : "%bodyData%" } }   |
+| POST             | /resources           | 201   |                               | no-body |
+| LET              | id                   |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id%.json |200    | Content-Type : application/json | !-jsonbody.resource.name=='test post'
+jsonbody.resource.data=='some data'-! |
+
+Use symbol in setBody, with form-urlencoded body:
+
+| Action Fixture                     |
+| start | Let Test Action Fixture    |
+| enter | symbolName  | bodyName     |
+| enter | symbolValue | test%20post  |
+
+The body being set in the following POST is specified as "name=%bodyName%&data=some%20data" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| setHeader        | Content-Type : application/x-www-form-urlencoded;charset=UTF-8    |
+| setBody          | name=%bodyName%&data=some%20data                                  |
+| POST             | /resources           | 201   |                               | no-body |
+| LET              | id                   |header | Location:/resources/(.+)      |         |
+| GET              | /resources/%id%      |200    |                               | !-/resource/name[text()='test post']
+/resource/data[text()='some data']-! |
