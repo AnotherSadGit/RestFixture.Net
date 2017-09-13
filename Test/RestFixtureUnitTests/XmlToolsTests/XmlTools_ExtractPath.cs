@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
-namespace UnitTests.XmlToolsTests
+namespace RestFixtureUnitTests.XmlToolsTests
 {
     [TestClass]
     public class XmlTools_ExtractPath

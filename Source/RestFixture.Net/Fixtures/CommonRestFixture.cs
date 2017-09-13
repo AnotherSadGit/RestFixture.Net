@@ -10,6 +10,7 @@ using restFixture.Net.Handlers;
 using restFixture.Net.Javascript;
 using restFixture.Net.Support;
 using restFixture.Net.TableElements;
+using restFixture.Net.Tools;
 using restFixture.Net.TypeAdapters;
 using restFixture.Net.Variables;
 using RestClient;
@@ -1347,7 +1348,7 @@ namespace restFixture.Net.Fixtures
                 bool success = false;
                 try
                 {
-                    string substitute = GLOBALS.substitute(Tools.fromHtml(expected.text()));
+                    string substitute = GLOBALS.substitute(HtmlTools.fromHtml(expected.text()));
                     object parse = ta.parse(substitute);
                     success = ta.Equals(parse, actual);
                 }
@@ -1452,17 +1453,17 @@ namespace restFixture.Net.Fixtures
 
         protected internal virtual IDictionary<string, string> parseHeaders(string str)
         {
-            return Tools.convertStringToMap(str, ":", LINE_SEPARATOR, true);
+            return StringTools.convertStringToMap(str, ":", LINE_SEPARATOR, true);
         }
 
         private IDictionary<string, string> parseNamespaceContext(string str)
         {
-            return Tools.convertStringToMap(str, "=", LINE_SEPARATOR, true);
+            return StringTools.convertStringToMap(str, "=", LINE_SEPARATOR, true);
         }
 
         private string stripTag(string somethingWithinATag)
         {
-            return Tools.fromSimpleTag(somethingWithinATag);
+            return HtmlTools.fromSimpleTag(somethingWithinATag);
         }
 
         private void configFormatter()
@@ -1559,7 +1560,7 @@ namespace restFixture.Net.Fixtures
 
         private string deHtmlify(string someHtml)
         {
-            return Tools.fromHtml(someHtml);
+            return HtmlTools.fromHtml(someHtml);
         }
 
         private void configureCredentials()

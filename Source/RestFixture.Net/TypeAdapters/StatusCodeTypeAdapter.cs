@@ -17,6 +17,7 @@
  */
 
 using restFixture.Net.Support;
+using restFixture.Net.Tools;
 
 namespace restFixture.Net.TypeAdapters
 {
@@ -44,7 +45,7 @@ namespace restFixture.Net.TypeAdapters
 				expected = ((Parse) r1).Text;
 			}
 			string actual = (string) r2;
-			if (!Tools.regex(actual, expected))
+			if (!StringTools.regex(actual, expected))
 			{
 				addError("not match: " + expected);
 			}

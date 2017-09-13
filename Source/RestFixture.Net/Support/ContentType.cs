@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using restFixture.Net.Tools;
 using RestClient.Data;
 
 /*  Copyright 2017 Simon Elms
@@ -128,8 +129,8 @@ namespace restFixture.Net.Support
 			RestData.DEFAULT_ENCODING = config.get("restfixture.content.default.charset", 
                 Encoding.UTF8.HeaderName);
 			string htmlConfig = config.get("restfixture.content.handlers.map", "");
-			string configStr = Tools.fromHtml(htmlConfig);
-			IDictionary<string, string> map = Tools.convertStringToMap(configStr, "=", "\n", true);
+			string configStr = HtmlTools.fromHtml(htmlConfig);
+			IDictionary<string, string> map = StringTools.convertStringToMap(configStr, "=", "\n", true);
 			foreach (string key in map.Keys)
 			{
 				string value = map[key];

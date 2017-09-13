@@ -7,4 +7,4 @@
 :: %FITNESSE_HOME% environment variable: Path to the folder that contains the common FitNesse 
 ::	files, including the fitnesse-standalone.jar and the FitSharp sub-folder containing the 
 ::	FitSharp executables and DLLs.
-java.exe -jar %FITNESSE_HOME%\fitnesse-standalone.jar -p 8090 -e 0
+java.exe -jar %FITNESSE_HOME%\fitnesse-standalone.jar -p 8089 -e 0
