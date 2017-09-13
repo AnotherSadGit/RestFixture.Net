@@ -39,6 +39,34 @@
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq, Version=4.7.99.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.99\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -68,6 +96,11 @@
     <Compile Include="ContentTypeTests\ContentTypeTestBase.cs" />
     <Compile Include="ContentTypeTests\ContentType_Config.cs" />
     <Compile Include="ContentTypeTests\ContentType_Parse.cs" />
+    <Compile Include="FitCellTests\FitCell_AddToBody.cs" />
+    <Compile Include="FitCellTests\FitCell_Body.cs" />
+    <Compile Include="FitCellTests\FitCell_Wrapped.cs" />
+    <Compile Include="Helpers\TestStubRowWrapper.cs" />
+    <Compile Include="Helpers\RestFixtureTestHelper.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_FromSimpleTag.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_MakeToggleCollapseable.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToCode.cs" />
