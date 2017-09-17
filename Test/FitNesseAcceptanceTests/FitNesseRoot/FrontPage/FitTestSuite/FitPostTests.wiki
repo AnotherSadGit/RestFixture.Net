@@ -8,19 +8,20 @@ A POST request with an XML body should create a resource:
 !* Note
 You set the body for the POST operation with the setBody.
 
-This example also shows how LET is used:
+This example also shows how LET is used to read a value into a variable or symbol (called "labels" 
+in !-restFixture-!):
 1) First cell: The "let" command;
-1) Second cell: The variable name;
+1) Second cell: The label name;
 2) Third cell: Where to read the data from; either "header" or "body" of the last successful HTTP 
 response;
-3) Fourth cell: The expression to extract the value that will be assigned to the variable.  For 
+3) Fourth cell: The expression to extract the value that will be assigned to the label.  For 
 header it must be a regular expression, for body it must be an XPath expression that returns a 
 string node.
 
-Variables are global: here the GET op is executed on an URI containing '''%id%''' where the label 'id' 
+Labels are global: here the GET op is executed on an URI containing '''%id%''' where the label 'id' 
 is defined in the test above.  In the displayed page the placeholder %id% will be replaced by the 
 value defined in the let method.
-You can also include variables in the expected result.
+You can also include labels in the expected result.
 
 Label values can be accessed from code using '''new Variables().get("labelname");'''
 *!

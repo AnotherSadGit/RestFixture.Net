@@ -1,5 +1,5 @@
 ---
-Suite
+Static
 ---
 !1 Individual Fit Tests
 

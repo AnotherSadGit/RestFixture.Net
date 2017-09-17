@@ -1,6 +1,5 @@
 !define TEST_SYSTEM {FIT}
 !define COMMAND_PATTERN {%m -r fitnesse.fitserver.FitServer %p}
-!define TEST_RUNNER {${FITSHARP_HOME}\Runner.exe}
-!path ${RESTFIXTURE_SERVER_HOME}\FitNesseTestServer.dll
-!path ${RESTFIXTURE_HOME}\RestFixture.Net.dll
-
+!define TEST_RUNNER {${FitSharpDirectory}\Runner.exe}
+!path ${RestFixtureDirectory}\RestFixture.Net.dll
+!path ${RestFixtureTestServerDirectory}\FitNesseTestServer.dll
