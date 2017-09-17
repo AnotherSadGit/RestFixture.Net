@@ -39,6 +39,14 @@
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="fit, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="fitSharp, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fitSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq, Version=4.7.99.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.99\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -68,7 +76,15 @@
     <Compile Include="ContentTypeTests\ContentTypeTestBase.cs" />
     <Compile Include="ContentTypeTests\ContentType_Config.cs" />
     <Compile Include="ContentTypeTests\ContentType_Parse.cs" />
+    <Compile Include="FitCellTests\FitCell_AddToBody.cs" />
+    <Compile Include="FitCellTests\FitCell_Body.cs" />
+    <Compile Include="FitCellTests\FitCell_Wrapped.cs" />
+    <Compile Include="HeadersTypeAdapterTests\HeadersTypeAdapter_Equals.cs" />
+    <Compile Include="HeadersTypeAdapterTests\HeadersTypeAdapter_Parse.cs" />
+    <Compile Include="Helpers\TestStubRowWrapper.cs" />
+    <Compile Include="Helpers\RestFixtureTestHelper.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_FromSimpleTag.cs" />
+    <Compile Include="HtmlToolsTests\HtmlTools_MakeToggleCollapseable.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToCode.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToHtmlLink.cs" />
     <Compile Include="JavascriptWrapper_EvaluateExpression.cs" />
@@ -76,11 +92,15 @@
     <Compile Include="LetHandlersTests\LetBodyJsHandler_Handle.cs" />
     <Compile Include="LetHandlersTests\LetHandlersTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestClientBuilder_CreateRestClient.cs" />
     <Compile Include="StringToolsTests\StringTools_ConvertStringToMap.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_FromHtml.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToHtml.cs" />
     <Compile Include="StringToolsTests\StringTools_Regex.cs" />
+    <Compile Include="VariablesTests\Variables_VariablesRegex.cs" />
     <Compile Include="XmlToolsTests\XmlTools_ExtractPath.cs" />
+    <Compile Include="XmlToolsTests\XmlTools_FromJSONtoXML.cs" />
+    <Compile Include="XmlToolsTests\XmlTools_IsValidJson.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

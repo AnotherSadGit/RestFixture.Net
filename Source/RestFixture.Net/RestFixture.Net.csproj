@@ -30,32 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+    <Reference Include="fit, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+    <Reference Include="fitSharp, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fitSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jurassic, Version=2.3.0.0, Culture=neutral, PublicKeyToken=42f272f6dd312a2c, processorArchitecture=MSIL">

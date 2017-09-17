@@ -55,12 +55,26 @@ namespace restFixture.Net.TypeAdapters
 			return Errors.Count == 0;
 		}
 
-		private RestData.Header find(ICollection<RestData.Header> actual, RestData.Header k)
+		private RestData.Header find(ICollection<RestData.Header> actualHeaders, 
+            RestData.Header expectedHeader)
 		{
-			foreach (RestData.Header h in actual)
+			foreach (RestData.Header h in actualHeaders)
 			{
-				bool nameMatches = h.Name.Equals(k.Name);
-				bool valueMatches = StringTools.regex(h.Value, k.Value);
+				bool nameMatches = h.Name.Equals(expectedHeader.Name);
+			    string expectedRegexPattern = expectedHeader.Value;
+			    if (!string.IsNullOrWhiteSpace(expectedRegexPattern))
+			    {
+                    expectedRegexPattern = expectedRegexPattern.Trim();
+                    // Was failing to match a URL with a query string because the "?" was parsed 
+                    //  as a regex metacharacter.  So if the regex pattern appears to be a 
+                    //  URL assume the "?" represents the start of the query string and escape it.
+                    if (expectedRegexPattern.ToLower().StartsWith("http://")
+                        || expectedRegexPattern.ToLower().StartsWith("https://"))
+                    {
+                        expectedRegexPattern = expectedRegexPattern.Replace("?", @"\?");
+                    }
+			    }
+                bool valueMatches = StringTools.regex(h.Value, expectedRegexPattern);
 				if (nameMatches && valueMatches)
 				{
 					return h;

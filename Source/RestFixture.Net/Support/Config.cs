@@ -116,6 +116,16 @@ namespace restFixture.Net.Support
 			data[key] = value;
 		}
 
+        /// <summary>
+        /// Removes a key/value pair from a named configuration.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
+        /// <remarks>Mainly used for testing.</remarks>
+        public void remove(string key)
+        {
+            data.Remove(key);
+        }
+
 		/// <summary>
 		/// Returns a key/value from a named config.
 		/// </summary>

@@ -5,7 +5,7 @@ using restFixture.Net.Tools;
 namespace RestFixtureUnitTests.StringToolsTests
 {
     [TestClass]
-    public class Tools_ConvertStringToMap
+    public class StringTools_ConvertStringToMap
     {
         [TestMethod]
         public void Should_Convert_String_Without_EntrySeparator_To_Single_Dictionary_Entry()

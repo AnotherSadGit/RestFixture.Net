@@ -1291,15 +1291,21 @@ namespace restFixture.Net.Fixtures
             string u = clientBaseUrl + lastRequestUrl;
             ICellWrapper<T> uriCell = row.getCell(1);
             Formatter.asLink(uriCell, GLOBALS.substitute(uriCell.body()), u, lastRequestUrl);
+
             ICellWrapper<T> cellStatusCode = row.getCell(2);
             if (cellStatusCode == null)
             {
                 throw new System.InvalidOperationException("You must specify a status code cell");
             }
+            cellStatusCode.body(GLOBALS.substitute(cellStatusCode.body()));
             int? lastStatusCode = LastResponse.StatusCode;
             process(cellStatusCode, lastStatusCode.ToString(), new StatusCodeTypeAdapter());
+
             IList<RestData.Header> lastHeaders = LastResponse.Headers;
-            process(row.getCell(3), lastHeaders, new HeadersTypeAdapter());
+            ICellWrapper<T> cellHeaders = row.getCell(3);
+            cellHeaders.body(GLOBALS.substitute(HtmlTools.fromHtml(cellHeaders.body())));
+            process(cellHeaders, lastHeaders, new HeadersTypeAdapter());
+
             ICellWrapper<T> bodyCell = row.getCell(4);
             if (bodyCell == null)
             {
