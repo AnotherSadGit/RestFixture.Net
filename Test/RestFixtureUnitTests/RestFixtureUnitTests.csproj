@@ -39,32 +39,12 @@
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="dbfit, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.dll</HintPath>
+    <Reference Include="fit, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="dbfit.mysql, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.mysql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.oracle, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.oracle.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.sqlserver, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sqlserver.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dbfit.sybase, Version=2.2.4498.25495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\dbfit.sybase.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="fit, Version=2.2.4498.25494, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="fitSharp, Version=2.2.4498.25493, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FitSharp.2.2\lib\net40\fitSharp.dll</HintPath>
+    <Reference Include="fitSharp, Version=2.5.6165.37488, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FitSharp.2.5.0\lib\net40\fitSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Moq, Version=4.7.99.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -112,10 +92,12 @@
     <Compile Include="LetHandlersTests\LetBodyJsHandler_Handle.cs" />
     <Compile Include="LetHandlersTests\LetHandlersTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestClientBuilder_CreateRestClient.cs" />
     <Compile Include="StringToolsTests\StringTools_ConvertStringToMap.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_FromHtml.cs" />
     <Compile Include="HtmlToolsTests\HtmlTools_ToHtml.cs" />
     <Compile Include="StringToolsTests\StringTools_Regex.cs" />
+    <Compile Include="VariablesTests\Variables_VariablesRegex.cs" />
     <Compile Include="XmlToolsTests\XmlTools_ExtractPath.cs" />
     <Compile Include="XmlToolsTests\XmlTools_FromJSONtoXML.cs" />
     <Compile Include="XmlToolsTests\XmlTools_IsValidJson.cs" />

@@ -31,11 +31,17 @@ namespace restFixture.Net.Variables
         /// <summary>
         /// pattern matching a variable name: {@code \%([a-zA-Z0-9_]+)\%}
         /// </summary>
-        public static Regex _specialCharactersRegex = new Regex("[{}()\\[\\].+*?^$\\\\|]", RegexOptions.Compiled);
+        public static readonly Regex SpecialCharactersRegex = new Regex("[{}()\\[\\].+*?^$\\\\|]", RegexOptions.Compiled);
 
-        // exclude 0-9, A-F from the first variable name as those are confused with URL encodings.
-        //  original regex pattern, allowing all initial characters: "\\%([a-zA-Z0-9_]+)\\%"
-        public static Regex _variablesRegex = new Regex("\\%([a-zG-Z_][a-zA-Z0-9_]*)\\%", RegexOptions.Compiled);
+        // Previous regex pattern which simply excluded hex digits (0-9, A-F) from the first 
+        //  character of the variable name to avoid confusion with URL encodings: 
+        //  "\\%([a-zG-Z_][a-zA-Z0-9_]*)\\%"
+
+        // Current regex excludes pairs of hex digits but allows single hex digits, 3 or more hex 
+        //  digits, or a hex digit + a non-hex digit, eg %GA%, %AG%, %A_%.
+        public static readonly Regex VariablesRegex =
+            new Regex(@"\%([a-zA-Z_]|[g-zG-Z_][a-zA-Z0-9_]|[a-zA-Z_][g-zG-Z_]|[a-zA-Z_][a-zA-Z0-9_]{2,})\%", 
+                RegexOptions.Compiled);
 
 		private static readonly string FIT_NULL_VALUE = (string)null;
 		protected internal string _nullValue = "null";
@@ -96,7 +102,7 @@ namespace restFixture.Net.Variables
 			}
 
 			IDictionary<string, string> replacements = new Dictionary<string, string>();
-		    MatchCollection matches = _variablesRegex.Matches(text);
+		    MatchCollection matches = VariablesRegex.Matches(text);
 		    foreach (Match match in matches)
 		    {
 		        GroupCollection groups = match.Groups;
@@ -130,7 +136,7 @@ namespace restFixture.Net.Variables
                     //  substitution expressions can include character escapes while .NET ones 
                     //  can't.  So the Java substitution expression "\\\\$0" probably 
                     //  translates to "\\$0" in .NET.  But we need to check this.
-                    string sanitisedReplacement = _specialCharactersRegex.Replace(replacement, "\\$0");
+                    string sanitisedReplacement = SpecialCharactersRegex.Replace(replacement, "\\$0");
 		            newText = newText.Replace(textToSubstitute, sanitisedReplacement);
 		        }
             }
