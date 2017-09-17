@@ -1,17 +1,16 @@
 ---
 Test
 ---
-!* !-LetTestActionFixture-!
-!-LetTestActionFixture-! allows the setting and getting of standard Fixture.Symbols.
+!* !-StringFixture-!
+!-StringFixture-! is one of the utility fixtures that comes with !-FitSharp-!.  It allows the reading 
+and setting of FIT symbols:
 *!
 
 Use symbol in the resource column:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | resType      |
-| enter | symbolValue | /resources   |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?       |
+| /resources | >>resType    |
 
 The resource text in the following GET is specified as "%resType%/0" (without the quotes).
 
@@ -20,11 +19,9 @@ The resource text in the following GET is specified as "%resType%/0" (without th
 
 Use symbol in the expected status code column:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | status       |
-| enter | symbolValue | 200          |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?       |
+| 200        | >>status     |
 
 The expected status code in the following GET is specified as "%status%" (without the quotes).
 
@@ -33,11 +30,9 @@ The expected status code in the following GET is specified as "%status%" (withou
 
 Use symbol in the expected headers column:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | headerName     |
-| enter | symbolValue | Content-Length |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?       |
+| Content-Length        | >>headerName |
 
 The expected header text in the following GET is specified as "%headerName% : [\d]+" (without the quotes).
 
@@ -46,11 +41,9 @@ The expected header text in the following GET is specified as "%headerName% : [\
 
 Use symbol in the expected body column #1, with XPath expression:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | xPath          |
-| enter | symbolValue | /resource/name |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?      |
+| /resource/name | >>xPath |
 
 The expected body in the following GET is specified as "%xPath%[text()='a funky name']" (without the quotes).
 
@@ -59,11 +52,9 @@ The expected body in the following GET is specified as "%xPath%[text()='a funky 
 
 Use symbol in the expected body column #2, with XPath expression:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | nodeValue    |
-| enter | symbolValue | a funky name |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?      |
+| a funky name | >>nodeValue |
 
 The expected body in the following GET is specified as "/resource/name[text()='%nodeValue%']" (without the quotes).
 
@@ -72,11 +63,9 @@ The expected body in the following GET is specified as "/resource/name[text()='%
 
 Use symbol in the expected body column #3, with !-JavaScript-! expression:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | nodeValue    |
-| enter | symbolValue | a funky name |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?      |
+| a funky name | >>nodeValue |
 
 The expected body in the following GET is specified as "jsonbody.resource.name=='%nodeValue%'" (without the double quotes).
 
@@ -85,11 +74,9 @@ The expected body in the following GET is specified as "jsonbody.resource.name==
 
 Use symbol in setHeader:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | contentType     |
-| enter | symbolValue | application/xml |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?      |
+| application/xml | >>contentType |
 
 The header being set in the following POST is specified as "Content-Type : %contentType%" (without the quotes).
 
@@ -102,12 +89,6 @@ The header being set in the following POST is specified as "Content-Type : %cont
 /resource/data[text()='some data']-! |
 
 Use symbol in setHeader with multiple headers:
-
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | contentType     |
-| enter | symbolValue | application/xml |
-| check | symbolValue |    |
 
 The first header being set in the following POST is specified as "Content-Type : %contentType%" (without the quotes).
 
@@ -122,11 +103,9 @@ X-CustomHeader : SomeText-! |
 
 Use symbol in setBody, with XML body:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | bodyData     |
-| enter | symbolValue | some data    |
-| check | symbolValue |    |
+| String Fixture |
+| Field      | Field?      |
+| some data | >>bodyData |
 
 The body being set in the following POST is specified as "<resource><name>test post</name><data>%bodyData%</data></resource>" (without the quotes).
 
@@ -140,12 +119,6 @@ The body being set in the following POST is specified as "<resource><name>test p
 
 Use symbol in setBody, with JSON body:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | bodyData     |
-| enter | symbolValue | some data    |
-| check | symbolValue |    |
-
 The body being set in the following POST is specified as '{ "resource" : { "name" : "test post", "data" : "%bodyData%" } }' (without the single quotes).
 
 | Fit Rest Fixture | http://localhost:7654 |
@@ -156,11 +129,13 @@ The body being set in the following POST is specified as '{ "resource" : { "name
 | GET              | /resources/%id%.json |200    | Content-Type : application/json | !-jsonbody.resource.name=='test post'
 jsonbody.resource.data=='some data'-! |
 
-A POST request with a URL-encoded body should create a resouce:
+Use symbol in setBody, with form-urlencoded body:
 
-!* setBody Encoding
-The setBody content cell may be encoded with ! - -! to add line breaks, etc.
-*!
+| String Fixture |
+| Field      | Field?      |
+| test%20post | >>bodyName |
+
+The body being set in the following POST is specified as "name=%bodyName%&data=some%20data" (without the quotes).
 
 | Fit Rest Fixture | http://localhost:7654 |
 | setHeader        | Content-Type : application/x-www-form-urlencoded;charset=UTF-8    |

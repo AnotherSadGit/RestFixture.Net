@@ -94,22 +94,21 @@ A variable defined via LET will be available to other fixtures in the regular Fi
 | GET              | /resources/0  |200    |  |  |
 | LET              | theName | body   | /resource/name/text() |  |
 
-!* !-LetTestActionFixture-!
-!-LetTestActionFixture-! allows the setting and getting of regular Fixture.Symbols.
+!* !-StringFixture-!
+!-StringFixture-! is one of the utility fixtures that comes with !-FitSharp-!  It allows the reading 
+and setting of FIT symbols:
 *!
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | theName      |
-| check | symbolValue | a funky name |
+| String Fixture |
+| Field     | Field?       |
+| <<theName | a funky name |
 
 !-RestFixture.Net-! should read regular FitNesse symbols which have been defined in other fixture 
 types, not via LET:
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | resType      |
-| enter | symbolValue | /resources   |
+| String Fixture |
+| Field      | Field?       |
+| /resources | >>resType    |
 
 !* Note
 In the wiki markup of this page the resource text of the GET row below is specified as 
