@@ -310,6 +310,7 @@ namespace restFixture.Net.Fixtures
             IRowWrapper<Parse> currentRow = new FitRow(parse);
 			try
 			{
+			    restFixture.Formatter.DisplayActual = restFixture.displayActualOnRight;
 				restFixture.processRow(currentRow);
 			}
 			catch (Exception exception)

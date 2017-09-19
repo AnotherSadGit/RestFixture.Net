@@ -90,20 +90,26 @@ namespace restFixture.Net.TableElements
 
         public void check(ICellWrapper<Parse> expected, RestDataTypeAdapter actual)
         {
+            // Based on the code in Fixture.check(), in the Java FitNesse source code (the Java 
+            //  version of RestFixture calls FitRestFixture.check() which calls 
+            //  ActionFixture.check() which calls Fixture.check()).
+
             if (string.IsNullOrWhiteSpace(expected.body()))
             {
                 if (actual.Actual == null)
                 {
                     return;
                 }
-                else
+                else // Expected value is blank so display actual value in grey text.
                 {
                     expected.body(gray(actual.Actual.ToString()));
                     return;
                 }
             }
 
-            if (actual.Actual != null && actual.Equals(expected.body(), actual.Actual.ToString()))
+            // This bit is based on CellComparator.compareCellToResult() and compare() in the Java 
+            //  FitNesse source code.
+            if (actual.Equals(expected, actual.Actual))
             {
                 right(expected, actual);
             }

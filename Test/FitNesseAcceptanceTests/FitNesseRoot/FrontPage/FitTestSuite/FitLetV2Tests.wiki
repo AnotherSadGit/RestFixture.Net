@@ -84,24 +84,29 @@ The body of the response is read from different properties in responses with dif
 *!
 
 !* Accessing the Headers in !-JavaScript-!:
-Sometimes a response may have multiple headers with the same name.  There are various methods of 
-retrieving headers from a response:
+There are various methods of retrieving headers from a response:
 
-1) header(''name'', ''index''):  Retrieves the header with the specified name and the specified index.  
-So, for example, if there are two Content-Type headers then header('Content-Type', 0) would retrieve 
-the first one and header('Content-Type', 1) would retrieve the second one;
+1) '''header(''name'', ''index''):'''  Retrieves the header with the specified name and the specified index.  
+So, for example, if there are two Set-Cookie headers then header(' Set-Cookie', 0) would retrieve 
+the first one and header(' Set-Cookie', 1) would retrieve the second one.  '''If the specified header doesn't 
+exist''' in the response then '''null''' is returned;
 
-2) header0(''name''):  This is a shortcut for header(''name'', 0), to retrieve the first header with the 
-specified name;
+2) '''header0(''name''):'''  This is a shortcut for header(''name'', 0), to retrieve the first header with the 
+specified name.  '''If the specified header doesn't exist''' in the response then '''null''' is returned;
 
-3) headersText(''name''):  Unfortunately, due to the !-JavaScript-! engine used in !-RestFixture.Net-!, it is 
-not possible to get a list of headers of the same name.  headersText is the next best thing: A string 
-representation of the list of headers of the same name.  It works fine for displaying results but would 
-cause problems if the list of headers needed further processing;
+3) '''headers(''name''):'''  An array of the headers with the same name (eg "Set-Cookie", which is sometimes 
+repeated).  '''If the specified header doesn't exist''' in the response then an '''empty array''' is returned.  This 
+is in contrast to the other methods that return null if the header doesn't exist;
 
-4) headerListSize(''name''): Returns the number of headers with the specified name;
+4) '''headersText(''name''):'''  Similar to headers but returns a string representation of the headers.  
+'''If the specified header doesn't exist''' then '''null''' is returned.  If a single header matches the 
+name then the string value of the header is returned.  If multiple headers match the name then a string 
+is returned of the form: "[value_1, value_2, ..., value_n]" (note the header in the example test table 
+below is a single header, not multiple headers);
 
-5) headersSize():  Returns the total number of headers in the response.  If multiple headers have the same 
+5) '''headerListSize(''name''):''' Returns the number of headers with the specified name;
+
+6) '''headersSize():'''  Returns the total number of headers in the response.  If multiple headers have the same 
 name they are counted separately.
 
 *!
@@ -114,9 +119,15 @@ name they are counted separately.
 | LET              | status_code_value     | js  | response.statusCode | 201 |
 | LET              | status_text_value     | js  | response.statusText | Created |
 | LET              | loc                   | js  |response.header('Location', 0) | /resources/102 |
+| LET              | loc                   | js  |response.header('Non-Existent', 0) | null |
 | LET              | loc                   | js  |response.header0('Location')   | /resources/102 |
+| LET              | loc                   | js  |response.header0('Non-Existent') | null |
 | LET              | header_size           | js  | response.headerListSize('Location') | 1 |
-| LET              | all_headers_size     | js  | response.headersSize() | 4 |
+| LET              | all_headers_size      | js  | response.headersSize() | 5 |
+| LET              | header_array          | js  | response.headers('Location') | /resources/102 |
+| LET              | header_array          | js  | response.headers('Non-Existent') |  |
+| LET              | header_array_as_text  | js  | response.headersText('Location') | /resources/102 |
+| LET              | header_array_as_text  | js  | response.headersText('Non-Existent') | null |
 
 For a response with Content-Type application/json the response body should be accessible as a JSON 
 object via response.jsonbody.  Properties of the JSON object should be accessible via dot notation:

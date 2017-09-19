@@ -75,6 +75,11 @@ namespace restFixture.Net.TableElements
 				return cell;
 			}
 		}
+
+	    public override string ToString()
+	    {
+            return cell.Body;
+	    }
 	}
 
 }

@@ -96,14 +96,14 @@ LET operation in the previous table.
 If a variable has not been defined via LET, !-RestFixture.Net-! should look in Fixture.Symbols 
 for the value:
 
-!* !-LetTestActionFixture-!
-!-LetTestActionFixture-! allows the setting and getting of standard Fixture.Symbols.
+!* !-StringFixture-!
+!-StringFixture-! is one of the utility fixtures that comes with !-FitSharp-!.  It allows the reading 
+and setting of FIT symbols:
 *!
 
-| Action Fixture                     |
-| start | Let Test Action Fixture    |
-| enter | symbolName  | resType      |
-| enter | symbolValue | /resources   |
+| String Fixture |
+| Field      | Field? |
+| /resources | >>resType   |
 
 The resource text in the following GET is specified as "%resType%/%id%" (without the quotes).
 
@@ -116,10 +116,9 @@ A variable defined via LET will be available in the regular Fixture.Symbols map:
 | GET              | /resources/%id%  |200    |  |  |
 | LET              | theName | body   | /resource/name/text() |  |
 
-| Action Fixture                  |
-| start | Let Test Action Fixture |
-| enter | symbolName  | theName   |
-| check | symbolValue | test post |
+| String Fixture |
+| Field      | Field? |
+| <<theName | test post |
 
 A variable that is set to null will be rendered using the configured null value representation 
 (the default representation is the string "null"):

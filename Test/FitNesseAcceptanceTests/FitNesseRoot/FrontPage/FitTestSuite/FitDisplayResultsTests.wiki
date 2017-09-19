@@ -1,0 +1,61 @@
+---
+Test
+---
+!3 Display or Hide Results via Config Table
+
+!* Difference in Behaviour from Original Java !-RestFixture-!:
+
+!-RestFixture.Net-! can display the actual results of a test alongside the expected results for 
+both FIT and SLiM tests.  The original Java !-RestFixture-! doesn't display actual results 
+alongside expected results for FIT tests, only for SLiM tests.
+*!
+
+Actual results should be displayed by default, as long as they are not identical to the expected 
+results:
+
+So the actual results are ''not'' displayed for the Status Code column, as the actual results are 
+identical to the expected results.  However, the actual results ''are'' displayed for the 
+Expected Headers and Expected Body columns as they are not identical to the expected results.
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -! |
+
+Actual results should ''not'' be displayed alongside expected results if the config table setting is 
+false:
+
+!| Rest Fixture Config |
+| restfixture.display.actual.on.right | false |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -! |
+
+If an expected result column is left blank the actual results should be displayed, even if the 
+config table setting is false:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 |  |  |
+
+Actual results ''should'' be displayed alongside expected results if the config table setting is 
+true:
+
+!| Rest Fixture Config |
+| restfixture.display.actual.on.right | true |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ | !-/resource/name[text()='a funky name'] 
+/resource/data[text()='an important message'] -! |
+
+The toggling of actual results should work for JSON bodies as well as XML:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
+jsonbody.resource.data=='an important message'-! |
+
+!| Rest Fixture Config |
+| restfixture.display.actual.on.right | false |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
+jsonbody.resource.data=='an important message'-! |

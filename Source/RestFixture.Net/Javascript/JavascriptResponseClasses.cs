@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Jurassic;
 using Jurassic.Library;
@@ -109,15 +110,40 @@ namespace restFixture.Net.Javascript
             return header(name, 0);
         }
 
-        /// <param name="name"> the header name </param>
-        /// <returns> all headers with the given name </returns>
+        /// <summary>
+        /// Gets an array of headers with the specified name.
+        /// </summary>
+        /// <param name="name">The header name.</param>
+        /// <returns>An array of headers with the specified name.  If there are no 
+        /// headers with the specified name an empty array is returned.</returns>
+        /// <remarks>Useful for headers such as "Set-Cookie" which may be repeated in 
+        /// an HTTP response.</remarks>
+        [JSFunction(Name = "headers")]
+        public virtual ArrayInstance headers(string name)
+        {
+            IList<string> vals;
+            bool exists = _headers.TryGetValue(name, out vals);
+            if (!exists)
+            {
+                return this.Engine.Array.New();
+            }
+            return this.Engine.Array.New(vals.ToArray());
+        }
+
+        /// <summary>Gets a string representation of an array of headers with the specified name.</summary>
+        /// <param name="name">The header name.</param>
+        /// <returns>A string representation of the values of all headers with a given name.  If no 
+        /// headers have the given name then null is returned.  If one header has the 
+        /// given name then the value of that header is returned.  If multiple headers have the 
+        /// given name then a string will be returned of the form: 
+        /// "[value_1, value_2, ..., value_n]"</returns>
         [JSFunction(Name = "headersText")]
         public virtual string headersText(string name)
         {
             int sz = headerListSize(name);
             if (sz == 0)
             {
-                return string.Empty;
+                return null;
             }
             if (sz == 1)
             {
