@@ -14,7 +14,7 @@ namespace RestFixtureUnitTests
     [TestClass]
     public class JavascriptWrapper_EvaluateExpression
     {
-        Mock<IRunnerVariablesProvider> _mock = new Mock<IRunnerVariablesProvider>();
+        private Mock<IRunnerVariablesProvider> _mock = new Mock<IRunnerVariablesProvider>();
 
         public FitVariables Variables { get; set; }
 
@@ -129,15 +129,15 @@ namespace RestFixtureUnitTests
         }
 
         [TestMethod]
-        public void Should_Read_ResponseHeader_Repeated_From_JavaScript()
+        public void Should_Read_ResponseHeader_Repeated_FirstValue_From_JavaScript()
         {
-            string javascriptText = "'my last response Bespoke-Header[0] is: ' + response.header('Bespoke-Header', 0)";
+            string javascriptText = "'my last response Bespoke-Header[0] is: ' + response.header0('Bespoke-Header')";
             string expectedResult = "my last response Bespoke-Header[0] is: jolly";
             ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
         }
 
         [TestMethod]
-        public void Should_Read_ResponseHeader_Repeated2_From_JavaScript()
+        public void Should_Read_ResponseHeader_Repeated_SecondValue_From_JavaScript()
         {
             string javascriptText = "'my last response Bespoke-Header[1] is: ' + response.header('Bespoke-Header', 1)";
             string expectedResult = "my last response Bespoke-Header[1] is: good";
@@ -145,14 +145,36 @@ namespace RestFixtureUnitTests
         }
 
         [TestMethod]
-        public void Should_Read_ResponseHeader_Repeated_All_From_JavaScript()
+        public void Should_Read_ResponseHeader_Repeated_AllValues_From_JavaScript()
         {
-            // Jurassic JavaScript engine cannot handle .NET methods that return an IEnumerable.
-            //  So we can't get a list of the bespoke headers.  Instead we have to make do with the 
-            //  string representation of the list.  Works for this test method but wouldn't work if 
-            //  the user wanted to further process the list of headers.
+            // response.headers(...) returns an array of headers with the specified name.
+            string javascriptText =
+@"var resultString = 'my last response Bespoke-Header values are:';
+var arrayLength = response.headerListSize('Bespoke-Header');
+var multiHeaders = response.headers('Bespoke-Header');
+for (var i = 0; i < arrayLength; i++) {
+    resultString += ' [' + i + ']:' + multiHeaders[i];
+}
+resultString;";
+            string expectedResult = "my last response Bespoke-Header values are: [0]:jolly [1]:good";
+            ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
+        }
+
+        [TestMethod]
+        public void Should_Read_ResponseHeader_Repeated_Text_From_JavaScript()
+        {
+            // response.headersText(...) returns a string representation of an array of headers 
+            //  with the specified name.
             string javascriptText = "'my last response Bespoke-Header: ' + response.headersText('Bespoke-Header')";
             string expectedResult = "my last response Bespoke-Header: [jolly, good]";
+            ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
+        }
+
+        [TestMethod]
+        public void Should_Read_ResponseHeader_NonRepeated_Text_From_JavaScript()
+        {
+            string javascriptText = "'my last response Content-Length: ' + response.headersText('Content-Length')";
+            string expectedResult = "my last response Content-Length: 7";
             ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
         }
 
@@ -173,10 +195,18 @@ namespace RestFixtureUnitTests
         }
 
         [TestMethod]
-        public void Should_Evaluate_NonExistent_ResponseHeader_As_Null_In_JavaScript()
+        public void Should_Evaluate_ResponseHeader_NonExistent_As_Null_In_JavaScript()
         {
-            string javascriptText = "'my last response does not have Non-Existent header: ' + response.header0('Ciccio')";
+            string javascriptText = "'my last response does not have Non-Existent header: ' + response.header0('Non-Existent')";
             string expectedResult = "my last response does not have Non-Existent header: null";
+            ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
+        }
+
+        [TestMethod]
+        public void Should_Read_ResponseHeader_NonExistent_Text_As_Null_From_JavaScript()
+        {
+            string javascriptText = "'my last response Non-Existent: ' + response.headersText('Non-Existent')";
+            string expectedResult = "my last response Non-Existent: null";
             ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
         }
 
@@ -266,6 +296,22 @@ namespace RestFixtureUnitTests
         {
             string javascriptText = "some invalid JavaScript";
             string expectedResult = "not important";
+            ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
+        }
+
+        [TestMethod]
+        public void Should_Evaluate_Multiple_JavaScript_Statements()
+        {
+            string javascriptText =
+@"var resultString = 'Iterating through the values in a header array: ';
+var arrayLength = response.headerListSize('Bespoke-Header');
+var multiHeaders = response.headers('Bespoke-Header');
+for (var i = 0; i < arrayLength; i++) {
+    if (i > 0) resultString += ', ';
+    resultString += multiHeaders[i];
+}
+resultString;";
+            string expectedResult = "Iterating through the values in a header array: jolly, good";
             ReadXmlResponsePropertyInJavaScript(javascriptText, expectedResult);
         }
 
