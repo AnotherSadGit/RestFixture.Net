@@ -302,6 +302,13 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
             Resources.add(type, newResource);
             response.StatusCode = (int)HttpStatusCode.Created;  // 201
             response.AddHeader("Location", type + "/" + newResource.Id);
+            // Want to include multiple headers with the same name.  Set-Cookie is one of the few 
+            //  headers that may be routinely duplicated in a HTTP response.  Note that these 
+            //  headers will appear as a single header with comma-separated values, rather than as 
+            //  separate headers due to the way the .NET HttpListenerResponse.AppendHeader() method 
+            //  works.
+            response.AddHeader("Set-Cookie", "cookie1=value1");
+            response.AppendHeader("Set-Cookie", "cookie2=value2");
         }
     }
 }
