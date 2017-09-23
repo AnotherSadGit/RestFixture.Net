@@ -33,7 +33,7 @@ namespace restFixture.Net.Fixtures
 	{
         private static NLog.Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private CommonRestFixture<Parse> restFixture;
+        private CommonRestFixture<Parse> _restFixture;
 
 	    public FitRestFixture()
 	    {
@@ -55,7 +55,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.LastEvaluation;
+				return _restFixture.LastEvaluation;
 			}
 		}
 
@@ -63,10 +63,10 @@ namespace restFixture.Net.Fixtures
         {
             get
             {
-                return restFixture.BaseUrl;
+                return _restFixture.BaseUrl;
             }
 
-            set { restFixture.BaseUrl = value; }
+            set { _restFixture.BaseUrl = value; }
         }
 
         /// <returns> delegates to <seealso cref="CommonRestFixture{T}.BaseUrlString"/> </returns>
@@ -74,7 +74,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-			    return restFixture.BaseUrlString;
+			    return _restFixture.BaseUrlString;
             }
 
             set
@@ -91,7 +91,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.DefaultHeaders;
+				return _restFixture.DefaultHeaders;
 			}
 		}
 
@@ -105,7 +105,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.Formatter;
+				return _restFixture.Formatter;
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void setMultipartFileName()
 		{
-			restFixture.SetMultipartFileName();
+			_restFixture.SetMultipartFileName();
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.MultipartFileName;
+				return _restFixture.MultipartFileName;
 			}
 		}
 
@@ -137,12 +137,12 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.FileName;
+				return _restFixture.FileName;
 			}
 
 		    set
 		    {
-                restFixture.FileName = value;
+                _restFixture.FileName = value;
 		    }
 		}
 
@@ -151,7 +151,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void setMultipartFileParameterName()
 		{
-			restFixture.setMultipartFileParameterName();
+			_restFixture.setMultipartFileParameterName();
 		}
 
 		/// <summary>
@@ -163,7 +163,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.MultipartFileParameterName;
+				return _restFixture.MultipartFileParameterName;
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void setBody()
 		{
-			restFixture.setBody();
+			_restFixture.setBody();
 		}
 
 		/// <summary>
@@ -180,7 +180,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void setHeader()
 		{
-			restFixture.setHeader();
+			_restFixture.setHeader();
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void setHeaders()
 		{
-			restFixture.setHeaders();
+			_restFixture.setHeaders();
 		}
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void PUT()
 		{
-			restFixture.PUT();
+			_restFixture.PUT();
 		}
 
 		/// <summary>
@@ -204,7 +204,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void GET()
 		{
-			restFixture.GET();
+			_restFixture.GET();
 		}
 
 		/// <summary>
@@ -212,7 +212,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void DELETE()
 		{
-			restFixture.DELETE();
+			_restFixture.DELETE();
 		}
 
 		/// <summary>
@@ -220,7 +220,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void POST()
 		{
-			restFixture.POST();
+			_restFixture.POST();
 		}
 
 		/// <summary>
@@ -228,7 +228,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void HEAD()
 		{
-			restFixture.HEAD();
+			_restFixture.HEAD();
 		}
 
 		/// <summary>
@@ -236,7 +236,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void OPTIONS()
 		{
-			restFixture.OPTIONS();
+			_restFixture.OPTIONS();
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void TRACE()
 		{
-			restFixture.TRACE();
+			_restFixture.TRACE();
 		}
 
 		/// <summary>
@@ -252,7 +252,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void let()
 		{
-			restFixture.let();
+			_restFixture.let();
 		}
 
 		/// <summary>
@@ -260,7 +260,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void comment()
 		{
-			restFixture.comment();
+			_restFixture.comment();
 		}
 
 		/// <summary>
@@ -268,7 +268,7 @@ namespace restFixture.Net.Fixtures
 		/// </summary>
 		public virtual void evalJs()
 		{
-			restFixture.evalJs();
+			_restFixture.evalJs();
 		}
 
 		/// <summary>
@@ -278,7 +278,7 @@ namespace restFixture.Net.Fixtures
 		///            the row to process. </param>
 		public virtual void processRow(IRowWrapper<Parse> currentRow)
 		{
-			restFixture.processRow(currentRow);
+			_restFixture.processRow(currentRow);
 		}
 
 		/// <summary>
@@ -289,36 +289,38 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.Headers;
+				return _restFixture.Headers;
 			}
 		}
 
         public override void DoCells(Parse parse)
 		{
-			if (restFixture == null)
+			if (_restFixture == null)
 			{
-                restFixture = new CommonRestFixture<Parse>(this.Symbols);
-				restFixture.Config = Config.getConfig(ConfigNameFromArgs);
+                _restFixture = new CommonRestFixture<Parse>(this.Symbols);
+				_restFixture.Config = Config.getConfig(ConfigNameFromArgs);
 				string url = BaseUrlFromArgs;
 				if (url != null)
 				{
-					restFixture.BaseUrl = new Url(HtmlTools.fromSimpleTag(url));
+					_restFixture.BaseUrl = new Url(HtmlTools.fromSimpleTag(url));
 				}
-                restFixture.initialize(Runner.FIT);
-				((FitFormatter) restFixture.Formatter).ActionFixtureDelegate = this;
+                _restFixture.initialize(Runner.FIT);
+				((FitFormatter) _restFixture.Formatter).ActionFixtureDelegate = this;
+                _restFixture.Formatter.DisplayActual = _restFixture.displayActualOnRight;
+                _restFixture.Formatter.DisplayAbsoluteURLInFull = _restFixture.displayAbsoluteURLInFull;
+                _restFixture.Formatter.MinLengthForToggleCollapse = _restFixture.minLenForCollapseToggle;
 			}
             IRowWrapper<Parse> currentRow = new FitRow(parse);
 			try
 			{
-			    restFixture.Formatter.DisplayActual = restFixture.displayActualOnRight;
-				restFixture.processRow(currentRow);
+				_restFixture.processRow(currentRow);
 			}
 			catch (Exception exception)
 			{
                 // TODO: Sort out CellWrapper vs CellWrapper<Parse>.
                 ICellWrapper<Parse> firstCell = currentRow.getCell(0);
 				LOG.Error(exception, "Exception when processing row {0}", firstCell.text());
-			    ICellFormatter<Parse> cellFormatter = restFixture.Formatter;
+			    ICellFormatter<Parse> cellFormatter = _restFixture.Formatter;
                 cellFormatter.exception(firstCell, exception);
 			}
 		}
@@ -356,7 +358,7 @@ namespace restFixture.Net.Fixtures
 		{
 			get
 			{
-				return restFixture.Config;
+				return _restFixture.Config;
 			}
 		}
 	}
