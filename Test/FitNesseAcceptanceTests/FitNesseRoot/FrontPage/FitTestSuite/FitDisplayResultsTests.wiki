@@ -59,3 +59,49 @@ jsonbody.resource.data=='an important message'-! |
 | Fit Rest Fixture | http://localhost:7654 |
 | GET | /resources/1.json | 200 | Content-Type : application/json;charset=ISO-8859-1 | !-jsonbody.resource.name=='a funky name'
 jsonbody.resource.data=='an important message'-! |
+
+!3 Collapseable Content
+
+When the actual body is displayed sometimes it will be very large.  In the interest of readability, 
+large content in cells can be hidden by default and a button displayed to toggle the visibility of 
+the content.  Whether the toggle button is displayed is determined by the value of the config setting 
+
+'''restfixture.display.toggle.for.cells.larger.than'''
+
+This defines the minimum number of characters in the cell for which the toggle button is displayed.
+
+A negative value disables this feature: Content will always be displayed, no matter how long it is, 
+and the toggle button will never be displayed.  The default value is -1, meaning this feature is 
+disabled by default.
+
+!* Difference in Behaviour from Original Java !-RestFixture-!:
+
+In !-RestFixture.Net-! Collapsible Content can be enabled for both FIT and SLiM tests.  In the 
+original Java !-RestFixture-! this feature is only available for SLiM tests, not for FIT.
+*!
+
+!| Rest Fixture Config |
+| restfixture.display.actual.on.right | true |
+
+By default, lengthy content should always be visible:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/100 | 200 |  | /resource/type[text()='large content'] |
+
+If the collapsible content config setting is positive, content with more than that number of characters 
+should be hidden and a button displayed to expand and collapse the content:
+
+!| Rest Fixture Config |
+| restfixture.display.toggle.for.cells.larger.than | 100 |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/100 | 200 |  | /resource/type[text()='large content'] |
+
+If the actual content is not displayed, the toggle button should not be visible, even for content that 
+is longer than the configured collapsible content threshold:
+
+!| Rest Fixture Config |
+| restfixture.display.actual.on.right | false |
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET | /resources/100 | 200 |  | /resource/type[text()='large content'] |
