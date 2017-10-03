@@ -1,4 +1,4 @@
-﻿namespace restFixture.Net.Support
+﻿namespace RestFixture.Net.Support
 {
     /// <summary>
     /// What runner this table is running on.

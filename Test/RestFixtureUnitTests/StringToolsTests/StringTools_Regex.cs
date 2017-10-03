@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Tools;
+using RestFixture.Net.Tools;
 
-namespace RestFixtureUnitTests.StringToolsTests
+namespace RestFixture.Net.UnitTests.StringToolsTests
 {
     [TestClass]
     public class StringTools_Regex

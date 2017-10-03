@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Tools;
+using RestFixture.Net.Tools;
 
-namespace RestFixtureUnitTests.HtmlToolsTests
+namespace RestFixture.Net.UnitTests.HtmlToolsTests
 {
     [TestClass]
     public class HtmlTools_FromSimpleTag

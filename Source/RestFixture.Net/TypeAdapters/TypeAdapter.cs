@@ -5,13 +5,12 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using fit;
 using FastClone;
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
+using RestFixture.Net.Tools;
 
 // Modified or written by Object Mentor, Inc. for inclusion with FitNesse.
 // Copyright (c) 2002 Cunningham & Cunningham, Inc.
 // Released under the terms of the GNU General Public License version 2 or later.
-namespace restFixture.Net.TypeAdapters
+namespace RestFixture.Net.TypeAdapters
 {
     // Copyright (c) 2002 Cunningham & Cunningham, Inc.
     // Released under the terms of the GNU General Public License version 2 or later.

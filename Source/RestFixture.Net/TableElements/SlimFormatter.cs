@@ -1,7 +1,6 @@
 ﻿using System;
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
-using restFixture.Net.TypeAdapters;
+using RestFixture.Net.Tools;
+using RestFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -21,7 +20,7 @@ using restFixture.Net.TypeAdapters;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.TableElements
+namespace RestFixture.Net.TableElements
 {
 	/// <summary>
 	/// Formatter of cells handled by Slim.

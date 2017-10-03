@@ -1,9 +1,9 @@
 ﻿using fit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.TableElements;
-using smartrics.rest.fitnesse.fixture;
+using RestFixture.Net.TableElements;
+using RestFixture.Net.UnitTests.Helpers;
 
-namespace RestFixtureUnitTests.FitCellTests
+namespace RestFixture.Net.UnitTests.FitCellTests
 {
     [TestClass]
     public class FitCell_AddToBody

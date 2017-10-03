@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Handlers;
-using restFixture.Net.Support;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RestClient.Data;
+using RestFixture.Net.Handlers;
 
-namespace RestFixtureUnitTests.LetHandlersTests
+namespace RestFixture.Net.UnitTests.LetHandlersTests
 {
     [TestClass]
     public class LetBodyJsHandler_Handle : LetHandlersTestBase

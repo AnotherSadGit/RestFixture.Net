@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace FitNesseTestServer
+namespace RestFixture.Net.FitNesseTestServer
 {
     internal static class HashMapHelperClass
     {

@@ -16,10 +16,9 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
+using RestFixture.Net.Tools;
 
-namespace restFixture.Net.TypeAdapters
+namespace RestFixture.Net.TypeAdapters
 {
 
 	using Parse = fit.Parse;

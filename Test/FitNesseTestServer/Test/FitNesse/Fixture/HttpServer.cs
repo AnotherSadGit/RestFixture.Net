@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers;
 using NLog;
+using RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
 {
     public class HttpServer
     {

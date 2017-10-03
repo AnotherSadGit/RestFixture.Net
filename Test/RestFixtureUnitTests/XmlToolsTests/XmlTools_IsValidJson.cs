@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Tools;
+using RestFixture.Net.Tools;
 
-namespace RestFixtureUnitTests.XmlToolsTests
+namespace RestFixture.Net.UnitTests.XmlToolsTests
 {
     [TestClass]
     public class XmlTools_IsValidJson

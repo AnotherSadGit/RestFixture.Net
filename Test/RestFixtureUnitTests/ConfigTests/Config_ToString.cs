@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
+using RestFixture.Net.Support;
 
-namespace RestFixtureUnitTests.ConfigTests
+namespace RestFixture.Net.UnitTests.ConfigTests
 {
     [TestClass]
     public class Config_ToString

@@ -7,7 +7,7 @@
 
 using System.Text.RegularExpressions;
 
-namespace restFixture.Net.Support
+namespace RestFixture.Net.Support
 {
     internal static class StringHelperClass
     {

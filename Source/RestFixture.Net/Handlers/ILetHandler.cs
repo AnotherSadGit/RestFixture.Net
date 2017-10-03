@@ -1,5 +1,5 @@
-﻿using restFixture.Net.Support;
-using RestClient.Data;
+﻿using RestClient.Data;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -19,7 +19,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Handlers
+namespace RestFixture.Net.Handlers
 {
 	/// <summary>
 	/// Strategy to handle LET expressions.

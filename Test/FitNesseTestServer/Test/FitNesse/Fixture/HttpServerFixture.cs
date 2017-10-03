@@ -17,10 +17,9 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using fit;
 using NLog;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
 {
 	/// <summary>
 	/// Fixture to manage the HTTP server required to support RestFixture CATs.

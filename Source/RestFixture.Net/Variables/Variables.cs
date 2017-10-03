@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using restFixture.Net.Support;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -19,7 +19,7 @@ using restFixture.Net.Support;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Variables
+namespace RestFixture.Net.Variables
 {
     /// <summary>
 	/// Facade to FitNesse global symbols map.
@@ -136,7 +136,7 @@ namespace restFixture.Net.Variables
                     //  substitution expressions can include character escapes while .NET ones 
                     //  can't.  So the Java substitution expression "\\\\$0" probably 
                     //  translates to "\\$0" in .NET.  But we need to check this.
-                    string sanitisedReplacement = SpecialCharactersRegex.Replace(replacement, "\\$0");
+                    string sanitisedReplacement = SpecialCharactersRegex.Replace(replacement, @"\$0");
 		            newText = newText.Replace(textToSubstitute, sanitisedReplacement);
 		        }
             }

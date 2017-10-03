@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using restFixture.Net.Tools;
 using RestClient.Data;
+using RestFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -22,7 +22,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Support
+namespace RestFixture.Net.Support
 {
 	/// <summary>
 	/// Supported content types.

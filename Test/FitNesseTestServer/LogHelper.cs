@@ -1,4 +1,4 @@
-﻿namespace FitNesseTestServer
+﻿namespace RestFixture.Net.FitNesseTestServer
 {
     public class LogHelper
     {

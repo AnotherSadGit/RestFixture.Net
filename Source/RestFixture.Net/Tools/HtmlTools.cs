@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.TypeAdapters;
+using RestFixture.Net.Support;
+using RestFixture.Net.TableElements;
+using RestFixture.Net.TypeAdapters;
 
-namespace restFixture.Net.Tools
+namespace RestFixture.Net.Tools
 {
     public sealed class HtmlTools
     {

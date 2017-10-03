@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.TypeAdapters;
+using RestFixture.Net.Support;
+using RestFixture.Net.TableElements;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -23,7 +22,7 @@ using restFixture.Net.TypeAdapters;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Fixtures
+namespace RestFixture.Net.Fixtures
 {
     /// <summary>
     /// A Slim implementation of the Rest Fixture for testing RESTful APIs.

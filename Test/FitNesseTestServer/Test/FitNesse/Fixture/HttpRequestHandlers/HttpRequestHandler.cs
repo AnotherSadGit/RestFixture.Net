@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using NLog;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
 {
     public class HttpRequestHandler : HttpMethodHandlerBase, IHttpRequestHandler
     {

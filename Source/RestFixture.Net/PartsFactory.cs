@@ -1,8 +1,8 @@
-﻿using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.TypeAdapters;
-using RestClient;
+﻿using RestClient;
 using RestClient.Data;
+using RestFixture.Net.Support;
+using RestFixture.Net.TableElements;
+using RestFixture.Net.TypeAdapters;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -22,7 +22,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net
+namespace RestFixture.Net
 {
 	/// <summary>
 	/// Factory of all dependencies the rest fixture needs.

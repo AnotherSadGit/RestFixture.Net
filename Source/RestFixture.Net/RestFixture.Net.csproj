@@ -7,7 +7,7 @@
     <ProjectGuid>{19D1017E-BA1E-40B3-937A-F6BDAF43E096}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>restFixture.Net</RootNamespace>
+    <RootNamespace>RestFixture.Net</RootNamespace>
     <AssemblyName>RestFixture.Net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

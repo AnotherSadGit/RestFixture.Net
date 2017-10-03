@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace FitNesseTestServer.Test.FitNesse.Fixture
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
 {
 
 	/// <summary>

@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using NLog;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
 {
     public abstract class HttpMethodHandlerBase : IHttpMethodHandler
     {

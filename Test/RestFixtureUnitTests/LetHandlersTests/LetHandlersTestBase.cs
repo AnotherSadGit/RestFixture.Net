@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Moq;
-using restFixture.Net;
-using restFixture.Net.Handlers;
-using restFixture.Net.Support;
-using restFixture.Net.Variables;
 using RestClient.Data;
+using RestFixture.Net.Handlers;
+using RestFixture.Net.Support;
+using RestFixture.Net.Variables;
 
-namespace RestFixtureUnitTests.LetHandlersTests
+namespace RestFixture.Net.UnitTests.LetHandlersTests
 {
     public class LetHandlersTestBase
     {

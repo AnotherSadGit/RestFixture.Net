@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
 using RestClient.Data;
+using RestFixture.Net.Support;
 
-namespace RestFixtureUnitTests.ContentTypeTests
+namespace RestFixture.Net.UnitTests.ContentTypeTests
 {
     [TestClass]
     public class ContentType_Parse : ContentTypeTestBase

@@ -1,8 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Variables;
 
-namespace RestFixtureUnitTests.VariablesTests
+namespace RestFixture.Net.UnitTests.VariablesTests
 {
     [TestClass]
     public class Variables_VariablesRegex
@@ -159,7 +158,7 @@ namespace RestFixtureUnitTests.VariablesTests
             string expectedVariableName = expectedFullMatch.Replace("%", "");
 
             // Act.
-            MatchCollection matches = Variables.VariablesRegex.Matches(textToTest);
+            MatchCollection matches = Variables.Variables.VariablesRegex.Matches(textToTest);
 
             // Assert.
             Assert.IsTrue(matches.Count > 0, "No match found.");
@@ -178,7 +177,7 @@ namespace RestFixtureUnitTests.VariablesTests
         private void CheckNonMatch(string textToTest)
         {
             // Act.
-            MatchCollection matches = Variables.VariablesRegex.Matches(textToTest);
+            MatchCollection matches = Variables.Variables.VariablesRegex.Matches(textToTest);
 
             // Assert.
             Assert.IsTrue(matches.Count == 0, "Unexpected match found.");

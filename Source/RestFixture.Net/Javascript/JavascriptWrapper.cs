@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Jurassic;
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
-using restFixture.Net.Variables;
 using RestClient.Data;
+using RestFixture.Net.Support;
+using RestFixture.Net.Tools;
+using RestFixture.Net.Variables;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -26,7 +26,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Javascript
+namespace RestFixture.Net.Javascript
 {
     /// <summary>
 	/// Wrapper class to all that related to JavaScript.

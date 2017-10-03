@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using fit;
 using NLog;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.Tools;
+using RestFixture.Net.Support;
+using RestFixture.Net.TableElements;
+using RestFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -24,7 +24,7 @@ using restFixture.Net.Tools;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Fixtures
+namespace RestFixture.Net.Fixtures
 {
 	/// <summary>
 	/// A Fit implementation of the Rest Fixture for testing RESTful APIs.

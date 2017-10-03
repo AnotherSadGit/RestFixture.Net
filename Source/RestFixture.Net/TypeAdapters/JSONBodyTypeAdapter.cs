@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using restFixture.Net.Javascript;
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
+using RestFixture.Net.Javascript;
+using RestFixture.Net.Support;
+using RestFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -23,7 +22,7 @@ using restFixture.Net.Tools;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.TypeAdapters
+namespace RestFixture.Net.TypeAdapters
 {
 
 

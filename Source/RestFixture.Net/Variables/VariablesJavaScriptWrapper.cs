@@ -1,7 +1,7 @@
 ﻿using Jurassic;
 using Jurassic.Library;
 
-namespace restFixture.Net.Variables
+namespace RestFixture.Net.Variables
 {
     /// <summary>
     /// A wrapper around Variables to allow them to be accessed from JavaScript.

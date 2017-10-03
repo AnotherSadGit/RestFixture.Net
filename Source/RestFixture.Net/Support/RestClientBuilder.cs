@@ -19,7 +19,7 @@
 
 using RestClient;
 
-namespace restFixture.Net.Support
+namespace RestFixture.Net.Support
 {
 
 	/// <summary>

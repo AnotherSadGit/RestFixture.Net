@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
 {
     /// <summary>
     /// A handler of an HTTP request which will generate an appropriate HTTP response.

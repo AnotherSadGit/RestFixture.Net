@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.Support;
 using RestClient;
+using RestFixture.Net.Support;
 
-namespace RestFixtureUnitTests
+namespace RestFixture.Net.UnitTests
 {
     [TestClass]
     public class RestClientBuilder_CreateRestClient

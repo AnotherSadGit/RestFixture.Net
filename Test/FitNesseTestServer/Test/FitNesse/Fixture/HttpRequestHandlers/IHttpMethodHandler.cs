@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
 {
     public interface IHttpMethodHandler
     {

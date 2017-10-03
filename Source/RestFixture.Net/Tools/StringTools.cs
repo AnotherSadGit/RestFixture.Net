@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.TypeAdapters;
+using RestFixture.Net.Support;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -25,7 +22,7 @@ using restFixture.Net.TypeAdapters;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.Tools
+namespace RestFixture.Net.Tools
 {
     /// <summary>
     /// Misc tool methods for string manipulation.

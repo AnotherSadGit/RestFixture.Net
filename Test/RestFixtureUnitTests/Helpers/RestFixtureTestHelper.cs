@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using fit;
-using Moq;
-using restFixture.Net;
-using restFixture.Net.Fixtures;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.TypeAdapters;
-using RestClient;
-using RestClient.Data;
+using RestFixture.Net.TableElements;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -29,7 +21,7 @@ using RestClient.Data;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace smartrics.rest.fitnesse.fixture
+namespace RestFixture.Net.UnitTests.Helpers
 {
 	public class RestFixtureTestHelper
 	{

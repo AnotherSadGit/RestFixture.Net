@@ -19,7 +19,7 @@ using fit;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net.TableElements
+namespace RestFixture.Net.TableElements
 {
 	/// <summary>
 	/// Wrapper class for table row for Fit Runner.

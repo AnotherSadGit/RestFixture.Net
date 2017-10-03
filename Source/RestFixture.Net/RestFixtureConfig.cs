@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using restFixture.Net.Fixtures;
-using restFixture.Net.Support;
-using restFixture.Net.Tools;
+using RestFixture.Net.Fixtures;
+using RestFixture.Net.Support;
+using RestFixture.Net.Tools;
 
 /*  Copyright 2017 Simon Elms
  *
@@ -22,7 +22,7 @@ using restFixture.Net.Tools;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace restFixture.Net
+namespace RestFixture.Net
 {
 
 	using Fixture = fit.Fixture;

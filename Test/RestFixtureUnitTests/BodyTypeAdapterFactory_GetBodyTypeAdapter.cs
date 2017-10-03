@@ -1,11 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using restFixture.Net;
-using restFixture.Net.Support;
-using restFixture.Net.TypeAdapters;
+using RestFixture.Net.Support;
+using RestFixture.Net.TypeAdapters;
 
-namespace RestFixtureUnitTests
+namespace RestFixture.Net.UnitTests
 {
     [TestClass]
     public class BodyTypeAdapterFactory_GetBodyTypeAdapter

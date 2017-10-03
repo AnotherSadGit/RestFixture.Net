@@ -6,17 +6,17 @@ using System.Reflection;
 using System.Security;
 using fitSharp.Machine.Engine;
 using NLog;
-using restFixture.Net.Handlers;
-using restFixture.Net.Javascript;
-using restFixture.Net.Support;
-using restFixture.Net.TableElements;
-using restFixture.Net.Tools;
-using restFixture.Net.TypeAdapters;
-using restFixture.Net.Variables;
 using RestClient;
 using RestClient.Data;
+using RestFixture.Net.Handlers;
+using RestFixture.Net.Javascript;
+using RestFixture.Net.Support;
+using RestFixture.Net.TableElements;
+using RestFixture.Net.Tools;
+using RestFixture.Net.TypeAdapters;
+using RestFixture.Net.Variables;
 
-namespace restFixture.Net.Fixtures
+namespace RestFixture.Net.Fixtures
 {
     /// <summary>
     /// Common functionality shared between Slim and Fit implementations of the Rest Fixture.

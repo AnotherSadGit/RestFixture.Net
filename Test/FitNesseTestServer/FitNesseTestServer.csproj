@@ -7,7 +7,7 @@
     <ProjectGuid>{F39E89E8-901D-418F-94DB-14DAD0D75723}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FitNesseTestServer</RootNamespace>
+    <RootNamespace>RestFixture.Net.FitNesseTestServer</RootNamespace>
     <AssemblyName>FitNesseTestServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace restFixture.Net.Support
+namespace RestFixture.Net.Support
 {
     internal static class HashMapHelperClass
     {

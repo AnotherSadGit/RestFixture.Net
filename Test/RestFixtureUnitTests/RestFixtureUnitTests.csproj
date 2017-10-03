@@ -6,7 +6,7 @@
     <ProjectGuid>{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RestFixtureUnitTests</RootNamespace>
+    <RootNamespace>RestFixture.Net.UnitTests</RootNamespace>
     <AssemblyName>RestFixtureUnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using restFixture.Net.TypeAdapters;
 using RestClient.Data;
+using RestFixture.Net.TypeAdapters;
 
-namespace RestFixtureUnitTests.HeadersTypeAdapterTests
+namespace RestFixture.Net.UnitTests.HeadersTypeAdapterTests
 {
     [TestClass]
     public class HeadersTypeAdapter_Equals

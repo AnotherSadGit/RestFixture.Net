@@ -1,8 +1,8 @@
 ﻿using System;
 using Moq;
-using restFixture.Net.TableElements;
+using RestFixture.Net.TableElements;
 
-namespace smartrics.rest.fitnesse.fixture
+namespace RestFixture.Net.UnitTests.Helpers
 {
     public class TestStubRowWrapper : IRowWrapper<string>
     {

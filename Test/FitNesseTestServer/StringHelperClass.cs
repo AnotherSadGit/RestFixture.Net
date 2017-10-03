@@ -4,7 +4,7 @@
 //
 //	This class is used to convert some aspects of the Java String class.
 //-------------------------------------------------------------------------------------------
-namespace FitNesseTestServer
+namespace RestFixture.Net.FitNesseTestServer
 {
     internal static class StringHelperClass
     {

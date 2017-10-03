@@ -1,4 +1,4 @@
-﻿using fit;
+﻿
 
 /*  Copyright 2017 Simon Elms
  *
@@ -19,7 +19,7 @@
  *  along with RestFixture.Net.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace FitNesseTestServer.Test.FitNesse.Fixture
+namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
 {
     /// <summary>
 	/// Supports Let CATs by providing a simple interface to FitNesse symbols map.

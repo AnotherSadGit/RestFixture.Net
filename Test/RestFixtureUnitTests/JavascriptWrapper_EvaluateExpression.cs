@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using restFixture.Net;
-using restFixture.Net.Javascript;
-using restFixture.Net.Support;
-using restFixture.Net.Variables;
 using RestClient.Data;
+using RestFixture.Net.Javascript;
+using RestFixture.Net.Support;
+using RestFixture.Net.Variables;
 
-namespace RestFixtureUnitTests
+namespace RestFixture.Net.UnitTests
 {
     [TestClass]
     public class JavascriptWrapper_EvaluateExpression
