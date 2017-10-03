@@ -32,7 +32,7 @@ namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
         private static Logger LOG = LogManager.GetCurrentClassLogger();
 
 		private int _port;
-		private static HttpServer _server;
+		private static HttpServer _server = null;
 
 		public virtual void startServer(string port)
 		{
@@ -44,7 +44,7 @@ namespace RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture
 			if (_server == null)
 			{
 				this._port = port;
-				LOG.Info("Starting server on port ", port);
+				LOG.Info("Starting server on port {0}", port);
 			    _server = new HttpServer(port);
 				_server.Start();
 			}

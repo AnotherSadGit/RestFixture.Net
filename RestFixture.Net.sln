@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{43229683-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitNesseTestServer", "Test\FitNesseTestServer\FitNesseTestServer.csproj", "{F39E89E8-901D-418F-94DB-14DAD0D75723}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitNesseTestServerHostConsole", "FitNesseTestServerHostConsole\FitNesseTestServerHostConsole.csproj", "{D07814BC-17D6-4F06-8DCB-DF933F36FAC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39E89E8-901D-418F-94DB-14DAD0D75723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D07814BC-17D6-4F06-8DCB-DF933F36FAC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D07814BC-17D6-4F06-8DCB-DF933F36FAC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D07814BC-17D6-4F06-8DCB-DF933F36FAC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D07814BC-17D6-4F06-8DCB-DF933F36FAC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +74,6 @@ Global
 		{19AD251E-12E8-4BA0-882E-A84C194CA217} = {0D55E88E-8F3C-4200-B13F-A70B328EEEE3}
 		{5DD1011E-FB22-4073-A16A-C9DDCC0B49FE} = {43229683-ADC4-45B4-83EA-DB050FFA599F}
 		{F39E89E8-901D-418F-94DB-14DAD0D75723} = {43229683-ADC4-45B4-83EA-DB050FFA599F}
+		{D07814BC-17D6-4F06-8DCB-DF933F36FAC1} = {43229683-ADC4-45B4-83EA-DB050FFA599F}
 	EndGlobalSection
 EndGlobal
