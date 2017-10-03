@@ -44,6 +44,8 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture.HttpRequestHandlers
                 string id = this.GetId(localUrl);
                 string type = this.GetResourceType(localUrl);
                 string extension = this.GetExtension(localUrl);
+                response.AddHeader("Set-Cookie",
+                    "JSESSIONID=\"5D9A85ABEBFA96ACF903C24EC42C3F5C.${aaa.yyy}\"; Version=1; Path=/yyy");
                 this.EchoHeader(context);
                 EchoQString(context);
                 try

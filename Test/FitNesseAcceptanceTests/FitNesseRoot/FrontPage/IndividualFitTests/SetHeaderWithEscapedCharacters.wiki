@@ -1,0 +1,37 @@
+---
+Test
+---
+!3 Check that !-RestFixture.Net-! handles the problem raised in !-RestFixture-! issue [[118][https://github.com/smartrics/RestFixture/issues/118]]:
+
+If a symbol contains a character that is a regular expression metacharacter, that character must be escaped.
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| setHeader | Echo-Header:JSESSIONID="5D9A85ABEBFA96ACF903C24EC42C3F5C.${aaa.yyy}"; Version=1; Path=/yyy |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| setHeader | Echo-Header:JSESSIONID="5D9A85ABEBFA96ACF903C24EC42C3F5C.%24%7Baaa.yyy%7D"; Version=1; Path=/yyy |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| setHeader | Echo-Header:JSESSIONID="5D9A85ABEBFA96ACF903C24EC42C3F5C\.\$\{aaa\.yyy\}"; Version=1; Path=/yyy |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+| LET | loginSessionId | header | Set-Cookie:(.+) | |
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| setHeader | Echo-Header:%loginSessionId% |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+!| String Fixture |
+| Field | Field? |
+| !-Echo-Header:JSESSIONID="5D9A85ABEBFA96ACF903C24EC42C3F5C.${aaa.yyy}"; Version=1; Path=/yyy-! | >>otherId | 
+
+| Fit Rest Fixture   | http://localhost:7654 |
+| setHeader | !-Echo-Header:%otherId%-! |
+| GET | /resources/0 | 200 | Content-Length : [\d]+ |  |
+
+
+

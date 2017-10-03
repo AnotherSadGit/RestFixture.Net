@@ -84,7 +84,18 @@ The expected body in the following GET is specified as "/resource/name[text()='%
 | Fit Rest Fixture | http://localhost:7654 |
 | GET              | /resources/0 | 200 | Content-Length : [\d]+ | /resource/name[text()='%nodeValue%'] |
 
-Use symbol in the expected body column #3, with !-JavaScript-! expression:
+Use symbol in the expected body column #3, containng characters that should not be escaped:
+
+| String Fixture |
+| Field      | Field?      |
+| Contains a full stop. And a decimal point: 10.123 | >>nodeValue |
+
+The expected body in the following GET is specified as "/resource/name[text()='%nodeValue%']" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/2 | 200 | Content-Length : [\d]+ | /resource/data[text()='%nodeValue%'] |
+
+Use symbol in the expected body column #4, with !-JavaScript-! expression:
 
 | String Fixture |
 | Field      | Field?      |

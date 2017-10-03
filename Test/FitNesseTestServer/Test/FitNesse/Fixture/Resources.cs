@@ -129,6 +129,7 @@ namespace FitNesseTestServer.Test.FitNesse.Fixture
             clear();
             add("/resources", new Resource("0", "<resource>\n    <name>a funky name</name>\n    <data>an important message</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>3</ns1:number>\n    </nstag>" + "\n</resource>"));
             add("/resources", new Resource("1", "{ \"resource\" : { \"name\" : \"a funky name\", " + "\"data\" : \"an important message\" } }"));
+            add("/resources", new Resource("2", "<resource>\n    <name>another name</name>\n    <data>Contains a full stop. And a decimal point: 10.123</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>3</ns1:number>\n    </nstag>" + "\n</resource>"));
 
             add("/resources", new Resource("10", "<resource xmlns=\"http://schemas.datacontract.org/2004/07/resources\">\n    <name>resource name</name>\n    <data>some data</data>" + "\n    <nstag xmlns:ns1='http://smartrics/ns1'>\n        <ns1:number>10</ns1:number>\n    </nstag>" + "\n</resource>"));
 

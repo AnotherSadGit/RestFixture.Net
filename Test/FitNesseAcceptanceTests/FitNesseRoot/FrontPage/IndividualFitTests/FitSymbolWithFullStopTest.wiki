@@ -1,0 +1,15 @@
+Use symbol in the expected body column #2, with XPath expression:
+
+| String Fixture |
+| Field      | Field?      |
+| Contains a full stop. And a decimal point: 10.123 | >>nodeValue |
+
+The expected body in the following GET is specified as "/resource/name[text()='%nodeValue%']" (without the quotes).
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/2 | 200 | Content-Length : [\d]+ | /resource/data[text()='%nodeValue%'] |
+
+In this example the expected body XPath expression includes a string literal, not a symbol:
+
+| Fit Rest Fixture | http://localhost:7654 |
+| GET              | /resources/2 | 200 | Content-Length : [\d]+ | /resource/data[text()='Contains a full stop. And a decimal point: 10.123'] |
