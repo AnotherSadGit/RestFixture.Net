@@ -1,7 +1,7 @@
 !| Import |
-| restFixture.Net |
-| restFixture.Net.Fixtures |
-| FitNesseTestServer.Test.FitNesse.Fixture |
+| RestFixture.Net |
+| RestFixture.Net.Fixtures |
+| RestFixture.Net.FitNesseTestServer.Test.FitNesse.Fixture |
 
 !| Action Fixture |
 | start | Http Server Fixture |
